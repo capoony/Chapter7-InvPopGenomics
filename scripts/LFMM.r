@@ -68,19 +68,28 @@ for (i in c("Europe", "NorthAmerica")) {
     DATA.af <- na.omit(InvFreq %>%
         inner_join(DATA.af, by = "sampleId"))
 
-    ###
+    ### plot temperatures
     world_coordinates <- map_data("world")
-    ggplot() +
-        # geom_map() function takes world coordinates
-        # as input to plot world map
+    WORLD <- ggplot(DATA.af, aes(x = long, y = lat, col = AvTemp)) +
         geom_map(
             data = world_coordinates, map = world_coordinates,
             aes(long, lat, map_id = region),
             color = "black",
             fill = "lightgrey",
         ) +
-        theme_bw() +
-        rownames(DATA.af) <- DATA.af$sampleId
+        geom_point() +
+        scale_colour_gradientn(colours = terrain.colors(10)) +
+        theme_bw()
+
+    FILE <- paste0("results/SNPs_", INV, "/LFMM_", INV, "_", i, "_WorldTemp.png")
+    ggsave(FILE,
+        WORLD,
+        width = 16,
+        height = 8
+    )
+
+
+    rownames(DATA.af) <- DATA.af$sampleId
     DATA.af.meta <- DATA.af %>%
         select(sampleId, continent, country, lat, long, AvTemp, AvPrec)
     DATA.af.lfmm <- DATA.af %>%
