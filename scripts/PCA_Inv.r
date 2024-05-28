@@ -3,60 +3,58 @@ library(factoextra)
 library(FactoMineR)
 library(ggpubr)
 
+# Define command line arguments
 args <- commandArgs(trailingOnly = TRUE)
-
 INV <- args[1]
 Chr <- args[2]
-Start <- args[3]
-End <- args[4]
+Start <- as.numeric(args[3])
+End <- as.numeric(args[4])
 WD <- args[5]
 
+# Set working directory
 setwd(WD)
 
-## Get meta data
-meta <- read.csv("data/meta.csv",
-    header = TRUE
-)
-meta.sub <- meta %>%
-    select(sampleId, country, province)
-meta.sub$sampleId <- gsub("-", ".", meta.sub$sampleId)
+# Function to load and process metadata
+load_metadata <- function() {
+    meta <- read.csv("data/meta.csv", header = TRUE)
+    meta.sub <- meta %>% select(sampleId, country, province)
+    meta.sub$sampleId <- gsub("-", ".", meta.sub$sampleId)
+    return(meta.sub)
+}
 
+# Function to read frequency data
+read_frequency_data <- function(region) {
+    DATA <- read.table(gzfile(paste0("results/SNPs/", region, "_freq.csv.gz")), header = TRUE, comment.char = "")
+    return(DATA)
+}
 
-for (i in c("Europe", "NorthAmerica")) {
-    ### read frequency data
-    DATA <- read.table(gzfile(paste0("results/SNPs/", i, "_freq.csv.gz")),
-        header = TRUE,
-        comment.char = ""
-    )
-    ### subset to SNPs inside the inversion
+# Function to process inversion data
+process_inversion_data <- function(DATA, meta.sub, Chr, Start, End) {
     DATA.inv <- as.data.frame(t(DATA %>%
-        filter(X.CHROM == Chr & POS > as.numeric(Start) & POS < as.numeric(End)) %>%
+        filter(X.CHROM == Chr & POS > Start & POS < End) %>%
         select(3:ncol(DATA))))
-    ### get sampleIds and link to metadata
     DATA.inv$sampleId <- rownames(DATA.inv)
     DATA.inv <- DATA.inv %>%
         inner_join(meta.sub, by = "sampleId") %>%
         filter(country != "Panama" & country != "Guadeloupe")
-    ### do PCA
+    return(DATA.inv)
+}
 
-    PCA.inv <- PCA(DATA.inv[, 1:(ncol(DATA.inv) - 3)],
-        graph = FALSE
-    )
-    ### make output table
-    write.table(
-        file = paste0("results/SNPs_", INV, "/PCA_", INV, "_", i, "_inside.txt"),
-        cbind(DATA.inv[, (ncol(DATA.inv) - 2):ncol(DATA.inv)], PCA.inv$ind$coord),
-        sep = ",",
-        quote = FALSE,
-        row.names = FALSE
-    )
-    ### make scatterplot
-    if (i == "Europe") {
-        COLOR <- DATA.inv$country
+# Function to perform PCA
+perform_pca <- function(DATA) {
+    PCA.result <- PCA(DATA, graph = FALSE)
+    return(PCA.result)
+}
+
+# Function to create PCA plot
+create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
+    plot_type <- ifelse(inside, "inside", "outside")
+    if (region == "Europe") {
+        COLOR <- DATA$country
     } else {
-        COLOR <- DATA.inv$province
+        COLOR <- DATA$province
     }
-    PLOT.inv <- fviz_pca_ind(PCA.inv,
+    PLOT <- fviz_pca_ind(PCA.result,
         col.ind = COLOR,
         pointshape = 16,
         pointsize = 3,
@@ -64,47 +62,53 @@ for (i in c("Europe", "NorthAmerica")) {
         mean.point = FALSE,
         label = COLOR,
         repel = TRUE
-    ) + theme_bw() + ggtitle(paste0("PCA - ", i, " inside ", INV))
+    ) + theme_bw() + ggtitle(paste0("PCA - ", region, " ", plot_type, " ", INV))
+    return(PLOT)
+}
 
-    ### repeat for SNPs outside the inversion
+# Function to save PCA results
+save_pca_results <- function(PCA.result, DATA, region, INV, inside = TRUE) {
+    plot_type <- ifelse(inside, "inside", "outside")
+    write.table(
+        file = paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, "_", plot_type, ".txt"),
+        cbind(DATA[, (ncol(DATA) - 2):ncol(DATA)], PCA.result$ind$coord),
+        sep = ",",
+        quote = FALSE,
+        row.names = FALSE
+    )
+}
+
+# Main function to process data for each region
+process_region <- function(region, meta.sub, Chr, Start, End, INV) {
+    DATA <- read_frequency_data(region)
+
+    # Process inversion data
+    DATA.inv <- process_inversion_data(DATA, meta.sub, Chr, Start, End)
+    PCA.inv <- perform_pca(DATA.inv[, 1:(ncol(DATA.inv) - 3)])
+    save_pca_results(PCA.inv, DATA.inv, region, INV, inside = TRUE)
+    PLOT.inv <- create_pca_plot(PCA.inv, DATA.inv, region, INV, inside = TRUE)
+
+    # Process non-inversion data
     DATA.non <- as.data.frame(t(DATA %>%
-        filter(!(X.CHROM == Chr & POS > as.numeric(Start) & POS < as.numeric(End))) %>%
+        filter(!(X.CHROM == Chr & POS > Start & POS < End)) %>%
         select(3:ncol(DATA))))
     DATA.non$sampleId <- rownames(DATA.non)
     DATA.non <- DATA.non %>%
         inner_join(meta.sub, by = "sampleId")
-    PCA.non <- PCA(DATA.non[, 1:(ncol(DATA.non) - 3)],
-        graph = FALSE
-    )
-    ### make output table
-    write.table(
-        file = paste0("results/SNPs_", INV, "/PCA_", INV, "_", i, "_outside.txt"),
-        cbind(DATA.non[, (ncol(DATA.non) - 2):ncol(DATA.non)], PCA.non$ind$coord),
-        sep = ",",
-        quote = FALSE,
-        row.names = FALSE
-    )
-    if (i == "Europe") {
-        COLOR <- DATA.non$country
-    } else {
-        COLOR <- DATA.non$province
-    }
-    PLOT.non <- fviz_pca_ind(PCA.non,
-        col.ind = COLOR,
-        pointshape = 16,
-        pointsize = 3,
-        alpha = 0.7,
-        mean.point = FALSE,
-        label = COLOR,
-        repel = TRUE
-    ) + theme_bw() + ggtitle(paste0("PCA - ", i, " outside ", INV))
+    PCA.non <- perform_pca(DATA.non[, 1:(ncol(DATA.non) - 3)])
+    save_pca_results(PCA.non, DATA.non, region, INV, inside = FALSE)
+    PLOT.non <- create_pca_plot(PCA.non, DATA.non, region, INV, inside = FALSE)
 
-    PLOT <- ggarrange(PLOT.inv, PLOT.non, common.legend = T)
-    FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", i, ".png")
-    ggsave(
-        file = FILE,
-        PLOT,
-        width = 12,
-        height = 6
-    )
+    # Combine and save plots
+    PLOT <- ggarrange(PLOT.inv, PLOT.non, common.legend = TRUE)
+    FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".png")
+    ggsave(file = FILE, PLOT, width = 12, height = 6)
+}
+
+# Load metadata
+meta.sub <- load_metadata()
+
+# Process each region
+for (region in c("Europe", "NorthAmerica")) {
+    process_region(region, meta.sub, Chr, Start, End, INV)
 }
