@@ -114,7 +114,7 @@ done
 ## (5) calculate FST between karyotypes
 
 ### make input files for STD and INV samples
-for i in IN3RP; do
+for i in IN2Lt; do
     mkdir ${WD}/data/${i}
     output_dir=${WD}/data/${i}
     ### split file with sample IDs based on Inversions status
@@ -127,7 +127,7 @@ for i in IN3RP; do
     }
     ' ${WD}/data/${i}.txt
 
-    ### filter VCF for biallelic SNPs
+    # ### filter VCF for biallelic SNPs
     conda activate vcftools
 
     vcftools --gzvcf ${WD}/results/SNPs_${i}/SNPs_${i}.vcf.gz \
@@ -139,20 +139,71 @@ for i in IN3RP; do
 
     gzip ${WD}/results/SNPs_${i}/SNPs_${i}.recode.vcf
 
-    ### convert haploid VCF to diploid
+    ## convert haploid VCF to diploid
     python ${WD}/scripts/hap2dip.py \
         --input ${WD}/results/SNPs_${i}/SNPs_${i}.recode.vcf.gz \
         --output ${WD}/results/SNPs_${i}/SNPs_${i}.recode_dip.vcf.gz
 
-    ### calculate FST
+    for karyo in INV ST; do
+
+        ### calculate PI
+        vcftools --gzvcf ${WD}/results/SNPs_${i}/SNPs_${i}.recode_dip.vcf.gz \
+            --keep ${WD}/data/${i}/${karyo}.csv \
+            --window-pi 200000 \
+            --out ${WD}/results/SNPs_${i}/${i}_${karyo}_pi
+    done
+
+    awk 'NR ==1 {print $0"\tType"}' ${WD}/results/SNPs_${i}/${i}_INV_pi.windowed.pi >${WD}/results/SNPs_${i}/${i}_pi.tsv
+    awk 'NR>1  {print $0"\tINV"}' ${WD}/results/SNPs_${i}/${i}_INV_pi.windowed.pi >>${WD}/results/SNPs_${i}/${i}_pi.tsv
+    awk 'NR>1  {print $0"\tST"}' ${WD}/results/SNPs_${i}/${i}_ST_pi.windowed.pi >>${WD}/results/SNPs_${i}/${i}_pi.tsv
+
+done
+
+### plot PI as Manhattan Plots
+for index in ${!DATA[@]}; do
+
+    i=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+
+    Rscript ${WD}/scripts/Plot_pi.r \
+        ${i} \
+        ${Ch} \
+        ${St} \
+        ${En} \
+        ${WD}
+
+done
+
+## (5) calculate FST between karyotypes
+
+### make input files for STD and INV samples
+for i in IN3RP; do
+
+    conda activate vcftools
+
+    ## calculate FST
     vcftools --gzvcf ${WD}/results/SNPs_${i}/SNPs_${i}.recode_dip.vcf.gz \
         --weir-fst-pop ${WD}/data/${i}/INV.csv \
         --weir-fst-pop ${WD}/data/${i}/ST.csv \
         --out ${WD}/results/SNPs_${i}/${i}.fst
 
+done
+
+for index in ${!DATA[@]}; do
+
+    i=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+
     ### plot FST as Manhattan Plots
     Rscript ${WD}/scripts/Plot_fst.r \
         ${i} \
+        ${Ch} \
+        ${St} \
+        ${En} \
         ${WD}
 
 done
@@ -363,3 +414,11 @@ for index in ${!DATA[@]}; do
         ${WD}
 
 done
+
+## copy figures to output folder
+
+mkdir /media/inter/mkapun/projects/InvChapter/output
+
+cp /media/inter/mkapun/projects/InvChapter/results/SNPs*/*.png /media/inter/mkapun/projects/InvChapter/output
+cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LFMM_*/*.png /media/inter/mkapun/projects/InvChapter/output
+cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LDwithSNPs/*.png /media/inter/mkapun/projects/InvChapter/output
