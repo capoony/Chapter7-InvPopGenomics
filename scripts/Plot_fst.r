@@ -57,7 +57,7 @@ save_plot <- function(plot, file_path, width = 16, height = 5) {
 # Main script
 file_path <- paste0("results/SNPs_", INV, "/", INV, ".fst.weir.fst")
 data <- load_and_clean_data(file_path)
-chromosomes <- c("X", "2L", "2R", "3L", "3R", "4")
+chromosomes <- c("X", "2L", "2R", "3L", "3R")
 filtered_data <- filter_by_chromosome(data, chromosomes)
 plot <- create_fst_plot(filtered_data)
 output_file_path <- paste0("results/SNPs_", INV, "/", INV, ".fst.weir.fst.png")

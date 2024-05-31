@@ -153,6 +153,7 @@ for i in IN2Lt; do
             --out ${WD}/results/SNPs_${i}/${i}_${karyo}_pi
     done
 
+    ## combine pi of INV and ST chromosomes
     awk 'NR ==1 {print $0"\tType"}' ${WD}/results/SNPs_${i}/${i}_INV_pi.windowed.pi >${WD}/results/SNPs_${i}/${i}_pi.tsv
     awk 'NR>1  {print $0"\tINV"}' ${WD}/results/SNPs_${i}/${i}_INV_pi.windowed.pi >>${WD}/results/SNPs_${i}/${i}_pi.tsv
     awk 'NR>1  {print $0"\tST"}' ${WD}/results/SNPs_${i}/${i}_ST_pi.windowed.pi >>${WD}/results/SNPs_${i}/${i}_pi.tsv
@@ -416,7 +417,6 @@ for index in ${!DATA[@]}; do
 done
 
 ## copy figures to output folder
-
 mkdir /media/inter/mkapun/projects/InvChapter/output
 
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs*/*.png /media/inter/mkapun/projects/InvChapter/output

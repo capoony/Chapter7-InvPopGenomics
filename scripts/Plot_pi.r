@@ -37,10 +37,11 @@ rect_data <- data.frame(
 # Function to create FST plot
 create_fst_plot <- function(data) {
     plot <- ggplot(data, aes(x = BIN_START / 1000000, y = PI, col = Type)) +
-        geom_line() +
+        geom_line(linewidth = 1) +
         # geom_point(col = rgb(0, 0, 0, 0.1), pch = 16, size = 0.1) +
         facet_grid(. ~ CHROM, scales = "free_x", space = "free") +
         theme_bw() +
+        scale_color_manual(values = c("red", "blue")) +
         geom_rect(
             data = rect_data,
             aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
@@ -58,7 +59,7 @@ save_plot <- function(plot, file_path, width = 16, height = 5) {
 # Main script
 file_path <- paste0("results/SNPs_", INV, "/", INV, "_pi.tsv")
 data <- load_and_clean_data(file_path)
-chromosomes <- c("X", "2L", "2R", "3L", "3R", "4")
+chromosomes <- c("X", "2L", "2R", "3L", "3R")
 filtered_data <- filter_by_chromosome(data, chromosomes)
 plot <- create_fst_plot(filtered_data)
 output_file_path <- paste0("results/SNPs_", INV, "/", INV, "_pi.png")
