@@ -13,6 +13,7 @@ End=(13154180 24744010)
 sh ${WD}/shell/dependencies
 
 ## (1) Get information of individual sequencing data and isolate samples with known inversion status
+mkdir ${WD}/data
 cd ${WD}/data
 
 ### download Excel table

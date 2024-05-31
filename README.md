@@ -12,13 +12,21 @@ Chromosomal inversions are structural mutations that result in a reorientation o
  
 In this book chapter, we will focus on the fruit fly *Drosophila melanogaster*, which is characterized by seven chromosomal inversions, which are commonly found in most world-wide populations. Using genomic data from different sources and a broad range of bioinformatics analyses tools, we will study two common cosmopolitan inversions, *In(2L)t* and *In(3R)Payne*, in their ancestral African origin and investigate their effect on genetic variation and differentiation. We will identify single nucleotide polymorphisms (SNPs) in the proximity of the inversion breakpoints which are fixed for different alleles in the inverted and standard chromosomal arrangements. Using these SNPs as diganostic markers, we will subsequently estimate inversion frequencies in pooled resequencing data, where individuals with uncertain inversion status are pooled prior to DNA sequencing. In particular, we will utilize the DEST v.2.0 dataset, which is a collection of whole-genome pooled sequencing data from more than 700 world-wide *Drosophila melanogaster* population samples, densely collected through time and space. Using the inversion-specific marker SNPs, we will test how inversions influence genome-wide linkage disequilibrium and population structure. Furthermore, we will test for clinal patterns of the inversions in European and North American populations and investigate if these patterns can be explained by demography alone.
 
-First, we will download the necessary datasets. We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Zamia with known karyotypes.
+The full analysis pipeline including specific *Python* and *R* scripts can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in the shell-script `dependencies.sh` which can be found in the `shell/` folder.
+
+```bash
+## (0) install dependencies
+sh ${WD}/shell/dependencies
+```
+
+Then, we will download the necessary datasets. We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Zamia with known karyotypes.
 
 ```bash
 ### define working directory
-WD=/media/inter/mkapun/projects/InvChapter
+WD=</Github/InvChapter> ## replace with path to the downloaded GitHub repo https://github.com/capoony/InvChapter
 
 ### Get information of individual sequencing data and isolate samples with known inversion status
+mkdir ${WD}/data
 cd ${WD}/data
 
 ### download Excel table
