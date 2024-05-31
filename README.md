@@ -16,7 +16,7 @@ In this book chapter, we will focus on the fruit fly *Drosophila melanogaster*, 
 
 ### Preparing the bioinformatics analyses
 
-The full analysis pipeline including specific *Python* and *R* scripts can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in the shell-script `dependencies.sh` which can be found in the `shell/` folder.
+The full analysis pipeline including specific *Python* and *R* scripts can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in the shell-script `dependencies.sh` which is located in the `shell/` folder.
 
 ```bash
 ## (1) install dependencies
