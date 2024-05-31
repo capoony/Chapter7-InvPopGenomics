@@ -1,8 +1,9 @@
 ################# ANALYSIS PIPELINE ##################
+
+### define working directory
 WD=/media/inter/mkapun/projects/InvChapter
 
-## Define arrays with the inverions names, chromosome, start and end breakpoints
-
+### Define arrays with the inverions names, chromosome, start and end breakpoints
 DATA=("IN2Lt" "IN3RP")
 Chrom=("2L" "3R")
 Start=(2225744 16432209)
