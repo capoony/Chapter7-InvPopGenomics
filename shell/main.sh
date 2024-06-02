@@ -451,3 +451,13 @@ mkdir /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs*/*.png /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LFMM_*/*.png /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LDwithSNPs/*.png /media/inter/mkapun/projects/InvChapter/output
+
+pandoc -f markdown \
+    -t latex \
+    -o /media/inter/mkapun/projects/InvChapter/README.pdf \
+    /media/inter/mkapun/projects/InvChapter/README.md
+
+pandoc -f markdown \
+    -t docx \
+    -o /media/inter/mkapun/projects/InvChapter/README.docx \
+    /media/inter/mkapun/projects/InvChapter/README.md
