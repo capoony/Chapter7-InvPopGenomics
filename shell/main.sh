@@ -27,7 +27,7 @@ mkdir ${WD}/data/reads
 mkdir ${WD}/shell/reads
 conda activate sra-tools
 
-for i in IN3RP; do
+for i in IN2Lt IN3RP; do
     while
         IFS=',' read -r ID SRR Inv
     do

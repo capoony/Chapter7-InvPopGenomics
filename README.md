@@ -14,7 +14,7 @@ Chromosomal inversions are structural mutations that result in a reorientation o
  
 In this book chapter, we will focus on the fruit fly *Drosophila melanogaster*, which is characterized by seven chromosomal inversions, which are commonly found in most world-wide populations. Using genomic data from different sources and a broad range of bioinformatics analyses tools, we will study two common cosmopolitan inversions, *In(2L)t* and *In(3R)Payne*, in their ancestral African origin and investigate their effect on genetic variation and differentiation. We will identify single nucleotide polymorphisms (SNPs) in the proximity of the inversion breakpoints which are fixed for different alleles in the inverted and standard chromosomal arrangements. Using these SNPs as diganostic markers, we will subsequently estimate inversion frequencies in pooled resequencing (PoolSeq) data, where individuals with uncertain inversion status are pooled prior to DNA sequencing. In particular, we will utilize the DEST v.2.0 dataset, which is a collection of whole-genome pooled sequencing data from more than 700 world-wide *Drosophila melanogaster* population samples, densely collected through time and space. Using the inversion-specific marker SNPs, we will estimate the inversion frequencies of our two focal inversions in the PoolSeq data of each population sample and test how inversions influence genome-wide linkage disequilibrium and population structure. Furthermore, we will test for clinal patterns of the inversions in European and North American populations and investigate if these patterns can be explained by demography alone.
 
-### Preparing the bioinformatics analyses
+### (1) Preparing the bioinformatics analyses pipeline
 
 The full analysis pipeline including specific *Python* and *R* scripts can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in the shell-script `dependencies.sh` which is located in the `shell/` folder.
 
@@ -23,7 +23,7 @@ The full analysis pipeline including specific *Python* and *R* scripts can be fo
 sh ${WD}/shell/dependencies
 ```
 
-Then, we will download the necessary datasets. We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Siavonga/Zambia with known karyotypes. 
+Then, we need to download genomic data from the Short Read Archive (SRA; XXX). We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Siavonga/Zambia with known karyotypes. In a first step, we will use a metadata-table, which contains the sample ID's, the corresponing ID's from the SRA database and the inversion status of common inversions, to select (up to) 20 individuals from each karyotype (INV and ST) for each of the two focal inversions. Finally, we will download the raw sequencing data for these samples from SRA
 
 ```bash
 ### define working directory
@@ -33,11 +33,43 @@ WD=</Github/InvChapter> ## replace with path to the downloaded GitHub repo https
 mkdir ${WD}/data
 cd ${WD}/data
 
-### download Excel table for Drosophila Nexus dataset
+### download metadata Excel table for Drosophila Nexus dataset
 wget http://johnpool.net/TableS1_individuals.xls
 
 ### process table and generate input files for downstream analyses, i.e., pick the ID's and SRA accession numbers for the first 20 individuals with inverted and standard karyotype, respectively.
 Rscript ${WD}/scripts/ReadXLS.r ${WD}
+
+
+## (2) Get read data from SRA
+mkdir ${WD}/data/reads
+mkdir ${WD}/shell/reads
+conda activate sra-tools
+
+for i in IN2Lt IN3RP; do
+    while
+        IFS=',' read -r ID SRR Inv
+    do
+        if [[ -f ${WD}/data/reads/${ID}_1.fastq.gz ]]; then
+            continue
+        fi
+
+        echo """
+        ## download reads and convert to FASTQ files
+        fasterq-dump \
+            --split-3 \
+            -o ${ID} \
+            -O ${WD}/data/reads \
+            -e 8 \
+            -f \
+            -p \
+            ${SRR}
+        ## compress data
+        gzip ${WD}/data/reads/${ID}*
+        """ >${WD}/shell/reads/${ID}.sh
+        sh ${WD}/shell/reads/${ID}.sh
+    done <${WD}/data/${i}.txt
+done
+
 
 ```
 
