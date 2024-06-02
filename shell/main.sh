@@ -69,12 +69,10 @@ conda deactivate
 
 ### trim & map & sort & remove duplicates & realign around indels
 for index in ${!DATA[@]}; do
-
     INVERSION=${DATA[index]}
     while
         IFS=',' read -r ID SRR Inv
     do
-
         if [[ ${ID} == "Stock ID" || -f ${WD}/mapping/${ID}_RG.bam ]]; then
             continue
         fi

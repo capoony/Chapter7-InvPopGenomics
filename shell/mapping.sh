@@ -60,11 +60,11 @@ java -jar $GATK -T RealignerTargetCreator \
     -I $output/${sample}.dedup.bam \
     -o $output/${sample}.intervals
 
-# java -jar $GATK \
-#     -T IndelRealigner \
-#     -R ${genome}.fa \
-#     -I $output/${sample}.dedup.bam \
-#     -targetIntervals $output/${sample}.intervals \
-#     -o $output/${sample}.RG.bam
+java -jar $GATK \
+    -T IndelRealigner \
+    -R ${genome}.fa \
+    -I $output/${sample}.dedup.bam \
+    -targetIntervals $output/${sample}.intervals \
+    -o $output/${sample}.RG.bam
 
 conda deactivate

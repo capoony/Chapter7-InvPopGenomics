@@ -22,14 +22,14 @@ The full analysis pipeline including specific *Python* and *R* scripts can be fo
 ### define working directory
 WD=</Github/InvChapter> ## replace with path to the downloaded GitHub repo https://github.com/capoony/InvChapter
 
-## (1) install dependencies
+## install dependencies
 sh ${WD}/shell/dependencies
 ```
 
 Then, we need to download genomic data from the Short Read Archive (SRA; XXX). We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Siavonga/Zambia with known karyotypes. In a first step, we will use a metadata-table, which contains the sample ID's, the corresponing ID's from the SRA database and the inversion status of common inversions, to select (up to) 20 individuals from each karyotype (INV and ST) for each of the two focal inversions. Finally, we will download the raw sequencing data for these samples from SRA
 
 ```bash
-## (2) Get information of individual sequencing data and isolate samples with known inversion status
+## Get information of individual sequencing data and isolate samples with known inversion status
 mkdir ${WD}/data
 cd ${WD}/data
 
@@ -45,7 +45,7 @@ Chrom=("2L" "3R")
 Start=(2225744 16432209)
 End=(13154180 24744010)
 
-## (3) Get read data from SRA
+## Get read data from SRA
 mkdir ${WD}/data/reads
 mkdir ${WD}/shell/reads
 conda activate sra-tools
@@ -79,8 +79,31 @@ for index in ${!DATA[@]}; do
     done <${WD}/data/${INVERSION}.txt
 done
 ```
+In the next step, we will first trim the reads based on base-quality and map the filtered datasets against the *D. melanogaster* reference genome, which we will download from [FlyBase](https://flybase.org/). We will use a modified mapping pipeline from Kapun et al. (2020), which further filters for PCR duplicates and improves the alignment of nucleotides around indels. 
 
-
+```bash
+### trim & map & sort & remove duplicates & realign around indels
+for index in ${!DATA[@]}; do
+    INVERSION=${DATA[index]}
+    while
+        IFS=',' read -r ID SRR Inv
+    do
+        ## ignore header or continue if mapped dataset already exists 
+        if [[ ${ID} == "Stock ID" || -f ${WD}/mapping/${ID}_RG.bam ]]; then
+            continue
+        fi
+        ## run the mapping pipeline with 100 threads (modify to adjust to your system ressources). Note that this step may take quite some time
+        sh ${WD}/shell/mapping.sh \
+            ${WD}/data/reads/${ID}_1.fastq.gz \
+            ${WD}/data/reads/${ID}_2.fastq.gz \
+            ${ID} \
+            ${WD}/mapping \
+            ${WD}/data/dmel-6.57 \
+            100 \
+            ${WD}/scripts/gatk/GenomeAnalysisTK.jar
+    done <${WD}/data/${INVERSION}.txt
+done
+```
 
 ### (1) SNPs in strong linkage disequilibrium with inversions
 
