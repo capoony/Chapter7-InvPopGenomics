@@ -104,6 +104,43 @@ for index in ${!DATA[@]}; do
     done <${WD}/data/${INVERSION}.txt
 done
 ```
+ During the mapping pipeline, we aligend all reads against the reference genome. We can thus now obtain the allelic information for each sample at every position in the reference genome. Since the sequencing data was generated from haploid embryos, we assume that there is only one allele present in each sample at a given genomic position. We will now identify polymorphisms using the FreeBayes variantcaller and store the SNP information across all samples per inversion in a VCF file.
+
+```bash
+
+## (5) SNP calling using freebayes with 100 threads
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    while
+        IFS=',' read -r ID SRR Inv
+    do
+        if [[ ${ID} == "Stock ID" ]]; then
+            continue
+        fi
+
+        mkdir -p ${WD}/results/SNPs_${INVERSION}
+
+        ### store the PATHs to all BAM files in a text, which will be used as the input for FreeBayes
+        echo ${WD}/mapping/${ID}_RG.bam >>${WD}/mapping/BAMlist_${INVERSION}.txt
+
+    done <${WD}/data/${INVERSION}.txt
+
+    conda activate freebayes
+
+    ### We assume ploidy = 1 and run FreeBayes in parallel by splitting the reference genome in chuncks of 100,000bps and and use GNU parallel for multithreading. I am using 100 threads. Please adjust to your system. 
+    freebayes-parallel \
+        <(fasta_generate_regions.py \
+            ${WD}/data/dmel-6.57.fa.fai \
+            100000) \
+        100 \
+        -f ${WD}/data/dmel-6.57.fa \
+        -L ${WD}/mapping/BAMlist_${INVERSION}.txt \
+        --ploidy 1 |
+        gzip >${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.vcf.gz
+    conda deactivate
+done
+```
 
 ### (1) SNPs in strong linkage disequilibrium with inversions
 
