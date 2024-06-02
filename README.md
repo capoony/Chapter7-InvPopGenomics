@@ -19,6 +19,9 @@ In this book chapter, we will focus on the fruit fly *Drosophila melanogaster*, 
 The full analysis pipeline including specific *Python* and *R* scripts can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in the shell-script `dependencies.sh` which is located in the `shell/` folder.
 
 ```bash
+### define working directory
+WD=</Github/InvChapter> ## replace with path to the downloaded GitHub repo https://github.com/capoony/InvChapter
+
 ## (1) install dependencies
 sh ${WD}/shell/dependencies
 ```
@@ -26,9 +29,6 @@ sh ${WD}/shell/dependencies
 Then, we need to download genomic data from the Short Read Archive (SRA; XXX). We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Siavonga/Zambia with known karyotypes. In a first step, we will use a metadata-table, which contains the sample ID's, the corresponing ID's from the SRA database and the inversion status of common inversions, to select (up to) 20 individuals from each karyotype (INV and ST) for each of the two focal inversions. Finally, we will download the raw sequencing data for these samples from SRA
 
 ```bash
-### define working directory
-WD=</Github/InvChapter> ## replace with path to the downloaded GitHub repo https://github.com/capoony/InvChapter
-
 ## (2) Get information of individual sequencing data and isolate samples with known inversion status
 mkdir ${WD}/data
 cd ${WD}/data
@@ -39,20 +39,29 @@ wget http://johnpool.net/TableS1_individuals.xls
 ### process table and generate input files for downstream analyses, i.e., pick the ID's and SRA accession numbers for the first 20 individuals with inverted and standard karyotype, respectively.
 Rscript ${WD}/scripts/ReadXLS.r ${WD}
 
+### Define arrays with the inverions names, chromosome, start and end breakpoints; These data will be reused in the whole pipleine for the sequential analysis and visulaization of both focal inversions
+DATA=("IN2Lt" "IN3RP")
+Chrom=("2L" "3R")
+Start=(2225744 16432209)
+End=(13154180 24744010)
 
-## (2) Get read data from SRA
+## (3) Get read data from SRA
 mkdir ${WD}/data/reads
 mkdir ${WD}/shell/reads
 conda activate sra-tools
 
-for i in IN2Lt IN3RP; do
+### loop over both inversions
+for index in ${!DATA[@]}; do
+    INVERSION=${DATA[index]}
+
+    ## read info from input file {WD}/data/${INVERSION}.txt that was generated above with ReadXLS.r
     while
         IFS=',' read -r ID SRR Inv
     do
         if [[ -f ${WD}/data/reads/${ID}_1.fastq.gz ]]; then
             continue
         fi
-
+        
         echo """
         ## download reads and convert to FASTQ files
         fasterq-dump \
@@ -67,11 +76,10 @@ for i in IN2Lt IN3RP; do
         gzip ${WD}/data/reads/${ID}*
         """ >${WD}/shell/reads/${ID}.sh
         sh ${WD}/shell/reads/${ID}.sh
-    done <${WD}/data/${i}.txt
+    done <${WD}/data/${INVERSION}.txt
 done
-
-
 ```
+
 
 
 ### (1) SNPs in strong linkage disequilibrium with inversions

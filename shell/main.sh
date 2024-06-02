@@ -3,16 +3,10 @@
 ### define working directory
 WD=/media/inter/mkapun/projects/InvChapter
 
-### Define arrays with the inverions names, chromosome, start and end breakpoints
-DATA=("IN2Lt" "IN3RP")
-Chrom=("2L" "3R")
-Start=(2225744 16432209)
-End=(13154180 24744010)
-
-## (0) install dependencies
+## (1) install dependencies
 sh ${WD}/shell/dependencies
 
-## (1) Get information of individual sequencing data and isolate samples with known inversion status
+## (2) Get information of individual sequencing data and isolate samples with known inversion status
 mkdir ${WD}/data
 cd ${WD}/data
 
@@ -22,12 +16,20 @@ wget http://johnpool.net/TableS1_individuals.xls
 ### process table and generate input files for downstream analyses
 Rscript ${WD}/scripts/ReadXLS.r ${WD}
 
-## (2) Get read data from SRA
+### Define arrays with the inverions names, chromosome, start and end breakpoints; These data will be reused in the whole pipleine for the sequential analysis and visulaization of both focal inversions
+DATA=("IN2Lt" "IN3RP")
+Chrom=("2L" "3R")
+Start=(2225744 16432209)
+End=(13154180 24744010)
+
+## (3) Get read data from SRA
 mkdir ${WD}/data/reads
 mkdir ${WD}/shell/reads
 conda activate sra-tools
 
-for i in IN2Lt IN3RP; do
+### loop over both inversions
+for index in ${!DATA[@]}; do
+    INVERSION=${DATA[index]}
     while
         IFS=',' read -r ID SRR Inv
     do
@@ -49,10 +51,10 @@ for i in IN2Lt IN3RP; do
         gzip ${WD}/data/reads/${ID}*
         """ >${WD}/shell/reads/${ID}.sh
         sh ${WD}/shell/reads/${ID}.sh
-    done <${WD}/data/${i}.txt
+    done <${WD}/data/${INVERSION}.txt
 done
 
-## (3) map reads
+## (4) map reads
 ### obtain Drosophila reference from FlyBase
 cd ${WD}/data
 wget -O dmel-6.57.fa.gz http://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.57.fasta.gz
@@ -66,7 +68,9 @@ samtools dict dmel-6.57.fa >dmel-6.57.dict
 conda deactivate
 
 ### trim & map & sort & remove duplicates & realign around indels
-for i in IN3RP; do
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
     while
         IFS=',' read -r ID SRR Inv
     do
@@ -83,11 +87,13 @@ for i in IN3RP; do
             ${WD}/data/dmel-6.57 \
             100 \
             ${WD}/scripts/gatk/GenomeAnalysisTK.jar
-    done <${WD}/data/${i}.txt
+    done <${WD}/data/${INVERSION}.txt
 done
 
-## (4) SNP calling using freebayes with 100 threads
-for i in IN3RP; do
+## (5) SNP calling using freebayes with 100 threads
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
     while
         IFS=',' read -r ID SRR Inv
     do
@@ -95,10 +101,10 @@ for i in IN3RP; do
             continue
         fi
 
-        mkdir -p ${WD}/results/SNPs_${i}
-        echo ${WD}/mapping/${ID}_RG.bam >>${WD}/mapping/BAMlist_${i}.txt
+        mkdir -p ${WD}/results/SNPs_${INVERSION}
+        echo ${WD}/mapping/${ID}_RG.bam >>${WD}/mapping/BAMlist_${INVERSION}.txt
 
-    done <${WD}/data/${i}.txt
+    done <${WD}/data/${INVERSION}.txt
 
     conda activate freebayes
     freebayes-parallel \
@@ -107,18 +113,18 @@ for i in IN3RP; do
             100000) \
         100 \
         -f ${WD}/data/dmel-6.57.fa \
-        -L ${WD}/mapping/BAMlist_${i}.txt \
+        -L ${WD}/mapping/BAMlist_${INVERSION}.txt \
         --ploidy 1 |
-        gzip >${WD}/results/SNPs_${i}/SNPs_${i}.vcf.gz
+        gzip >${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.vcf.gz
     conda deactivate
 done
 
-## (5) calculate FST between karyotypes
+## (6) calculate FST between karyotypes
 
 ### make input files for STD and INV samples
 for i in IN2Lt; do
-    mkdir ${WD}/data/${i}
-    output_dir=${WD}/data/${i}
+    mkdir ${WD}/data/${INVERSION}
+    output_dir=${WD}/data/${INVERSION}
     ### split file with sample IDs based on Inversions status
     awk -F',' '
     {
@@ -127,51 +133,51 @@ for i in IN2Lt; do
         if (filename == ".csv") next
         print $1 >> filepath
     }
-    ' ${WD}/data/${i}.txt
+    ' ${WD}/data/${INVERSION}.txt
 
     # ### filter VCF for biallelic SNPs
     conda activate vcftools
 
-    vcftools --gzvcf ${WD}/results/SNPs_${i}/SNPs_${i}.vcf.gz \
+    vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.vcf.gz \
         --min-alleles 2 \
         --max-alleles 2 \
         --remove-indels \
         --recode \
-        --out ${WD}/results/SNPs_${i}/SNPs_${i}
+        --out ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}
 
-    gzip ${WD}/results/SNPs_${i}/SNPs_${i}.recode.vcf
+    gzip ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf
 
     ## convert haploid VCF to diploid
     python ${WD}/scripts/hap2dip.py \
-        --input ${WD}/results/SNPs_${i}/SNPs_${i}.recode.vcf.gz \
-        --output ${WD}/results/SNPs_${i}/SNPs_${i}.recode_dip.vcf.gz
+        --input ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz \
+        --output ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz
 
     for karyo in INV ST; do
 
         ### calculate PI
-        vcftools --gzvcf ${WD}/results/SNPs_${i}/SNPs_${i}.recode_dip.vcf.gz \
-            --keep ${WD}/data/${i}/${karyo}.csv \
+        vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
+            --keep ${WD}/data/${INVERSION}/${karyo}.csv \
             --window-pi 200000 \
-            --out ${WD}/results/SNPs_${i}/${i}_${karyo}_pi
+            --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_${karyo}_pi
     done
 
     ## combine pi of INV and ST chromosomes
-    awk 'NR ==1 {print $0"\tType"}' ${WD}/results/SNPs_${i}/${i}_INV_pi.windowed.pi >${WD}/results/SNPs_${i}/${i}_pi.tsv
-    awk 'NR>1  {print $0"\tINV"}' ${WD}/results/SNPs_${i}/${i}_INV_pi.windowed.pi >>${WD}/results/SNPs_${i}/${i}_pi.tsv
-    awk 'NR>1  {print $0"\tST"}' ${WD}/results/SNPs_${i}/${i}_ST_pi.windowed.pi >>${WD}/results/SNPs_${i}/${i}_pi.tsv
+    awk 'NR ==1 {print $0"\tType"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_INV_pi.windowed.pi >${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
+    awk 'NR>1  {print $0"\tINV"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_INV_pi.windowed.pi >>${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
+    awk 'NR>1  {print $0"\tST"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_ST_pi.windowed.pi >>${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
 
 done
 
 ### plot PI as Manhattan Plots
 for index in ${!DATA[@]}; do
 
-    i=${DATA[index]}
+    INVERSION=${DATA[index]}
     St=${Start[index]}
     En=${End[index]}
     Ch=${Chrom[index]}
 
     Rscript ${WD}/scripts/Plot_pi.r \
-        ${i} \
+        ${INVERSION} \
         ${Ch} \
         ${St} \
         ${En} \
@@ -179,31 +185,32 @@ for index in ${!DATA[@]}; do
 
 done
 
-## (5) calculate FST between karyotypes
+## (6) calculate FST between karyotypes
 
 ### make input files for STD and INV samples
-for i in IN3RP; do
+for index in ${!DATA[@]}; do
+    INVERSION=${DATA[index]}
 
     conda activate vcftools
 
     ## calculate FST
-    vcftools --gzvcf ${WD}/results/SNPs_${i}/SNPs_${i}.recode_dip.vcf.gz \
-        --weir-fst-pop ${WD}/data/${i}/INV.csv \
-        --weir-fst-pop ${WD}/data/${i}/ST.csv \
-        --out ${WD}/results/SNPs_${i}/${i}.fst
+    vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
+        --weir-fst-pop ${WD}/data/${INVERSION}/INV.csv \
+        --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
+        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}.fst
 
 done
 
 for index in ${!DATA[@]}; do
 
-    i=${DATA[index]}
+    INVERSION=${DATA[index]}
     St=${Start[index]}
     En=${End[index]}
     Ch=${Chrom[index]}
 
     ### plot FST as Manhattan Plots
     Rscript ${WD}/scripts/Plot_fst.r \
-        ${i} \
+        ${INVERSION} \
         ${Ch} \
         ${St} \
         ${En} \
@@ -215,21 +222,21 @@ done
 
 for index in ${!DATA[@]}; do
 
-    i=${DATA[index]}
+    INVERSION=${DATA[index]}
     St=${Start[index]}
     En=${End[index]}
     Ch=${Chrom[index]}
 
     BP="${Ch},${St},${En}"
-    gunzip -c ${WD}/results/SNPs_${i}/SNPs_${i}.recode.vcf.gz |
+    gunzip -c ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz |
         awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
         python ${WD}/scripts/DiagnosticSNPs.py \
             --range 200000 \
             --breakpoints ${BP} \
             --input - \
-            --output ${WD}/results/SNPs_${i}/${i} \
+            --output ${WD}/results/SNPs_${INVERSION}/${INVERSION} \
             --MinCov 10 \
-            --Variant ${WD}/data/${i}.txt
+            --Variant ${WD}/data/${INVERSION}.txt
 done
 ## (7) estimate inversion frequency in PoolSeq data
 
@@ -256,23 +263,27 @@ gunzip -c ${WD}/data/DEST.vcf.gz |
     gzip >${WD}/data/DEST.sync.gz
 
 ### Get positions at inversion specific marker SNPs
-for i in IN3RP; do
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
     gunzip -c ${WD}/data/DEST.sync.gz |
         parallel \
             --pipe \
             --jobs 20 \
             -k \
             --cat python3 ${WD}/scripts/overlap_in_SNPs.py \
-            --source ${WD}/results/SNPs_${i}/${i}_diag.txt \
+            --source ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
             --target {} \
-            >${WD}/data/DEST_${i}.sync
+            >${WD}/data/DEST_${INVERSION}.sync
 done
 
 ### convert diagnostic SNP file to match prerequisites for inv script
-for i in IN3RP; do
-    cut -f1-3 ${WD}/results/SNPs_${i}/${i}_diag.txt |
-        awk -v INV=${i} 'NR>1{print INV"\t"$0}' \
-            >${WD}/results/SNPs_${i}/${i}_diag.markers
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    cut -f1-3 ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt |
+        awk -v INV=${INVERSION} 'NR>1{print INV"\t"$0}' \
+            >${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.markers
 done
 
 NAMES=$(gunzip -c ${WD}/data/DEST.vcf.gz | head -150 | awk '/^#C/' | cut -f10- | tr '\t' ',')
@@ -280,27 +291,29 @@ NAMES=$(gunzip -c ${WD}/data/DEST.vcf.gz | head -150 | awk '/^#C/' | cut -f10- |
 # Calculate average frequencies for marker SNPs
 for index in ${!DATA[@]}; do
 
-    i=${DATA[index]}
+    INVERSION=${DATA[index]}
     Ch=${Chrom[index]}
 
     python3 ${WD}/scripts/inversion-freqs.py \
-        ${WD}/results/SNPs_${i}/${i}_diag.markers \
-        ${WD}/data/DEST_${i}.sync \
+        ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.markers \
+        ${WD}/data/DEST_${INVERSION}.sync \
         $NAMES \
-        >${WD}/results/SNPs_${i}/${i}.af
+        >${WD}/results/SNPs_${INVERSION}/${INVERSION}.af
 
     gunzip -c ${WD}/data/DEST.vcf.gz |
         awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
         python3 ${WD}/scripts/AFbyAllele.py \
             --input - \
-            --diag ${WD}/results/SNPs_${i}/${i}_diag.txt \
-            >${WD}/results/SNPs_${i}/${i}_pos.af
+            --diag ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
+            >${WD}/results/SNPs_${INVERSION}/${INVERSION}_pos.af
 done
 
 ### generate plots for each population
-for i in IN3RP; do
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
     Rscript ${WD}/scripts/Plot_InvMarker.r \
-        ${i} \
+        ${INVERSION} \
         ${WD}
 done
 
@@ -354,13 +367,13 @@ pigz -dc ${WD}/data/DEST.vcf.gz |
 
 for index in ${!DATA[@]}; do
 
-    i=${DATA[index]}
+    INVERSION=${DATA[index]}
     St=${Start[index]}
     En=${End[index]}
     Ch=${Chrom[index]}
 
     Rscript ${WD}/scripts/PlotInvLD.r \
-        ${i} \
+        ${INVERSION} \
         ${Ch} \
         ${St} \
         ${En} \
@@ -373,13 +386,13 @@ done
 ### use PCA to test for patterns inside and outside the genomic region spanned by an inversion
 for index in ${!DATA[@]}; do
 
-    i=${DATA[index]}
+    INVERSION=${DATA[index]}
     St=${Start[index]}
     En=${End[index]}
     Ch=${Chrom[index]}
 
     Rscript ${WD}/scripts/PCA_Inv.r \
-        ${i} \
+        ${INVERSION} \
         ${Ch} \
         ${St} \
         ${En} \
@@ -388,29 +401,33 @@ for index in ${!DATA[@]}; do
 done
 
 ### does the Inv Frequency influence the PCA results?
-for i in IN2Lt IN3RP; do
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
     Rscript ${WD}/scripts/Plot_PCAInvFreq.r \
-        ${i} \
+        ${INVERSION} \
         ${WD}
 done
 
 ## (11) test for clinality of inversion frequency
-for i in IN2Lt IN3RP; do
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
     Rscript ${WD}/scripts/Plot_Clinality.r \
-        ${i} \
+        ${INVERSION} \
         ${WD}
 done
 
 ### Test if clinality due to demography or potentially adaptive
 for index in ${!DATA[@]}; do
 
-    i=${DATA[index]}
+    INVERSION=${DATA[index]}
     St=${Start[index]}
     En=${End[index]}
     Ch=${Chrom[index]}
 
     Rscript ${WD}/scripts/LFMM.r \
-        ${i} \
+        ${INVERSION} \
         ${Ch} \
         ${St} \
         ${En} \
