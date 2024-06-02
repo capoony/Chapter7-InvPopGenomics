@@ -195,12 +195,20 @@ for index in ${!DATA[@]}; do
 
     conda activate vcftools
 
-    ## calculate FST
+    ## calculate FST per SNP
     vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
         --weir-fst-pop ${WD}/data/${INVERSION}/INV.csv \
         --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
         --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}.fst
 
+    ## calculate FST
+    vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
+        --weir-fst-pop ${WD}/data/${INVERSION}/INV.csv \
+        --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
+        --fst-window-size 100000 \
+        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_window.fst
+
+    conda deactivate
 done
 
 for index in ${!DATA[@]}; do

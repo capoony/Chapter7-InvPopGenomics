@@ -16,7 +16,7 @@ In this book chapter, we will focus on the fruit fly *Drosophila melanogaster*, 
 
 ### (1) Preparing the bioinformatics analyses pipeline
 
-The full analysis pipeline including specific *Python* and *R* scripts can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in the shell-script `dependencies.sh` which is located in the `shell/` folder.
+> The full analysis pipeline including specific *Python* and *R* scripts can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in the shell-script `dependencies.sh` which is located in the `shell/` folder.
 
 ```bash
 ### define working directory
@@ -26,7 +26,7 @@ WD=</Github/InvChapter> ## replace with path to the downloaded GitHub repo https
 sh ${WD}/shell/dependencies
 ```
 
-Then, we need to download genomic data from the Short Read Archive (SRA; XXX). We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Siavonga/Zambia with known karyotypes. In a first step, we will use a metadata-table, which contains the sample ID's, the corresponing ID's from the SRA database and the inversion status of common inversions, to select (up to) 20 individuals from each karyotype (INV and ST) for each of the two focal inversions. Finally, we will download the raw sequencing data for these samples from SRA
+> Then, we need to download genomic data from the Short Read Archive (SRA; XXX). We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Siavonga/Zambia with known karyotypes. In a first step, we will use a metadata-table, which contains the sample ID's, the corresponing ID's from the SRA database and the inversion status of common inversions, to select (up to) 20 individuals from each karyotype (INV and ST) for each of the two focal inversions. Finally, we will download the raw sequencing data for these samples from SRA
 
 ```bash
 ## Get information of individual sequencing data and isolate samples with known inversion status
@@ -79,7 +79,7 @@ for index in ${!DATA[@]}; do
     done <${WD}/data/${INVERSION}.txt
 done
 ```
-In the next step, we will first trim the reads based on base-quality and map the filtered datasets against the *D. melanogaster* reference genome, which we will download from [FlyBase](https://flybase.org/). We will use a modified mapping pipeline from Kapun et al. (2020), which further filters for PCR duplicates and improves the alignment of nucleotides around indels. 
+> In the next step, we will first trim the reads based on base-quality and map the filtered datasets against the *D. melanogaster* reference genome, which we will download from [FlyBase](https://flybase.org/). We will use a modified mapping pipeline from Kapun et al. (2020), which further filters for PCR duplicates and improves the alignment of nucleotides around indels. 
 
 ```bash
 ### trim & map & sort & remove duplicates & realign around indels
@@ -104,7 +104,7 @@ for index in ${!DATA[@]}; do
     done <${WD}/data/${INVERSION}.txt
 done
 ```
- During the mapping pipeline, we aligend all reads against the reference genome. We can thus now obtain the allelic information for each sample at every position in the reference genome. Since the sequencing data was generated from haploid embryos, we assume that there is only one allele present in each sample at a given genomic position. We will now identify polymorphisms using the FreeBayes variantcaller and store the SNP information across all samples per inversion in a VCF file.
+> Using the mapping pipeline, we aligend all reads against the *Drosophila melanogaster* reference genome. Thus, we can now obtain the allelic information for each sample at every position in the reference genome, which is stored in the final BAM files. Since the sequencing data was generated from haploid embryos, we assume that there is only one allele present in each sample at a given genomic position. We will now identify polymorphisms using the FreeBayes variant calling software and store the SNP information across all samples per inversion in a VCF file.
 
 ```bash
 
@@ -142,8 +142,7 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-### (1) SNPs in strong linkage disequilibrium with inversions
-
+### (1) Patterns Of genomic 
 Once a inversions originates and persists in a population, novel mutations will appear and bulid up in frequency
 
 ### (2) SNPs in strong linkage disequilibrium with inversions
