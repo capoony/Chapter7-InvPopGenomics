@@ -79,9 +79,23 @@ for index in ${!DATA[@]}; do
     done <${WD}/data/${INVERSION}.txt
 done
 ```
-> In the next step, we will first trim the reads based on base-quality and map the filtered datasets against the *D. melanogaster* reference genome, which we will download from [FlyBase](https://flybase.org/). We will use a modified mapping pipeline from Kapun et al. (2020), which further filters for PCR duplicates and improves the alignment of nucleotides around indels. 
+
+> In the next step, we will first trim the reads based on base-quality and map the filtered datasets against the *D. melanogaster* reference genome (v.6.57), which we will download from [FlyBase](https://flybase.org/). We will use a modified mapping pipeline from Kapun et al. (2020), which further filters for PCR duplicates and improves the alignment of nucleotides around indels. 
 
 ```bash
+
+### obtain D. melanogaster reference genome from FlyBase
+cd ${WD}/data
+wget -O dmel-6.57.fa.gz http://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.57.fasta.gz
+
+### index the reference genome for the mapping pipeline
+conda activate bwa-mem2
+bwa-mem2 index dmel-6.57.fa.gz
+gunzip -c dmel-6.57.fa.gz >dmel-6.57.fa
+samtools faidx dmel-6.57.fa
+samtools dict dmel-6.57.fa >dmel-6.57.dict
+conda deactivate
+
 ### trim & map & sort & remove duplicates & realign around indels
 for index in ${!DATA[@]}; do
     INVERSION=${DATA[index]}
@@ -104,11 +118,12 @@ for index in ${!DATA[@]}; do
     done <${WD}/data/${INVERSION}.txt
 done
 ```
+
 > Using the mapping pipeline, we aligend all reads against the *Drosophila melanogaster* reference genome. Thus, we can now obtain the allelic information for each sample at every position in the reference genome, which is stored in the final BAM files. Since the sequencing data was generated from haploid embryos, we assume that there is only one allele present in each sample at a given genomic position. We will now identify polymorphisms using the FreeBayes variant calling software and store the SNP information across all samples per inversion in a VCF file.
 
 ```bash
 
-## (5) SNP calling using freebayes with 100 threads
+## SNP calling using freebayes with 100 threads
 for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}
@@ -142,8 +157,10 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-### (1) Patterns Of genomic 
+### (1) Patterns of genomic variation associated with different karyotpes in African populations
 Once a inversions originates and persists in a population, novel mutations will appear and bulid up in frequency
+
+
 
 ### (2) SNPs in strong linkage disequilibrium with inversions
 
