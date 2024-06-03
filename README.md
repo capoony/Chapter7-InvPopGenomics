@@ -161,9 +161,61 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-### (1) Patterns of genomic variation associated with different karyotpes in African populations
-In the next step, we will use population genetics statistics to compare genetic variation among Zambian indivduals with inverted and standard arrangement for the two inversions *In(2L)t* and In(3R)Payne*
+### (2) Patterns of genomic variation associated with different karyotpes in African populations
+In the next step, we will use population genetics statistics to compare genetic variation among Zambian indivduals with inverted and standard arrangement for the two inversions *In(2L)t* and *In(3R)Payne*. We will calulate Nei's &pi (nucleotide diversity) as an estimator of genetic diversity in a population. Since VCFtools, the program which we use to calculate the population genetic statistics, does not allow calculating these statistics from haploid VCF files, we will first convert the haploid VCF to a diploid version by duplicating the haploid haplotype.
 
+```bash
+
+## calculate pi per karyotype
+for index in ${!DATA[@]}; do
+    INVERSION=${DATA[index]}
+
+    mkdir ${WD}/data/${INVERSION}
+    output_dir=${WD}/data/${INVERSION}
+
+    ### split input file with sample IDs based on Inversions status
+    awk -F',' '
+    {
+        filename = $3 ".csv"
+        filepath = "'$output_dir'/" filename
+        if (filename == ".csv") next
+        print $1 >> filepath
+    }
+    ' ${WD}/data/${INVERSION}.txt
+
+    ### filter VCF for biallelic SNPs
+    conda activate vcftools
+
+    vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.vcf.gz \
+        --min-alleles 2 \
+        --max-alleles 2 \
+        --remove-indels \
+        --recode \
+        --out ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}
+
+    gzip ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf
+
+    ### convert haploid VCF to diploid
+    python ${WD}/scripts/hap2dip.py \
+        --input ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz \
+        --output ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz
+
+    for karyo in INV ST; do
+
+        ### calculate pi in 200kbp windows
+        vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
+            --keep ${WD}/data/${INVERSION}/${karyo}.csv \
+            --window-pi 200000 \
+            --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_${karyo}_pi
+    done
+
+    ## combine pi of INV and ST chromosomes
+    awk 'NR ==1 {print $0"\tType"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_INV_pi.windowed.pi >${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
+    awk 'NR>1  {print $0"\tINV"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_INV_pi.windowed.pi >>${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
+    awk 'NR>1  {print $0"\tST"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_ST_pi.windowed.pi >>${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
+
+done
+```
 
 
 ### (2) SNPs in strong linkage disequilibrium with inversions

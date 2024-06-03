@@ -90,7 +90,6 @@ done
 
 ## (5) SNP calling using freebayes with 100 threads
 for index in ${!DATA[@]}; do
-
     INVERSION=${DATA[index]}
     while
         IFS=',' read -r ID SRR Inv
@@ -121,12 +120,13 @@ for index in ${!DATA[@]}; do
     conda deactivate
 done
 
-## (6) calculate FST between karyotypes
+## (6) calculate pi per karyotype
+for index in ${!DATA[@]}; do
+    INVERSION=${DATA[index]}
 
-### make input files for STD and INV samples
-for i in IN2Lt; do
     mkdir ${WD}/data/${INVERSION}
     output_dir=${WD}/data/${INVERSION}
+
     ### split file with sample IDs based on Inversions status
     awk -F',' '
     {
@@ -137,7 +137,7 @@ for i in IN2Lt; do
     }
     ' ${WD}/data/${INVERSION}.txt
 
-    # ### filter VCF for biallelic SNPs
+    ### filter VCF for biallelic SNPs
     conda activate vcftools
 
     vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.vcf.gz \
@@ -149,21 +149,21 @@ for i in IN2Lt; do
 
     gzip ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf
 
-    ## convert haploid VCF to diploid
+    ### convert haploid VCF to diploid
     python ${WD}/scripts/hap2dip.py \
         --input ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz \
         --output ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz
 
     for karyo in INV ST; do
 
-        ### calculate PI
+        ### calculate pi in 200kbp windows
         vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
             --keep ${WD}/data/${INVERSION}/${karyo}.csv \
             --window-pi 200000 \
             --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_${karyo}_pi
     done
 
-    ## combine pi of INV and ST chromosomes
+    ### combine pi of INV and ST chromosomes
     awk 'NR ==1 {print $0"\tType"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_INV_pi.windowed.pi >${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
     awk 'NR>1  {print $0"\tINV"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_INV_pi.windowed.pi >>${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
     awk 'NR>1  {print $0"\tST"}' ${WD}/results/SNPs_${INVERSION}/${INVERSION}_ST_pi.windowed.pi >>${WD}/results/SNPs_${INVERSION}/${INVERSION}_pi.tsv
