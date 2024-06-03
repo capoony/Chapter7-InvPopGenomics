@@ -162,7 +162,7 @@ done
 ```
 
 ### (2) Patterns of genomic variation associated with different karyotpes in African populations
-In the next step, we will use population genetics statistics to compare genetic variation among Zambian indivduals with inverted and standard arrangement for the two inversions *In(2L)t* and *In(3R)Payne*. We will calulate Nei's &pi (nucleotide diversity) as an estimator of genetic diversity in a population. Since VCFtools, the program which we use to calculate the population genetic statistics, does not allow calculating these statistics from haploid VCF files, we will first convert the haploid VCF to a diploid version by duplicating the haploid haplotype.
+In the next step, we will use population genetics statistics to compare genetic variation among Zambian indivduals with inverted and standard arrangement for the two inversions *In(2L)t* and *In(3R)Payne*. We will calulate Nei's &pi; (nucleotide diversity) as an estimator of genetic diversity in a population. Since VCFtools, the program which we use to calculate the population genetic statistics, does not allow calculating these statistics from haploid VCF files, we will first convert the haploid VCF to a diploid version by duplicating the haploid haplotype.
 
 ```bash
 
