@@ -40,10 +40,12 @@ cd ${WD}/data
 ### download metadata Excel table for Drosophila Nexus dataset
 wget http://johnpool.net/TableS1_individuals.xls
 
-### process table and generate input files for downstream analyses, i.e., pick the ID's and SRA accession numbers for the first 20 individuals with inverted and standard karyotype, respectively.
+### process table and generate input files for downstream analyses, i.e., pick the ID's and SRA accession numbers
+### for the first 20 individuals with inverted and standard karyotype, respectively.
 Rscript ${WD}/scripts/ReadXLS.r ${WD}
 
-### Define arrays with the inverions names, chromosome, start and end breakpoints; These data will be reused in the whole pipleine for the sequential analysis and visulaization of both focal inversions
+### Define arrays with the inverions names, chromosome, start and end breakpoints; 
+### These data will be reused in the whole pipleine for the sequential analysis and visulaization of both focal inversions
 DATA=("IN2Lt" "IN3RP")
 Chrom=("2L" "3R")
 Start=(2225744 16432209)
@@ -88,11 +90,11 @@ done
 
 ```bash
 
-### obtain D. melanogaster reference genome from FlyBase
+## obtain D. melanogaster reference genome from FlyBase
 cd ${WD}/data
 wget -O dmel-6.57.fa.gz http://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.57.fasta.gz
 
-### index the reference genome for the mapping pipeline
+## index the reference genome for the mapping pipeline
 conda activate bwa-mem2
 bwa-mem2 index dmel-6.57.fa.gz
 gunzip -c dmel-6.57.fa.gz >dmel-6.57.fa
@@ -100,17 +102,18 @@ samtools faidx dmel-6.57.fa
 samtools dict dmel-6.57.fa >dmel-6.57.dict
 conda deactivate
 
-### trim & map & sort & remove duplicates & realign around indels
+## trim & map & sort & remove duplicates & realign around indels
 for index in ${!DATA[@]}; do
     INVERSION=${DATA[index]}
     while
         IFS=',' read -r ID SRR Inv
     do
-        ## ignore header or continue if mapped dataset already exists 
+        ### ignore header or continue if mapped dataset already exists 
         if [[ ${ID} == "Stock ID" || -f ${WD}/mapping/${ID}_RG.bam ]]; then
             continue
         fi
-        ## run the mapping pipeline with 100 threads (modify to adjust to your system ressources). Note that this step may take quite some time
+        ### run the mapping pipeline with 100 threads (modify to adjust to your system ressources). 
+        ### Note that this step may take quite some time
         sh ${WD}/shell/mapping.sh \
             ${WD}/data/reads/${ID}_1.fastq.gz \
             ${WD}/data/reads/${ID}_2.fastq.gz \
