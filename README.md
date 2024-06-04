@@ -161,8 +161,8 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-### (2) Patterns of genomic variation associated with different karyotpes in African populations
-> In the next step, we will use population genetics statistics to compare genetic variation among Zambian indivduals with inverted and standard arrangement for the two inversions *In(2L)t* and *In(3R)Payne*. We will calulate Nei's &pi; (nucleotide diversity) as an estimator of genetic diversity in a population. Since VCFtools, the program which we use to calculate the population genetic statistics, does not allow calculating these statistics from haploid VCF files, we will first convert the haploid VCF to a diploid version by duplicating the haploid haplotype. Then, we will calculate &pi; in 200,000 bp windows along the whole genome for the standard and the inverted individuals.
+### (2) Patterns of genomic variation and differentiation associated with different karyotpes in African populations
+> In the next step, we will use population genetics statistics to compare genetic variation among Zambian indivduals with inverted and standard arrangement for the two inversions *In(2L)t* and *In(3R)Payne*. We will calulate Nei's *&pi;* (nucleotide diversity) as an estimator of genetic diversity in a population. Since VCFtools, the program which we use to calculate the population genetic statistics, does not allow calculating these statistics from haploid VCF files, we will first convert the haploid VCF to a diploid version by duplicating the haploid haplotype. Then, we will calculate &pi; in 200,000 bp windows along the whole genome for the standard and the inverted individuals.
 
 ```bash
 
@@ -238,6 +238,7 @@ for index in ${!DATA[@]}; do
 done
 ```
 
+#### (2.1) The influence of inversions on genetic variation
 With the exception of the genomic region spanned either by *In(2L)t* (Figure 2; top) and *In(3R)Payne* (Figure 2; bottom), we find that *&pi;*-values are very similar across INV (red) and ST (blue) samples across the whole genome. In contrast, we see that genetic variation within the inverted regions is markedly reduced in INV individuals which suggest that the population size of the inversion is smaller than the standard arrangement or that the inversion is not old enough and gene flux and novel mutations did not have enough time yet, to reconstitute genetic varaition similar to the ancestral arrangement. Moreover, we see that the reduction of genetic variation is not equal across the whole inverted region. Rather, the reduction is strongest close to the breakpoints. This indicates that gene-flux in the center of the inversion has, at least partilally, shifted genetic varaition from the standard arrangement into the inverted chromosomes. In the case of *In(2L)t*, we further find that the effect of the inversion on genetic variation is not confined to the region spanned by the inversion but rather spreads millions of basepairs beyond the breakpoints (Figure 2; top). Finally, we also observe that the distribution of nucleotide diversity varies along each chromosome and is strongly reduced close to the centro- and telomers (Figure 2). These particular regions are characterized by reduced recombination rates, which influences the extend of backround selection and leads to reduced variation in these chromosomal regions. 
 
 ![Figure2_top](output/IN2Lt_pi.png)
