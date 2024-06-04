@@ -60,6 +60,7 @@ file_path.window <- paste0("results/SNPs_", INV, "/", INV, "_window.fst.windowed
 file_path.pos <- paste0("results/SNPs_", INV, "/", INV, ".fst.weir.fst")
 data.pos <- load_and_clean_data(file_path.pos, "WEIR_AND_COCKERHAM_FST")
 data.window <- load_and_clean_data(file_path.window, "WEIGHTED_FST")
+
 chromosomes <- c("X", "2L", "2R", "3L", "3R")
 filtered_data.pos <- filter_by_chromosome(data.pos, chromosomes)
 filtered_data.window <- filter_by_chromosome(data.window, chromosomes)

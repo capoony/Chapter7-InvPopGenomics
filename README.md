@@ -246,8 +246,54 @@ With the exception of the genomic region spanned either by *In(2L)t* (Figure 2; 
 
 
 #### (2.2) The influence of inversions on genetic differentiation
->In a next step, we will use the diploid SNP dataset generated above to calculate *F*<sub>ST</sub> estimates among the INV and ST indivduals. 
+>In a next step, we will use the diploid SNP dataset generated above to calculate *F*<sub>ST</sub> estimates among the INV and ST indivduals for each inversion using the method of Weir & Cockerham as implemented in VCFtools. The fixation index *F*<sub>ST</sub> summarizes genetic structure and is scaled between 0 (no differentiation) and 1 (complete differentiation). 
 
+```bash
+## calculate FST between karyotypes
+for index in ${!DATA[@]}; do
+    INVERSION=${DATA[index]}
 
+    conda activate vcftools
+
+    ## calculate FST per SNP
+    vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
+        --weir-fst-pop ${WD}/data/${INVERSION}/INV.csv \
+        --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
+        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}.fst
+
+    ## calculate FST in 200kbp windows
+    vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
+        --weir-fst-pop ${WD}/data/${INVERSION}/INV.csv \
+        --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
+        --fst-window-size 200000 \
+        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_window.fst
+
+    conda deactivate
+done
+```
+
+>Now, we plot both SNP-wise *F*<sub>ST</sub> as well as *F*<sub>ST</sub> - values in 200kbp windows. These type of plots are so-called Manhattan plots, where each dot respresents a polymorphic genomic position on the x-axis and the corresponding *F*<sub>ST</sub> - value on the y-axis. On top, we are plotting the window-wise *F*<sub>ST</sub> as a line and highlight the region of the corresponding inversion by a transparent blue box.
+
+```bash
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+
+    ### plot FST as Manhattan Plots
+    Rscript ${WD}/scripts/Plot_fst.r \
+        ${INVERSION} \
+        ${Ch} \
+        ${St} \
+        ${En} \
+        ${WD}
+done
+```
+
+As you can see, these plots for *In(2l)t* (Figure 3; top) and *In(3R)Payne* (Figure 3; bottom) show elevated levels of differentiation particularly at the inversion breakpoints.
+![Figure3_top](output/IN2Lt.fst.weir.fst.png)
+![Figure3_bottom](output/IN3RP.fst.weir.fst.png)
 ### (2) SNPs in strong linkage disequilibrium with inversions
 

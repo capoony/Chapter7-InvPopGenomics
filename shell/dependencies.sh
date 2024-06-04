@@ -30,3 +30,7 @@ conda install conda-forge::r-base
 Rscript -e 'install.packages(c("remotes","BiocManager","tidyverse","ggpubr","factoextra","FactoMineR","readr","lme4","readxl","stringr"), repos="https://cran.rstudio.com")'
 Rscript -e 'remotes::install_github("rspatial/geodata")'
 Rscript -e 'BiocManager::install("LEA")'
+
+cd ~/InvChapter/scripts
+
+wget -O dxy.py https://raw.githubusercontent.com/hugang123/Dxy/master/Dxy_calculate

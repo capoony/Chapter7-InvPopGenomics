@@ -8,7 +8,7 @@ WD <- args[1]
 setwd(WD)
 
 # Read the Excel file, skipping the first 6 rows
-myDF <- read_excel("TableS1_individuals.xls", skip = 6)
+myDF <- read_excel("data/TableS1_individuals.xls", skip = 6)
 
 # Filter the dataframe to keep only haploid embryos with single SRA accessions that start with 'SRR'
 myDF1 <- myDF %>%
