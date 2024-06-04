@@ -170,7 +170,7 @@ for index in ${!DATA[@]}; do
 
 done
 
-### plot PI as Manhattan Plots
+### plot PI as line plot
 for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}

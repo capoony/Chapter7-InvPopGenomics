@@ -40,12 +40,10 @@ cd ${WD}/data
 ### download metadata Excel table for Drosophila Nexus dataset
 wget http://johnpool.net/TableS1_individuals.xls
 
-### process table and generate input files for downstream analyses, i.e., pick the ID's and SRA accession numbers
-### for the first 20 individuals with inverted and standard karyotype, respectively.
+### process table and generate input files for downstream analyses, i.e., pick the ID's and SRA accession numbers for the first 20 individuals with inverted and standard karyotype, respectively.
 Rscript ${WD}/scripts/ReadXLS.r ${WD}
 
-### Define arrays with the inverions names, chromosome, start and end breakpoints; 
-### These data will be reused in the whole pipleine for the sequential analysis and visulaization of both focal inversions
+### Define arrays with the inverions names, chromosome, start and end breakpoints; These data will be reused in the whole pipleine for the sequential analysis and visulaization of both focal inversions
 DATA=("IN2Lt" "IN3RP")
 Chrom=("2L" "3R")
 Start=(2225744 16432209)
@@ -112,8 +110,7 @@ for index in ${!DATA[@]}; do
         if [[ ${ID} == "Stock ID" || -f ${WD}/mapping/${ID}_RG.bam ]]; then
             continue
         fi
-        ### run the mapping pipeline with 100 threads (modify to adjust to your system ressources). 
-        ### Note that this step may take quite some time
+        ### run the mapping pipeline with 100 threads (modify to adjust to your system ressources). Note that this step may take quite some time
         sh ${WD}/shell/mapping.sh \
             ${WD}/data/reads/${ID}_1.fastq.gz \
             ${WD}/data/reads/${ID}_2.fastq.gz \
@@ -165,7 +162,7 @@ done
 ```
 
 ### (2) Patterns of genomic variation associated with different karyotpes in African populations
-In the next step, we will use population genetics statistics to compare genetic variation among Zambian indivduals with inverted and standard arrangement for the two inversions *In(2L)t* and *In(3R)Payne*. We will calulate Nei's &pi; (nucleotide diversity) as an estimator of genetic diversity in a population. Since VCFtools, the program which we use to calculate the population genetic statistics, does not allow calculating these statistics from haploid VCF files, we will first convert the haploid VCF to a diploid version by duplicating the haploid haplotype.
+> In the next step, we will use population genetics statistics to compare genetic variation among Zambian indivduals with inverted and standard arrangement for the two inversions *In(2L)t* and *In(3R)Payne*. We will calulate Nei's &pi; (nucleotide diversity) as an estimator of genetic diversity in a population. Since VCFtools, the program which we use to calculate the population genetic statistics, does not allow calculating these statistics from haploid VCF files, we will first convert the haploid VCF to a diploid version by duplicating the haploid haplotype. Then, we will calculate &pi; in 200,000 bp windows along the whole genome for the standard and the inverted individuals.
 
 ```bash
 
@@ -220,6 +217,31 @@ for index in ${!DATA[@]}; do
 done
 ```
 
+> After we merged all &pi; estimates for both karyotypes in a single file, we plot the genome-wide patterns in a line-plot for each chromosome and each karyotype. Here and in the rest of this pipeline, we will use *ggplot* from the *tidyverse* package in *R* for plotting. Note, for the sake of brevity, I collected all *R* code in individual *R*-scripts, which can all be found in the `scripts/` folder.
+
+```bash
+### plot PI as line plot
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+
+    Rscript ${WD}/scripts/Plot_pi.r \
+        ${INVERSION} \
+        ${Ch} \
+        ${St} \
+        ${En} \
+        ${WD}
+
+done
+```
+
+With the exception of the genomic region spanned either by *In(2L)t* (Figure 2; top) and *In(3R)Payne* (Figure 2; bottom), we find that &pi;-values are very similar across INV (red) and ST (blue) samples across the whole genome. In contrast, we see that genetic variation within the inverted regions is markedly reduced in INV individuals which suggest that the population size of the inversion is smaller than the standard arrangement or that the inversion is not old enough and gene flux and novel mutations did not have enough time yet, to reconstitute genetic varaition similar to the ancestral arrangement. Moreover, we see that the reduction of genetic variation is not equal across the whole inverted region. Rather, the reduction is strongest close to the breakpoints. This indicates that gene-flux in the center of the inversion has, at least partilally, shifted genetic varaition from the standard arrangement into the inverted chromosomes. Finally, we can also observe that the distribution of nucleotide diversity &pi;-values varies along each chromosome and is strongly reduced close to the centro- and telomers (Figure 2). These particular regions are characterized by reduced recombination rates, which influences the extend of backround selection and leads to reduced variation in these chromosomal regions. 
+
+![Figure2_top](output/IN2Lt_pi.png)
+![Figure2_bottom](output/IN3RP_pi.png)
 
 ### (2) SNPs in strong linkage disequilibrium with inversions
 
