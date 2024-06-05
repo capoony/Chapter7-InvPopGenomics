@@ -253,16 +253,15 @@ done
 
 ## (7) estimate inversion frequency in PoolSeq data
 
-###  download sripts
-cd ${WD}/scripts
-wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/VCF2sync.py
-wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/inversion-freqs.py
-wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/overlap_in_SNPs.py
-cp /media/inter/mkapun/projects/DESTv2_data_paper/16.Inversions/scripts/overlap_in_SNPs.py .
 ### download VCF file and metadata for DEST dataset
 cd ${WD}/data
 wget -O DEST.vcf.gz http://berglandlab.uvadcos.io/vcf/dest.all.PoolSNP.001.50.3May2024.ann.vcf.gz
 wget -O meta.csv https://raw.githubusercontent.com/DEST-bio/DESTv2/main/populationInfo/dest_v2.samps_3May2024.csv
+
+###  download sripts
+cd ${WD}/scripts
+wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/VCF2sync.py
+wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/overlap_in_SNPs.py
 
 ### convert VCF to SYNC file format
 conda activate parallel
@@ -454,6 +453,8 @@ mkdir /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs*/*.png /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LFMM_*/*.png /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LDwithSNPs/*.png /media/inter/mkapun/projects/InvChapter/output
+
+cd ${WD}
 
 pandoc -f markdown \
     -t latex \

@@ -41,7 +41,6 @@ VaOut = open(options.out+"_variants.txt", "wt")
 DiaOut.write("Chrom\tPos\tINV\tST\n")
 VaOut.write("Sample\tChrom\tPos\tVariant\n")
 Chrom, Start, End = options.BP.split(",")
-print(Chrom, Start, End)
 Range = int(options.RA)
 MINSt = int(Start)-Range
 MAXSt = int(Start)+Range

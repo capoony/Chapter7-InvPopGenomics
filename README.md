@@ -30,7 +30,7 @@ WD=</Github/InvChapter> ## replace with path to the downloaded GitHub repo https
 sh ${WD}/shell/dependencies
 ```
 
-> Then, we need to download genomic data from the Short Read Archive (SRA; XXX). We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Siavonga/Zambia with known karyotypes. In a first step, we will use a metadata-table, which contains the sample ID's, the corresponing ID's from the SRA database and the inversion status of common inversions, to select (up to) 20 individuals from each karyotype (INV and ST) for each of the two focal inversions. Finally, we will download the raw sequencing data for these samples from SRA. As you will see in the code block below, we will focus on the two inversions *In(2L)t* and *In(3R)Payne* which we abbreviate as *IN2Lt* and *IN3RP* for the sake of simplicity. The arrays `DATA`, `Chrom`, `Start` and `End` contain the information of the genomic position for both inversions.
+> Then, we download genomic data from the Short Read Archive (SRA; XXX). We will use the *Drosophila* Nexus dataset and focus on genomic data of haploid individuals collected in Siavonga/Zambia with known karyotypes. In a first step, we will use a metadata-table, which contains the sample ID's, the corresponing ID's from the SRA database and the inversion status of common inversions, to select (up to) 20 individuals from each karyotype (INV and ST) for each of the two focal inversions. Finally, we will download the raw sequencing data for these samples from SRA. As you will see in the code block below, we will focus on the two inversions *In(2L)t* and *In(3R)Payne* which we abbreviate as *IN2Lt* and *IN3RP* for the sake of simplicity. The arrays `DATA`, `Chrom`, `Start` and `End` contain the information of the genomic position for both inversions.
 
 ```bash
 ## Get information of individual sequencing data and isolate samples with known inversion status
@@ -298,8 +298,9 @@ As you can see in Figure 3 for *In(2l)t* (top) and *In(3R)Payne* (bottom), genet
 ![Figure3_bottom](output/IN3RP.fst.weir.fst.png)
 
 ### (3) SNPs in strong linkage disequilibrium with inversions
-Several SNPs in the Manhattan plots of Figure 3 that are clustered at the inversion breakpoints show an *F*<sub>ST</sub> - value of one, which indicates complete fixation for different alleles among the two karyotpes. We therefore assume that these SNPs are in complete linkage disequilibrium (LD) with the inversion - at least in the particular Zambian population sample that is investigated here. This means that one allele is associated with the inverted karyotype and the other with the standard arrangement. Thus, it is possible to use these SNPs as diagnostic markers that allow to (1) estimate if the sequencing data of an individual with unknown karyotype is carrying the inversion simply by tracing for the inversion-specific allele at the correpsonding diagnostic markers. Furthermore, it is possible to estimate the frequency of inverted chromosomes in pooled sequencing data, where multiple individuals are pooled prior to DNA extraction and the pool of DNA is then sequenced jointly. In the latter type of datasets, it is assumed that the frequency of an allele in the pool corresponds to the actual frequency of the allele in the population from which the pooled individuals were randomly sampled. Thus, the median frequency of the inversion-specific alleles in the pooled dataset should roughly correspond to the inversion frequency given that these SNPs have been found to be in tight LD with the inversion. However, I need to caution here, that these markers should - at best - only be applied to sequencing data from samples collected in the same broader geographic region, or that diagnostic maker SNPs are defined using a mixed samples of individuals with known karyotype from all areas where the corresponding inversion occurs. The evolutionary history of inversions with a broad geographic distribution may be very complex and characterized by the emergence and fixation of different SNPs within the inversion in different geographic regions. 
+Several SNPs in the Manhattan plots of Figure 3 that are clustered at the inversion breakpoints show an *F*<sub>ST</sub> - value of one, which indicates complete fixation for different alleles among the two karyotpes. We therefore assume that these SNPs are in complete linkage disequilibrium (LD) with the inversion - at least in the particular Zambian population sample that we investigate here. This means that one allele is associated with the inverted karyotype and the other with the standard arrangement. Thus, it is possible to use these SNPs as diagnostic markers that allow to (1) estimate if the sequencing data of an individual with unknown karyotype is carrying the inversion simply by tracing for the inversion-specific allele at the correpsonding diagnostic markers. Furthermore, it is possible to estimate the frequency of inverted chromosomes in pooled sequencing data, where multiple individuals are pooled prior to DNA extraction and the pool of DNA is then sequenced jointly. In the latter type of datasets, it is assumed that the frequency of an allele in the pool corresponds to the actual frequency of the allele in the population from which the pooled individuals were randomly sampled. Thus, the median frequency of the inversion-specific alleles in the pooled dataset should roughly correspond to the inversion frequency given that these SNPs have been found to be in tight LD with the inversion. However, I need to caution here, that these markers should - at best - only be applied to sequencing data from samples collected in the same broader geographic region, or that diagnostic maker SNPs are defined using a mixed samples of individuals with known karyotype from all areas where the corresponding inversion occurs. The evolutionary history of inversions with a broad geographic distribution may be very complex and characterized by the emergence and fixation of different SNPs within the inversion in different geographic regions. 
 
+#### (3.1) Inversion-specific diagnostic marker SNPs
 > In the following, we will isolate SNPs located within 200kbp distance to each of the breakpoints that are in full LD with either of the two focal inversoin and obtain their alleles that are fixed within the inverted chromosomes. We will use a custom script that searches the inversion-specifc VCF files for SNPs with fixed differences among the INV and ST individuals as defined above within 200kbp around each inversion breakpoint. 
 
 ```bash
@@ -326,4 +327,50 @@ for index in ${!DATA[@]}; do
             --Variant ${WD}/data/${INVERSION}.txt
 done
 ```
-This 
+
+#### (3.2) Estimating inversion frequencies in Pool-Seq data
+This analysis resulted in 62 and 26 diagnostic SNPs for *In(2L)t* and *In(3R)Payne*, respectively. In the next part, we will apply this diganostic maker SNPs to the largest Pool-Seq dataset of natural *D. melanogaster* populations available. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitfly populations from different sources that were densely collected through space and time and sequenced as pools. All raw reads were filtered and mapped using a standardized pipeline prior to joint SNP calling using the heuristic variant caller `PoolSNP`. In our pipeline, we  focus on population samples collected from North America and Europe and use the diagnostic marker SNPs to estimate inversion frequencies in each of these population samples. Then, we will test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation.
+
+> As a first step, we will download both the SNP data in VCF file-format and the corresponding metadata as a comma-separated (CSV) table from the DEST website and convert the VCF file to the SYNC file format, which is commonly used to store allele counts in pooled resequencing data as a colon-separated list in the form `A:T:C:G:N:Del` for each population and samples. In addition, we will download two scripts from the DEST pipeline that are needed for the downstream analaysis.
+
+```bash 
+### download VCF file and metadata for DEST dataset
+cd ${WD}/data
+wget -O DEST.vcf.gz http://berglandlab.uvadcos.io/vcf/dest.all.PoolSNP.001.50.3May2024.ann.vcf.gz
+wget -O meta.csv https://raw.githubusercontent.com/DEST-bio/DESTv2/main/populationInfo/dest_v2.samps_3May2024.csv
+
+###  download sripts
+cd ${WD}/scripts
+wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/VCF2sync.py
+wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/overlap_in_SNPs.py
+```
+
+> Next we will convert the VCF file to the SYNC file format and isolate the position of the inversion-specific marker SNPs.
+
+```bash
+### convert VCF to SYNC file format
+conda activate parallel
+gunzip -c ${WD}/data/DEST.vcf.gz |
+    parallel \
+        --jobs 200 \
+        --pipe \
+        -k \
+        --cat python3 ${WD}/scripts/VCF2sync.py \
+        --input {} |
+    gzip >${WD}/data/DEST.sync.gz
+
+### Get positions at inversion specific marker SNPs
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    gunzip -c ${WD}/data/DEST.sync.gz |
+        parallel \
+            --pipe \
+            --jobs 20 \
+            -k \
+            --cat python3 ${WD}/scripts/overlap_in_SNPs.py \
+            --source ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
+            --target {} \
+            >${WD}/data/DEST_${INVERSION}.sync
+done
+```
