@@ -228,7 +228,7 @@ for index in ${!DATA[@]}; do
 
 done
 
-## (7) obtain diagnostic SNPs for inversion
+## (7) obtain diagnostic SNPs for each inversion
 for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}
@@ -236,7 +236,10 @@ for index in ${!DATA[@]}; do
     En=${End[index]}
     Ch=${Chrom[index]}
 
+    ### store the chormosome, start and endpoints of each inversion as a comma-separated string
     BP="${Ch},${St},${En}"
+
+    ### only retain the header and the rows on the "correct" chromosome and focus on the focal individuals that are either INV or ST
     gunzip -c ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz |
         awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
         python ${WD}/scripts/DiagnosticSNPs.py \
@@ -247,6 +250,7 @@ for index in ${!DATA[@]}; do
             --MinCov 10 \
             --Variant ${WD}/data/${INVERSION}.txt
 done
+
 ## (7) estimate inversion frequency in PoolSeq data
 
 ###  download sripts
