@@ -246,7 +246,7 @@ With the exception of the genomic region spanned either by *In(2L)t* (Figure 2; 
 
 
 #### (2.2) The influence of inversions on genetic differentiation
->In a next step, we will use the diploid SNP dataset generated above to calculate *F*<sub>ST</sub> estimates among the INV and ST indivduals for each inversion using the method of Weir & Cockerham as implemented in VCFtools. The fixation index *F*<sub>ST</sub> summarizes genetic structure and is scaled between 0 (no differentiation) and 1 (complete differentiation). 
+>In the next step, we will use the diploid SNP dataset generated above to calculate *F*<sub>ST</sub> estimates among the INV and ST indivduals for each inversion using the method of Weir & Cockerham as implemented in VCFtools. The fixation index *F*<sub>ST</sub> summarizes genetic structure and is scaled between 0 (no differentiation) and 1 (complete differentiation). 
 
 ```bash
 ## calculate FST between karyotypes
@@ -292,8 +292,10 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-As you can see, these plots for *In(2l)t* (Figure 3; top) and *In(3R)Payne* (Figure 3; bottom) show elevated levels of differentiation particularly at the inversion breakpoints.
+As you can see in Figure 3 for *In(2l)t* (top) and *In(3R)Payne* (bottom), genetic differentiation is elevated among the karyotypes within the inversion and particularly at and around the inversion breakpoints. These patterns suggest, that novel mutations building up over time in the proximity of the inversion breakpoints result in strong differentiation. Conistent with theory, the suppression of recombination prevents genetic homogenization among the karyotypes across the whole inverted region, but specifically at the breakpoints. Similar to Figure 2, we also see that patterns of differentation may spread way beyond the inversion breakpoint, as shown for *In(2L)t*, which further emphasizes the genome-wide impact of inversions on genetic variation. If you look closley, there are several SNPs in the Manahattan plots that show an *F*<sub>ST</sub> - value of one, which indicate complete fixation for different alleles among the two karyotpes. Again, these are particularly clustered at the 
+
 ![Figure3_top](output/IN2Lt.fst.weir.fst.png)
 ![Figure3_bottom](output/IN3RP.fst.weir.fst.png)
+
 ### (2) SNPs in strong linkage disequilibrium with inversions
 
