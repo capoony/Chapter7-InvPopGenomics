@@ -228,8 +228,7 @@ for index in ${!DATA[@]}; do
 
 done
 
-## (6) obtain diagnostic SNPs for inversion
-
+## (7) obtain diagnostic SNPs for inversion
 for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}

@@ -298,4 +298,31 @@ As you can see in Figure 3 for *In(2l)t* (top) and *In(3R)Payne* (bottom), genet
 ![Figure3_bottom](output/IN3RP.fst.weir.fst.png)
 
 ### (3) SNPs in strong linkage disequilibrium with inversions
-There are several SNPs in the Manahattan plots of Figure 3 clustered at the inversion breakpoints that show an *F*<sub>ST</sub> - value of one, which indicates complete fixation for different alleles among the two karyotpes. We therefore assume that these SNPs are in complete linkage disequilibrium with the inversion - at least in the particular population sample that is investigated here. This means that one allele is always associated with the inverted karyotype and the other with the standard arrangement. Thus, it is possible to use these SNPs as diagnostic markers that allow to (1) estimate if the sequencing data of an individual with unknown karyotype is carrying the inversion simply by tracing for the inversion-specific allele at the correpsonding diagnostic markers. Furthermore, it is possible to estimate the frequency of inverted chromosomes in pooled sequencing data, where multiple individuals are pooled prior to DNA extraction and the pool of DNA is then sequenced jointly. In the latter type of datasets, it is assumed that the frequency of an allele in the pool corresponds to the actual frequency of the allele in the population from which the pooled individuals were randomly sampled. Thus, the median frequency of the inversion-specific alleles in the pooled dataset should roughly correspond to the inversion frequency given that these SNPs have been found to be in tight linkage disequilibrium with the inversion. 
+Several SNPs in the Manahattan plots of Figure 3 clustered at the inversion breakpoints show an *F*<sub>ST</sub> - value of one, which indicates complete fixation for different alleles among the two karyotpes. We therefore assume that these SNPs are in complete linkage disequilibrium (LD) with the inversion - at least in the particular population sample that is investigated here. This means that one allele is always associated with the inverted karyotype and the other with the standard arrangement. Thus, it is possible to use these SNPs as diagnostic markers that allow to (1) estimate if the sequencing data of an individual with unknown karyotype is carrying the inversion simply by tracing for the inversion-specific allele at the correpsonding diagnostic markers. Furthermore, it is possible to estimate the frequency of inverted chromosomes in pooled sequencing data, where multiple individuals are pooled prior to DNA extraction and the pool of DNA is then sequenced jointly. In the latter type of datasets, it is assumed that the frequency of an allele in the pool corresponds to the actual frequency of the allele in the population from which the pooled individuals were randomly sampled. Thus, the median frequency of the inversion-specific alleles in the pooled dataset should roughly correspond to the inversion frequency given that these SNPs have been found to be in tight LD with the inversion. However, I need to caution here, that these markers should - at best - only be applied to sequencing data from samples collected in the same broader geographic region, or that diagnostic maker SNPs are defined using a mixed samples of individuals with known karyotype from all areas where the corresponding inversion occurs. The evolutionary history of inversions with a broad geographic distribution may be very complex and characterized by the emergence and fixation of different SNPs within the inversion in different geographic regions. 
+
+> In the following, we will isolate SNPs located within 200kbp distance to each of the breakpoints that are in full LD with either of the two focal inversoin and obtain their alleles that are fixed within the inverted chromosomes.
+
+```bash
+## obtain diagnostic SNPs for each inversion
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+    
+    ### store the chormosome, start and endpoints of each inversion as a comma-separated string
+    BP="${Ch},${St},${En}"
+
+    ### only retain the header and the rows on the "correct" chromosome and focus on the focal individuals that are either INV or ST
+    gunzip -c ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz |
+        awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
+        python ${WD}/scripts/DiagnosticSNPs.py \
+            --range 200000 \
+            --breakpoints ${BP} \
+            --input - \
+            --output ${WD}/results/SNPs_${INVERSION}/${INVERSION} \
+            --MinCov 10 \
+            --Variant ${WD}/data/${INVERSION}.txt
+done
+```
