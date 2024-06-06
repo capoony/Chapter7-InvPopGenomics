@@ -417,5 +417,5 @@ for index in ${!DATA[@]}; do
         ${WD}
 done
 ```
-The example shown in Figure 4 below shows the results of the inversion frequency estimation for *In(2L)t* for a population sample collected close to Mauternbach in the beautiful Wachau-Area close to the Danube in Austria. 
+The example shown in Figure 4 below shows the results of the inversion frequency estimation for *In(2L)t* for a population sample collected in 2015 close to Mauternbach in the beautiful Wachau area along the Danube in Austria. 
 ![Figure 4](output/AT_Nie_Mau_1_2015-10-19.png)
