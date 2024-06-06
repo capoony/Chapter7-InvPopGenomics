@@ -289,41 +289,38 @@ for index in ${!DATA[@]}; do
             >${WD}/data/DEST_${INVERSION}.sync
 done
 
-### convert diagnostic SNP file to match prerequisites for inv script
-for index in ${!DATA[@]}; do
-
-    INVERSION=${DATA[index]}
-    cut -f1-3 ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt |
-        awk -v INV=${INVERSION} 'NR>1{print INV"\t"$0}' \
-            >${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.markers
-done
-
+### get the names of all samples in the VCF file and store as an array
 NAMES=$(gunzip -c ${WD}/data/DEST.vcf.gz | head -150 | awk '/^#C/' | cut -f10- | tr '\t' ',')
 
-# Calculate average frequencies for marker SNPs
+# Calculate median frequencies for marker SNPs
 for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}
-    Ch=${Chrom[index]}
 
     python3 ${WD}/scripts/inversion-freqs.py \
-        ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.markers \
-        ${WD}/data/DEST_${INVERSION}.sync \
-        $NAMES \
+        --marker ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
+        --input ${WD}/data/DEST_${INVERSION}.sync \
+        --names $NAMES \
+        --inv ${INVERSION} \
         >${WD}/results/SNPs_${INVERSION}/${INVERSION}.af
 
-    gunzip -c ${WD}/data/DEST.vcf.gz |
-        awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
-        python3 ${WD}/scripts/AFbyAllele.py \
-            --input - \
-            --diag ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
-            >${WD}/results/SNPs_${INVERSION}/${INVERSION}_pos.af
 done
 
 ### generate plots for each population
 for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}
+    Ch=${Chrom[index]}
+
+    ### convert VCF to allele frequency table for each SNP and population sample
+    gunzip -c ${WD}/data/DEST.vcf.gz |
+        awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
+        python3 ${WD}/scripts/AFbyAllele.py \
+            --input - \
+            --diag ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
+            >${WD}/results/SNPs_${INVERSION}/${INVERSION}_pos.af
+
+    ### make plots in R
     Rscript ${WD}/scripts/Plot_InvMarker.r \
         ${INVERSION} \
         ${WD}
@@ -470,7 +467,7 @@ mkdir /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs*/*.png /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LFMM_*/*.png /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LDwithSNPs/*.png /media/inter/mkapun/projects/InvChapter/output
-
+cp /media/inter/mkapun/projects/InvChapter/results/SNPs_IN2Lt/In2Lt_plots/AT_Nie_Mau_1_2015-10-19.png /media/inter/mkapun/projects/InvChapter/output
 cd ${WD}
 
 pandoc -f markdown \

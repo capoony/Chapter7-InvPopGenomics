@@ -1,5 +1,23 @@
 import sys
 from collections import defaultdict as d
+from optparse import OptionParser, OptionGroup
+
+# Author: Martin Kapun
+
+#########################################################   HELP   #########################################################################
+usage = "python %prog --input file --output file "
+parser = OptionParser(usage=usage)
+group = OptionGroup(parser, '< put description here >')
+
+#########################################################   CODE   #########################################################################
+
+parser.add_option("--input", dest="IN", help="Input file")
+parser.add_option("--marker", dest="MA", help="Input file")
+parser.add_option("--inv", dest="INV", help="Input file")
+parser.add_option("--names", dest="NA", help="Input file")
+
+(options, args) = parser.parse_args()
+parser.add_option_group(group)
 
 
 def sync2freqh(x):
@@ -34,16 +52,17 @@ def median(x):
         return sort[mid]
 
 
-invmarker = open(sys.argv[1], "r")
-data = open(sys.argv[2], "r")
-names = sys.argv[3].split(",")
+invmarker = open(options.MA, "r")
+data = open(options.IN, "r")
+names = options.NA.split(",")
+INV = options.INV
 invh = d(list)
 
 for l in invmarker:
-    if l.startswith("inversion") or l.startswith("#"):
+    if l.startswith("Chrom") or l.startswith("#"):
         continue
-    a = l.split()
-    invh[a[1] + ":" + a[2]] = [a[0], a[3]]
+    a = l.rstrip().split()
+    invh[a[0] + ":" + a[1]] = [INV, a[2]]
 
 invdata = d(lambda: d(list))
 Inv = []

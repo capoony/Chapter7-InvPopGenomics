@@ -374,3 +374,48 @@ for index in ${!DATA[@]}; do
             >${WD}/data/DEST_${INVERSION}.sync
 done
 ```
+> For each of the two inversions, we are now calculating the median frequency of the inversion specific alleles across all diagnostic markers for each population to obtain an estimate of the corresponding inversion frequency. First, we obtain the names of all samples in the VCF file in the correct order and then output the estimated inversion frequencies as a tab-delimted file.
+
+```bash
+### get the names of all samples in the VCF file and store as an array
+NAMES=$(gunzip -c ${WD}/data/DEST.vcf.gz | head -150 | awk '/^#C/' | cut -f10- | tr '\t' ',')
+
+# Calculate median frequencies for marker SNPs
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+
+    python3 ${WD}/scripts/inversion-freqs.py \
+        --marker ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
+        --input ${WD}/data/DEST_${INVERSION}.sync \
+        --names $NAMES \
+        --inv ${INVERSION} \
+        >${WD}/results/SNPs_${INVERSION}/${INVERSION}.af
+
+done
+```
+> To visually inspect the accuracy of the inversion frequency estimates, we plot, for each sample, a historgram of all inversion-specific allele frequencies with the median (= estimated inversion frequency) and the actual allel-frequencies of all diagnostic SNPs against their genomic position. We therefore need to first generate a table with the inversion-specific allele frequencies of the diagnostic SNPs for all population samples in the DEST VCF file. Then, we plot these frequencies in *R*.
+
+```bash
+### generate plots for each population
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    Ch=${Chrom[index]}
+
+    ### convert VCF to allele frequency table for each SNP and population sample
+    gunzip -c ${WD}/data/DEST.vcf.gz |
+        awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
+        python3 ${WD}/scripts/AFbyAllele.py \
+            --input - \
+            --diag ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
+            >${WD}/results/SNPs_${INVERSION}/${INVERSION}_pos.af
+
+    ### make plots in R
+    Rscript ${WD}/scripts/Plot_InvMarker.r \
+        ${INVERSION} \
+        ${WD}
+done
+```
+The example shown in Figure 4 below shows the results of the inversion frequency estimation for *In(2L)t* for a population sample collected close to Mauternbach in the beautiful Wachau-Area close to the Danube in Austria. 
+![Figure 4](output/AT_Nie_Mau_1_2015-10-19.png)
