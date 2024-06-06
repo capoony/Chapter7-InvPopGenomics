@@ -123,7 +123,7 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-> Using the mapping pipeline, we aligend all reads against the *Drosophila melanogaster* reference genome. Thus, we can now obtain the allelic information for each sample at every position in the reference genome, which is stored in the final BAM files. Since the sequencing data was generated from haploid embryos, we assume that there is only one allele present in each sample at a given genomic position. We will now identify polymorphisms using the FreeBayes variant calling software and store the SNP information across all samples per inversion in a VCF file.
+> Using the mapping pipeline, we aligend all reads against the *Drosophila melanogaster* reference genome. Thus, we can now obtain the allelic information for each sample at every position in the reference genome, which is stored in the final BAM files. Since the sequencing data was generated from haploid embryos, we assume that there is only one allele present in each sample at a given genomic position. We will now identify polymorphisms using the FreeBayes variant calling software and store the SNP information across all samples per inversion in a VCF file. To speed this analyses up, I am using GNU parallel with 100 threads.
 
 ```bash
 
@@ -301,7 +301,7 @@ As you can see in Figure 3 for *In(2l)t* (top) and *In(3R)Payne* (bottom), genet
 Several SNPs in the Manhattan plots of Figure 3 that are clustered at the inversion breakpoints show an *F*<sub>ST</sub> - value of one, which indicates complete fixation for different alleles among the two karyotpes. We therefore assume that these SNPs are in complete linkage disequilibrium (LD) with the inversion - at least in the particular Zambian population sample that we investigate here. This means that one allele is associated with the inverted karyotype and the other with the standard arrangement. Thus, it is possible to use these SNPs as diagnostic markers that allow to (1) estimate if the sequencing data of an individual with unknown karyotype is carrying the inversion simply by tracing for the inversion-specific allele at the correpsonding diagnostic markers. Furthermore, it is possible to estimate the frequency of inverted chromosomes in pooled sequencing data, where multiple individuals are pooled prior to DNA extraction and the pool of DNA is then sequenced jointly. In the latter type of datasets, it is assumed that the frequency of an allele in the pool corresponds to the actual frequency of the allele in the population from which the pooled individuals were randomly sampled. Thus, the median frequency of the inversion-specific alleles in the pooled dataset should roughly correspond to the inversion frequency given that these SNPs have been found to be in tight LD with the inversion. However, I need to caution here, that these markers should - at best - only be applied to sequencing data from samples collected in the same broader geographic region, or that diagnostic maker SNPs are defined using a mixed samples of individuals with known karyotype from all areas where the corresponding inversion occurs. The evolutionary history of inversions with a broad geographic distribution may be very complex and characterized by the emergence and fixation of different SNPs within the inversion in different geographic regions. 
 
 #### (3.1) Inversion-specific diagnostic marker SNPs
-> In the following, we will isolate SNPs located within 200kbp distance to each of the breakpoints that are in full LD with either of the two focal inversoin and obtain their alleles that are fixed within the inverted chromosomes. We will use a custom script that searches the inversion-specifc VCF files for SNPs with fixed differences among the INV and ST individuals as defined above within 200kbp around each inversion breakpoint. 
+> In the following, we will isolate SNPs located within 200kbp distance to each of the breakpoints that are in full LD with either of the two focal inversoin and obtain their alleles that are fixed within the inverted chromosomes. We will use a custom script that searches the inversion-specifc VCF files for SNPs with fixed differences among the INV and ST individuals as defined above within 200kbp around each inversion breakpoint. This analysis resulted in 62 and 26 diagnostic SNPs for *In(2L)t* and *In(3R)Payne*, respectively. 
 
 ```bash
 ## obtain diagnostic SNPs for each inversion
@@ -329,9 +329,9 @@ done
 ```
 
 #### (3.2) Estimating inversion frequencies in Pool-Seq data
-This analysis resulted in 62 and 26 diagnostic SNPs for *In(2L)t* and *In(3R)Payne*, respectively. In the next part, we will apply this diganostic maker SNPs to the largest Pool-Seq dataset of natural *D. melanogaster* populations available. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitfly populations from different sources that were densely collected through space and time and sequenced as pools. All raw reads were filtered and mapped using a standardized pipeline prior to joint SNP calling using the heuristic variant caller `PoolSNP`. In our pipeline, we  focus on population samples collected from North America and Europe and use the diagnostic marker SNPs to estimate inversion frequencies in each of these population samples. Then, we will test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation.
+In the next part, we will apply these diganostic maker SNPs to the largest Pool-Seq dataset of natural *D. melanogaster* populations available to date. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitfly populations from different sources that were densely collected through space and time mostly from North American and from European populations. All shotgun sequence data were filtered and trimmed reads were mapped using a standardized pipeline prior to joint SNP calling with the heuristic variant caller `PoolSNP`. In our analysis pipeline, we will focus on population samples collected from North America and Europe and use our diagnostic marker SNPs to estimate inversion frequencies in each population sample. Then, we will test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation and if they are associated with environmental variation.
 
-> As a first step, we will download both the SNP data in VCF file-format and the corresponding metadata as a comma-separated (CSV) table from the DEST website and convert the VCF file to the SYNC file format, which is commonly used to store allele counts in pooled resequencing data as a colon-separated list in the form `A:T:C:G:N:Del` for each population sample and position. In addition, we will download two scripts from the DEST pipeline that are needed for the downstream analaysis.
+> As a first step, we will download both the DEST v.2.0 SNP data in VCF file-format and the corresponding metadata as a comma-separated (CSV) table from the DEST website and convert the VCF file to the SYNC file format, which is commonly used to store allele counts in pooled re-sequencing data as colon-separated lists in the form `A:T:C:G:N:Del` for each population sample and position. In addition, we will download two scripts from the DEST pipeline that are needed for the downstream analaysis.
 
 ```bash 
 ### download VCF file and metadata for DEST dataset
@@ -345,14 +345,14 @@ wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Invers
 wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/overlap_in_SNPs.py
 ```
 
-> Next we will convert the VCF file to the SYNC file format and isolate the position of the inversion-specific marker SNPs.
+> Next we will convert the VCF file to the SYNC file format using the Python script `VCF2sync.py` from the DEST pipeline and obtain the allele counts from the SYNC file at the positions of inversion-specific marker SNPs that are present in the DEST dataset using the Python script `overlap_in_SNPs.py`. To speed these calculations up, I am using GNU parallel with 100 threads. 
 
 ```bash
 ### convert VCF to SYNC file format
 conda activate parallel
 gunzip -c ${WD}/data/DEST.vcf.gz |
     parallel \
-        --jobs 200 \
+        --jobs 100 \
         --pipe \
         -k \
         --cat python3 ${WD}/scripts/VCF2sync.py \
@@ -366,7 +366,7 @@ for index in ${!DATA[@]}; do
     gunzip -c ${WD}/data/DEST.sync.gz |
         parallel \
             --pipe \
-            --jobs 20 \
+            --jobs 100 \
             -k \
             --cat python3 ${WD}/scripts/overlap_in_SNPs.py \
             --source ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \

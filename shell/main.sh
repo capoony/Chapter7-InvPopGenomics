@@ -447,6 +447,23 @@ for index in ${!DATA[@]}; do
 
 done
 
+### Test if associations with environmental factors due to demography or potentially adaptive
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+
+    Rscript ${WD}/scripts/LFMM_WorldClim.r \
+        ${INVERSION} \
+        ${Ch} \
+        ${St} \
+        ${En} \
+        ${WD}
+
+done
+
 ## copy figures to output folder
 mkdir /media/inter/mkapun/projects/InvChapter/output
 

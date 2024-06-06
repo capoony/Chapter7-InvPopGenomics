@@ -47,7 +47,8 @@ create_plot <- function(data, var, title, colors, ggtitle_text, xlab_text, ylab_
         geom_point() +
         ggtitle(ggtitle_text) +
         scale_colour_gradientn(colours = colors) +
-        theme_bw()
+        theme_bw() +
+        theme(legend.position = "bottom")
     return(WORLD)
 }
 
@@ -91,20 +92,20 @@ process_continent_data <- function(continent, inv_freq, meta_sub, chr, start, en
     world_temp_plot <- create_plot(data.af, "AvTemp", "Average Temperature (°C)", terrain.colors(10), "Average Temperature (°C)", "Longitude", "Latitude")
     corr_lat_temp_plot <- plot_correlation(data.af, "AvTemp", "lat", "Corr. Latitude & Average Temp")
     corr_lon_temp_plot <- plot_correlation(data.af, "AvTemp", "long", "Corr. Longitude & Average Temp")
-    plot_temp <- ggarrange(world_temp_plot, ggarrange(corr_lat_temp_plot, corr_lon_temp_plot, ncol = 2), nrow = 2)
-    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_", continent, "_WorldTemp.png"), plot_temp, 16, 16)
+    plot_temp <- ggarrange(world_temp_plot, ggarrange(corr_lat_temp_plot, corr_lon_temp_plot, ncol = 2), nrow = 2, heights = c(2, 1))
+    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_", continent, "_WorldTemp.png"), plot_temp, 10, 10)
 
     world_prec_plot <- create_plot(data.af, "AvPrec", "Average Precipitation (mm)", terrain.colors(10), "Average Precipitation (mm)", "Longitude", "Latitude")
     corr_lat_prec_plot <- plot_correlation(data.af, "AvPrec", "lat", "Corr. Latitude & Average Prec")
     corr_lon_prec_plot <- plot_correlation(data.af, "AvPrec", "long", "Corr. Longitude & Average Prec")
-    plot_prec <- ggarrange(world_prec_plot, ggarrange(corr_lat_prec_plot, corr_lon_prec_plot, ncol = 2), nrow = 2)
-    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_", continent, "_WorldPrecipitation.png"), plot_prec, 16, 16)
+    plot_prec <- ggarrange(world_prec_plot, ggarrange(corr_lat_prec_plot, corr_lon_prec_plot, ncol = 2), nrow = 2, heights = c(2, 1))
+    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_", continent, "_WorldPrecipitation.png"), plot_prec, 10, 10)
 
     rownames(data.af) <- data.af$sampleId
     data.af.meta <- data.af %>% select(sampleId, continent, country, lat, long, AvTemp, AvPrec)
     data.af.lfmm <- data.af %>% select(-Sample, -sampleId, -continent, -country, -province, -lat, -long, -AvTemp, -AvPrec)
     data.af.lfmm <- data.af.lfmm[, colSums(data.af.lfmm) != 0]
-    data.env <- data.af.meta %>% select(lat, long, AvTemp, AvPrec)
+    data.env <- data.af.meta %>% select(AvTemp, AvPrec)
 
     write.lfmm(data.af.lfmm, paste0("results/SNPs_", INV, "/LFMM_", continent, "/", continent, ".lfmm"))
 
@@ -120,10 +121,8 @@ process_continent_data <- function(continent, inv_freq, meta_sub, chr, start, en
 
     inversion <- pval[1, ]
     hline_data <- data.frame(
-        ylat = as.numeric(inversion[2]),
-        ylon = as.numeric(inversion[3]),
-        yat = as.numeric(inversion[4]),
-        yap = as.numeric(inversion[5]),
+        yat = as.numeric(inversion[2]),
+        yap = as.numeric(inversion[3]),
         xmin = as.numeric(start) / 1000000,
         xmax = as.numeric(end) / 1000000,
         Chrom = c(chr)
@@ -133,27 +132,13 @@ process_continent_data <- function(continent, inv_freq, meta_sub, chr, start, en
         as.data.frame() %>%
         separate(ID, into = c("Chrom", "Pos"), sep = ":")
 
+    write.table(pval,
+        file = paste0("results/SNPs_", INV, "/LFMM_", INV, "_", continent, ".txt"),
+        quote = FALSE,
+        row.names = FALSE
+    )
+
     plot_list <- list(
-        lat = ggplot(others, aes(x = as.numeric(Pos) / 1000000, y = as.numeric(lat))) +
-            geom_point(col = rgb(0, 0, 0, 0.1), pch = 16) +
-            facet_grid(. ~ Chrom, scales = "free_x", space = "free") +
-            theme_bw() +
-            geom_hline(yintercept = -log10(0.05 / (nrow(others) + 1)), colour = "blue") +
-            geom_segment(aes(x = xmin, y = ylat, xend = xmax, yend = ylat, colour = "segment"), data = hline_data) +
-            xlab("Position (Mbp)") +
-            ylab("-log10(p-value)") +
-            ggtitle(paste0("LFMM: Latitude ", INV, " for ", continent)) +
-            theme(legend.position = "none"),
-        lon = ggplot(others, aes(x = as.numeric(Pos) / 1000000, y = as.numeric(long))) +
-            geom_point(col = rgb(0, 0, 0, 0.1), pch = 16) +
-            facet_grid(. ~ Chrom, scales = "free_x", space = "free") +
-            theme_bw() +
-            geom_hline(yintercept = -log10(0.05 / (nrow(others) + 1)), colour = "blue") +
-            geom_segment(aes(x = xmin, y = ylon, xend = xmax, yend = ylon, colour = "segment"), data = hline_data) +
-            xlab("Position (Mbp)") +
-            ylab("-log10(p-value)") +
-            ggtitle(paste0("LFMM: Longitude ", INV, " for ", continent)) +
-            theme(legend.position = "none"),
         temp = ggplot(others, aes(x = as.numeric(Pos) / 1000000, y = as.numeric(AvTemp))) +
             geom_point(col = rgb(0, 0, 0, 0.1), pch = 16) +
             facet_grid(. ~ Chrom, scales = "free_x", space = "free") +
@@ -186,31 +171,23 @@ main <- function() {
     inv_freq <- cbind(inv_freq, bio.sub)
 
     plot_list <- list(
-        lat = list(),
-        lon = list(),
         temp = list(),
         prec = list()
     )
 
     for (continent in c("Europe", "NorthAmerica")) {
         plot_continent <- process_continent_data(continent, inv_freq, meta.sub, Chr, Start, End)
-        plot_list$lat[[continent]] <- plot_continent$lat
-        plot_list$lon[[continent]] <- plot_continent$lon
         plot_list$temp[[continent]] <- plot_continent$temp
         plot_list$prec[[continent]] <- plot_continent$prec
     }
 
     combined_plots <- list(
-        lat = ggarrange(plotlist = plot_list$lat, nrow = 2),
-        lon = ggarrange(plotlist = plot_list$lon, nrow = 2),
         temp = ggarrange(plotlist = plot_list$temp, nrow = 2),
         prec = ggarrange(plotlist = plot_list$prec, nrow = 2)
     )
 
-    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Latitude.png"), combined_plots$lat, 10, 8)
-    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Longitude.png"), combined_plots$lon, 10, 8)
     save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_AvTemp.png"), combined_plots$temp, 10, 8)
-    save_plot(paste0("results/SNPs_", INV, "_LFMM_", INV, "_AvPrec.png"), combined_plots$prec, 10, 8)
+    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_AvPrec.png"), combined_plots$prec, 10, 8)
 }
 
 # Run main function
