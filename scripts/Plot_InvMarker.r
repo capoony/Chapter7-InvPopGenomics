@@ -1,6 +1,7 @@
 library(tidyverse)
 library(stringr)
 library(ggpubr)
+library(ggExtra)
 
 # Define command line arguments
 args <- commandArgs(trailingOnly = TRUE)
@@ -28,32 +29,33 @@ create_and_save_plots <- function(data, id, output_dir) {
         group_by(ID) %>%
         summarize(median_value = median(Freq))
 
-    # Histogram plot with median line
-    plot1 <- ggplot(data_at, aes(x = Freq)) +
-        geom_histogram(bins = 10, fill = "blue", color = "black") +
-        facet_grid(. ~ ID) +
+    # Scatter plot of frequency by position
+    PLOT <- ggplot(data_at, aes(x = Pos, y = Freq, col = Freq)) +
+        geom_point() +
+        # facet_grid(ID ~ .) +
         theme_bw() +
-        geom_vline(
+        theme(legend.position = "none") +
+        geom_hline(
             data = medians_df,
-            aes(xintercept = median_value),
+            aes(yintercept = median_value),
             color = "red",
             linetype = "dashed",
             size = 1
-        )
-
-    # Scatter plot of frequency by position
-    plot2 <- ggplot(data_at, aes(x = Pos, y = Freq, col = Freq)) +
-        geom_point() +
-        facet_grid(ID ~ .) +
-        theme_bw() +
-        theme(legend.position = "none")
+        ) +
+        ggtitle(id)
 
     # Combine the two plots
-    plot_final <- ggarrange(plot1, plot2, nrow = 2)
+    plot_final <- ggMarginal(PLOT,
+        type = "histogram",
+        margins = "y",
+        color = "black",
+        fill = "blue",
+        bins = 10
+    )
 
     # Save the combined plot
     output_file <- paste0(output_dir, id, ".png")
-    ggsave(file = output_file, plot_final, width = 6, height = 6)
+    ggsave(file = output_file, plot_final, width = 6, height = 4)
 }
 
 # Create and save plots for each ID in the data

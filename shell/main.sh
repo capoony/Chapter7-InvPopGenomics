@@ -467,7 +467,7 @@ mkdir /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs*/*.png /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LFMM_*/*.png /media/inter/mkapun/projects/InvChapter/output
 cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LDwithSNPs/*.png /media/inter/mkapun/projects/InvChapter/output
-cp /media/inter/mkapun/projects/InvChapter/results/SNPs_IN2Lt/In2Lt_plots/AT_Nie_Mau_1_2015-10-19.png /media/inter/mkapun/projects/InvChapter/output
+cp /media/inter/mkapun/projects/InvChapter/results/SNPs_IN2Lt/IN2Lt_plots/AT_Nie_Mau_1_2015-10-19.png /media/inter/mkapun/projects/InvChapter/output
 cd ${WD}
 
 pandoc -f markdown \
