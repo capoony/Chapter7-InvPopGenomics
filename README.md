@@ -231,8 +231,7 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-With the exception of the genomic region spanned either by *In(2L)t* (Figure 2; top) or *In(3R)Payne* (Figure 2; bottom), we find that *&pi;*-values are very similar for INV (red) and ST (blue) samples across the whole genome. In contrast, we see that genetic variation within the inverted regions is markedly reduced in INV individuals, which suggest that the population size of the inversion is smaller than the standard arrangement. These patterns may also indicate that the inversion is not old enough and gene flux and novel mutations did not have enough time yet 
- to reconstitute genetic variation similar to the ancestral arrangement. Moreover, we see that the reduction of genetic variation is not equal across the whole inverted region. Rather, the reduction is strongest close to the breakpoints. This indicates that gene-flux in the center of the inversion has, at least partilally, shifted genetic varaition from the standard arrangement into the inverted chromosomes. In the case of *In(2L)t*, we further find that the effect of the inversion on genetic variation is not confined to the region spanned by the inversion but rather spreads millions of basepairs beyond the breakpoints (Figure 2; top). Finally, we also observe that the distribution of nucleotide diversity varies along each chromosome and is strongly reduced close to the centro- and telomers (Figure 2). These particular regions are characterized by reduced recombination rates, which influences the extend of backround selection and leads to reduced variation in these chromosomal regions. 
+With the exception of the genomic region spanned either by *In(2L)t* (Figure 2; top) or *In(3R)Payne* (Figure 2; bottom), we find that *&pi;*-values are very similar for INV (red) and ST (blue) samples across the whole genome. In contrast, we see that genetic variation within the inverted regions is markedly reduced in INV individuals, which suggest that the population size of the inversion is smaller than the standard arrangement. These patterns may also indicate that the inversion is not old enough and gene flux and novel mutations did not have enough time yet to reconstitute genetic variation similar to the ancestral arrangement. Moreover, we see that the reduction of genetic variation is not equal across the whole inverted region. Rather, the reduction is strongest close to the breakpoints. This indicates that gene-flux in the center of the inversion has, at least partilally, shifted genetic varaition from the standard arrangement into the inverted chromosomes. In the case of *In(2L)t*, we further find that the effect of the inversion on genetic variation is not confined to the region spanned by the inversion but rather spreads millions of basepairs beyond the breakpoints (Figure 2; top). Finally, we also observe that the distribution of nucleotide diversity varies along each chromosome and is strongly reduced close to the centro- and telomers (Figure 2). These particular regions are characterized by reduced recombination rates, which influences the extend of backround selection and leads to reduced variation in these chromosomal regions. 
 
 ![Figure2_top](output/IN2Lt_pi.png)
 ![Figure2_bottom](output/IN3RP_pi.png)
@@ -294,7 +293,7 @@ As you can see in Figure 3 for *In(2l)t* (top) and *In(3R)Payne* (bottom), genet
 Several SNPs in the Manhattan plots of Figure 3 that are clustered at the inversion breakpoints show an *F*<sub>ST</sub> - value of one, which indicates complete fixation for different alleles among the two karyotpes. We therefore assume that these SNPs are in complete linkage disequilibrium (LD) with the inversion - at least in the particular Zambian population sample that we investigate here. This means that one allele is associated with the inverted karyotype and the other with the standard arrangement. Thus, it is possible to use these SNPs as diagnostic markers that allow to (1) estimate if the sequencing data of an individual with unknown karyotype is carrying the inversion simply by tracing for the inversion-specific allele at the correpsonding diagnostic markers. Furthermore, it is possible to estimate the frequency of inverted chromosomes in pooled sequencing data, where multiple individuals are pooled prior to DNA extraction and the pool of DNA is then sequenced jointly. In the latter type of datasets, it is assumed that the frequency of an allele in the pool corresponds to the actual frequency of the allele in the population from which the pooled individuals were randomly sampled. Thus, the median frequency of the inversion-specific alleles in the pooled dataset should roughly correspond to the inversion frequency given that these SNPs have been found to be in tight LD with the inversion. However, I need to caution here, that these markers should - at best - only be applied to sequencing data from samples collected in the same broader geographic region, or that diagnostic maker SNPs are defined using a mixed samples of individuals with known karyotype from all areas where the corresponding inversion occurs. The evolutionary history of inversions with a broad geographic distribution may be very complex and characterized by the emergence and fixation of different SNPs within the inversion in different geographic regions. 
 
 #### (3.1) Inversion-specific diagnostic marker SNPs
-> In the following, we will isolate SNPs located within 200kbp distance to each of the breakpoints that are in full LD with either of the two focal inversoin and obtain their alleles that are fixed within the inverted chromosomes. We will use a custom script that searches the inversion-specifc VCF files for SNPs with fixed differences among the INV and ST individuals as defined above within 200kbp around each inversion breakpoint. This analysis resulted in 62 and 26 diagnostic SNPs for *In(2L)t* and *In(3R)Payne*, respectively. 
+> In the following, we will isolate SNPs located within 200kbp distance to each of the breakpoints that are in full LD with either of the two focal inversoin and obtain their alleles that are fixed within the inverted chromosomes. We will use a custom script that searches the inversion-specifc VCF files for SNPs with fixed differences among the INV and ST individuals as defined above within 200kbp around each inversion breakpoint. 
 
 ```bash
 ## obtain diagnostic SNPs for each inversion
@@ -321,10 +320,12 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-#### (3.2) Estimating inversion frequencies in Pool-Seq data
-In the next part, we will apply these diganostic maker SNPs to the largest Pool-Seq dataset of natural *D. melanogaster* populations available to date. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitflies from different sources that were densely collected through space and time mostly from North American and from European populations. All shotgun sequence data processed with a standardized trimming and mapping pipeline (as described above) prior to joint SNP calling with the heuristic variant caller `PoolSNP`. In our analysis pipeline, we will take advantage of this comprehensive and quantitative SNP datasest and focus on population samples collected from North America and Europe. Since the inversion frequencies in each of the population samples are unknown and cannot be investigated directly, we will take advantage of our diagnostic marker SNPs that we isolated above and estimate inversion frequencies in each population sample. This will allow us to test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation and if they are associated with environmental variation.
+This analysis resulted in 62 and 26 diagnostic SNPs for *In(2L)t* and *In(3R)Payne*, respectively. In the following paragraphs, we will use these marker SNPs to indirectly infer inversion frequencies in other genomic datasets, but before that, we will test if inversions influence population structure in *D. melanogaster* population samples from North America and Europe without prior information on inversion frequencies in the corresponding samples.
 
-> As a first step, we will download both the DEST v.2.0 SNP data in VCF file-format and the corresponding metadata as a comma-separated (CSV) table from the DEST website. Then we will convert the VCF file to the SYNC file format, which is commonly used to store allele counts in pooled re-sequencing data as colon-separated lists in the form `A:T:C:G:N:Del` for each population sample and position. In addition, we will download two scripts from the DEST pipeline that are needed for the downstream analaysis.
+#### (3.2) The influence of inversions on population structure
+To this end, we will use the largest Pool-Seq dataset of natural *D. melanogaster* populations available to date. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitflies from different sources that were densely collected through space and time mostly from North American and from European populations. All shotgun sequence data were processed with a standardized trimming and mapping pipeline (as described above) prior to joint SNP calling with the heuristic variant caller `PoolSNP`. In our analysis pipeline, we will take advantage of this comprehensive and quantitative SNP datasest and focus particularly on population samples collected from North America and Europe. Moreover, DEST v.2.0. also provides rich metadata, including detailed information on the sampling date and location, basic sequencing statistics (such as read depths, SNP counts, etc.) and recommendations based on data quality assessments.
+
+> As a first step, we will download both the DEST v.2.0 SNP data in VCF file-format and the corresponding metadata as a comma-separated (CSV) table from the DEST website. In addition, we will download two scripts from the DEST pipeline that are needed for the downstream analaysis.
 
 ```bash 
 ### download VCF file and metadata for DEST dataset
@@ -338,7 +339,66 @@ wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Invers
 wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/overlap_in_SNPs.py
 ```
 
-> Next we will convert the VCF file to the SYNC file format using the Python script `VCF2sync.py` from the DEST pipeline and obtain the allele counts from the SYNC file at the positions of inversion-specific marker SNPs that are present in the DEST dataset using the Python script `overlap_in_SNPs.py`. To speed these calculations up, I am using GNU parallel with 100 threads. 
+> Next, we identify samples that we want to include in our continent-wide analyses of populations from North America and Europe. Furthermore, we want to exclude samples that did not pass the quality thresholds defined previously for the DEST v.2.0. dataset. We will obtain the necessary information from the metadata table and generate input files by subsetting this dataset.
+
+```bash
+### Split metadata by continent
+
+## remove single quotes from metadata table
+sed -i "s/'//g" ${WD}/data/meta.csv
+
+## split by continent
+awk -F "," '$6 =="Europe" {print $1}' ${WD}/data/meta.csv >${WD}/data/Europe.ids
+awk -F "," '$6 =="North_America" {print $1}' ${WD}/data/meta.csv >${WD}/data/NorthAmerica.ids
+
+## get data for populationes that did not pass the quality criteria (no PASS and average read depths < 15)
+awk -F "," '$(NF-7) !="Pass" || $(NF-9)<15 {print $1"\t"$(NF-7)"\t"$(NF-9)}' ${WD}/data/meta.csv >${WD}/data/REMOVE.ids
+```
+
+> Next, we will apply several filtering steps to the VCF file and craft two continent-specific allele frequency datasets that we will use for all downstream analyses. Specifically, we will (1) isolate continent-specific populations, (2) remove problematic samples (based on DEST recommendations), remove (3) populations with < 15-fold average read depth, (4) only retain bilallic SNPs, (5) subsample to 50,000 randomly drawn genome-wide SNPs, (6) convert the allele counts to frequencies of the reference allele and obtain (7) read-depths for each position and population sample.
+
+```bash
+### subset the VCF file 
+
+mkdir ${WD}/results/SNPs
+
+for continent in NorthAmerica Europe; do
+
+    conda activate vcftools
+
+    ## decompress VCF file
+    pigz -dc ${WD}/data/DEST.vcf.gz |
+
+        ## keep header and position with only one alternative allele
+        awk '$0~/^\#/ || length($5)==1' |
+
+        ## keep continental data and remove bad quality samples
+        vcftools --vcf - \
+            --keep ${WD}/data/${continent}.ids \
+            --remove ${WD}/data/REMOVE.ids \
+            --recode \
+            --stdout |
+
+        ## remove rows with missing data
+        grep -v "\./\." |
+
+        ## randomly samples 50,000 SNPs
+        python ${WD}/scripts/SubsampleVCF.py \
+            --input - \
+            --snps 50000 |
+
+        ## convert VCF to allele frequencies and weigths (of the reference allele)
+        python ${WD}/scripts/vcf2af.py \
+            --input - \
+            --output ${WD}/results/SNPs/${continent}
+
+done
+```
+
+#### (3.3) Estimating inversion frequencies in Pool-Seq data
+Since the inversion frequencies in each of the population samples are unknown and cannot be investigated directly, we will take advantage of our diagnostic marker SNPs that we isolated above and estimate inversion frequencies in each population sample. This will allow us to test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation and if they are associated with environmental variation.
+
+> Next we will convert the VCF file to the SYNC file format using the Python script `VCF2sync.py` from the DEST pipeline. The SYNC file format, which is commonly used to store allele counts in pooled re-sequencing data as colon-separated lists in the form `A:T:C:G:N:Del` for each population sample and position. We will then obtain allele counts from the SYNC file at the positions of inversion-specific marker SNPs that are present in the DEST dataset using the Python script `overlap_in_SNPs.py`. To speed these calculations up, I am using GNU parallel with 100 threads. 
 
 ```bash
 ### convert VCF to SYNC file format
@@ -413,3 +473,4 @@ done
 The example in Figure 4 below shows the distribution of inversion-specific alleles for *In(2L)t* in a population sample collected in 2015 close to Mautern in the beautiful Wachau area along the Danube in Austria. As you can see in the scatterplot, two set of SNPs are located around the breakpoints of *In(2L)t* and the frequencies of the invesion-specific alleles range from 0% to more than 60%, which is quite a broad range and mostly the result of sampling error in the PoolSeq data. Assume that even if a diasgnostic SNP is in full linkage disequilibrium with the inversion, it will not necessarly correctly depict the "true" frequency of the inversion in the population due to binomial sampling. When sequencing the pooled DNA from multiple samples with NGS methods such as Illumina, we are usually sampling (i.e., sequencing) 50-100 DNA fragments at every genomic position, which corresponds to a 50-100 fold sequencing depth. This is, of course, only a very tiny fraction of the total millions of copies of DNA from all body cells of the individuals in the extracted DNA. The resulting sampling error leads to deviations from the expected frequency (i.e., the true allele frequency in all the DNA copies) and these deviations become even bigger the lower the sequencing depths are. However, if we further assume that each SNP is a reliable estimator of the "true" inversion frequency due to perfect linkage disequilibrium, we expect that the inferred frequencies across all marker SNPs roughly follow a binomial distribution, where the sequencing depth corresponds to the number of trials *n* and the expected inversion frequency corresponds to the number of successces *p*. However, other factors, such as sequencing and mapping errors or imperfect linkage disequilibrium of some diagnostic SNPs in certain geographic regions (see above in the introduction to chapter 3) may also influence the distirbution of frequencies. Rather than calculating the mean frequencies across all markers, we use the median to estimate the population inversion frequency and compare inversion patterns in all population samples, since this statistic is more robust to assymetric distributions. In our example in Figure 4, the median is shown as a dashed red line at app. 25%.
 
 ![Figure 4](output/AT_Nie_Mau_1_2015-10-19.png)
+

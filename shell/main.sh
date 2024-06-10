@@ -243,8 +243,6 @@ for index in ${!DATA[@]}; do
             --Variant ${WD}/data/${INVERSION}.txt
 done
 
-## (7) estimate inversion frequency in PoolSeq data
-
 ### download VCF file and metadata for DEST dataset
 cd ${WD}/data
 wget -O DEST.vcf.gz http://berglandlab.uvadcos.io/vcf/dest.all.PoolSNP.001.50.3May2024.ann.vcf.gz
@@ -254,6 +252,77 @@ wget -O meta.csv https://raw.githubusercontent.com/DEST-bio/DESTv2/main/populati
 cd ${WD}/scripts
 wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/VCF2sync.py
 wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/overlap_in_SNPs.py
+
+## (8) now subset to European and North American datasets and calculate AFs
+
+### Split metadata by continent
+
+## remove single quotes from metadata table
+sed -i "s/'//g" ${WD}/data/meta.csv
+
+## split by continent
+awk -F "," '$6 =="Europe" {print $1}' ${WD}/data/meta.csv >${WD}/data/Europe.ids
+awk -F "," '$6 =="North_America" {print $1}' ${WD}/data/meta.csv >${WD}/data/NorthAmerica.ids
+
+## get data for populationes that did not pass the quality criteria (no PASS and average read depths < 15)
+awk -F "," '$(NF-7) !="Pass" || $(NF-9)<15 {print $1"\t"$(NF-7)"\t"$(NF-9)}' ${WD}/data/meta.csv >${WD}/data/REMOVE.ids
+
+### subset the VCF file to only (1) contain only European data (2) remove problematic populations (based on DEST recommendations), remove (3) populations with < 15-fold average read depth, (4) only retain bilallic SNPs, (5) subsample to 50,000 randomly drawn genome-wide SNPs and (6) convert the allele counts to frequencies and weights (read-depths).
+
+mkdir ${WD}/results/SNPs
+
+for continent in NorthAmerica Europe; do
+
+    conda activate vcftools
+
+    ## decompress VCF file
+    pigz -dc ${WD}/data/DEST.vcf.gz |
+
+        ## keep header and position with only one alternative allele
+        awk '$0~/^\#/ || length($5)==1' |
+
+        ## keep continental data and remove bad quality samples
+        vcftools --vcf - \
+            --keep ${WD}/data/${continent}.ids \
+            --remove ${WD}/data/REMOVE.ids \
+            --recode \
+            --stdout |
+
+        ## remove rows with missing data
+        grep -v "\./\." |
+
+        ## randomly samples 50,000 SNPs
+        python ${WD}/scripts/SubsampleVCF.py \
+            --input - \
+            --snps 50000 |
+
+        ## convert VCF to allele frequencies and weigths (of the reference allele)
+        python ${WD}/scripts/vcf2af.py \
+            --input - \
+            --output ${WD}/results/SNPs/${continent}
+
+done
+
+## (9) The influence of Inversions on population structure
+
+### use PCA to test for patterns inside and outside the genomic region spanned by an inversion
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+
+    Rscript ${WD}/scripts/PCA_Inv.r \
+        ${INVERSION} \
+        ${Ch} \
+        ${St} \
+        ${En} \
+        ${WD}
+
+done
+
+## (10) estimate inversion frequency in PoolSeq data
 
 ### convert VCF to SYNC file format
 conda activate parallel
@@ -284,7 +353,7 @@ done
 ### get the names of all samples in the VCF file and store as an array
 NAMES=$(gunzip -c ${WD}/data/DEST.vcf.gz | head -150 | awk '/^#C/' | cut -f10- | tr '\t' ',')
 
-# Calculate median frequencies for marker SNPs
+### Calculate median frequencies for marker SNPs
 for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}
@@ -318,53 +387,16 @@ for index in ${!DATA[@]}; do
         ${WD}
 done
 
-## (8) now subset to European and North American datasets and calculate AFs
+## (11) does the Inv Frequency influence the PCA results?
+for index in ${!DATA[@]}; do
 
-### Split metadata by continent
+    INVERSION=${DATA[index]}
+    Rscript ${WD}/scripts/Plot_PCAInvFreq.r \
+        ${INVERSION} \
+        ${WD}
+done
 
-sed -i "s/'//g" ${WD}/data/meta.csv
-
-awk -F "," '$6 =="Europe" {print $1}' ${WD}/data/meta.csv >${WD}/data/Europe.ids
-awk -F "," '$6 =="North_America" {print $1}' ${WD}/data/meta.csv >${WD}/data/NorthAmerica.ids
-awk -F "," '$(NF-7) !="Pass" || $(NF-9)<15 {print $1"\t"$(NF-7)"\t"$(NF-9)}' ${WD}/data/meta.csv >${WD}/data/REMOVE.ids
-
-### subset the VCF file to only (1) contain only European data (2) remove problematic populations (based on DEST recommendations), remove (3) populations with < 15-fold average read depth, (4) only retain bilallic SNPs, (5) subsample to 50,000 randomly drawn genome-wide SNPs and (6) convert the allele counts to frequencies and weights (read-depths).
-
-mkdir ${WD}/results/SNPs
-
-conda activate vcftools
-pigz -dc ${WD}/data/DEST.vcf.gz |
-    awk '$0~/^\#/ || length($5)==1' |
-    vcftools --vcf - \
-        --keep ${WD}/data/Europe.ids \
-        --remove ${WD}/data/REMOVE.ids \
-        --recode \
-        --stdout |
-    grep -v "\./\." |
-    python ${WD}/scripts/SubsampleVCF.py \
-        --input - \
-        --snps 50000 |
-    python ${WD}/scripts/vcf2af.py \
-        --input - \
-        --output ${WD}/results/SNPs/Europe
-
-### do the same for North American samples
-pigz -dc ${WD}/data/DEST.vcf.gz |
-    awk '$0~/^\#/ || length($5)==1' |
-    vcftools --vcf - \
-        --keep ${WD}/data/NorthAmerica.ids \
-        --remove ${WD}/data/REMOVE.ids \
-        --recode \
-        --stdout |
-    grep -v "\./\." |
-    python ${WD}/scripts/SubsampleVCF.py \
-        --input - \
-        --snps 50000 |
-    python ${WD}/scripts/vcf2af.py \
-        --input - \
-        --output ${WD}/results/SNPs/NorthAmerica
-
-## (9) calculate SNP-wise logistic regressions testing for associations between SNP allele frequencies and inversion frequencies to test for linkage between SNPs and the inversion for Europe and North America
+## (12) calculate SNP-wise logistic regressions testing for associations between SNP allele frequencies and inversion frequencies to test for linkage between SNPs and the inversion for Europe and North America
 
 for index in ${!DATA[@]}; do
 
@@ -382,35 +414,7 @@ for index in ${!DATA[@]}; do
 
 done
 
-## (10) The influence of Inversions on population structure
-
-### use PCA to test for patterns inside and outside the genomic region spanned by an inversion
-for index in ${!DATA[@]}; do
-
-    INVERSION=${DATA[index]}
-    St=${Start[index]}
-    En=${End[index]}
-    Ch=${Chrom[index]}
-
-    Rscript ${WD}/scripts/PCA_Inv.r \
-        ${INVERSION} \
-        ${Ch} \
-        ${St} \
-        ${En} \
-        ${WD}
-
-done
-
-### does the Inv Frequency influence the PCA results?
-for index in ${!DATA[@]}; do
-
-    INVERSION=${DATA[index]}
-    Rscript ${WD}/scripts/Plot_PCAInvFreq.r \
-        ${INVERSION} \
-        ${WD}
-done
-
-## (11) test for clinality of inversion frequency
+## (13) test for clinality of inversion frequency
 for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}
