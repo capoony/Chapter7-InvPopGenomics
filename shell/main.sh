@@ -73,10 +73,6 @@ for index in ${!DATA[@]}; do
     while
         IFS=',' read -r ID SRR Inv
     do
-        if [[ ${ID} == "Stock ID" || -f ${WD}/mapping/${ID}_RG.bam ]]; then
-            continue
-        fi
-
         sh ${WD}/shell/mapping.sh \
             ${WD}/data/reads/${ID}_1.fastq.gz \
             ${WD}/data/reads/${ID}_2.fastq.gz \
@@ -94,10 +90,6 @@ for index in ${!DATA[@]}; do
     while
         IFS=',' read -r ID SRR Inv
     do
-        if [[ ${ID} == "Stock ID" ]]; then
-            continue
-        fi
-
         mkdir -p ${WD}/results/SNPs_${INVERSION}
 
         ### store the PATHs to all BAM files in a text, which will be used as the input for FreeBayes

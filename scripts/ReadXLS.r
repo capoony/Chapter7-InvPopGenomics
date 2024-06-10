@@ -27,7 +27,7 @@ IN2LT.no <- myDF1 %>%
 
 # Write the combined data to a file
 write.table(rbind(IN2LT.yes, IN2LT.no),
-    file = "IN2LT.txt",
+    file = "data/IN2LT.txt",
     quote = FALSE,
     row.names = FALSE,
     col.names = FALSE,
@@ -47,7 +47,7 @@ IN3RP.no <- myDF1 %>%
 
 # Write the combined data to a file
 write.table(rbind(IN3RP.yes, IN3RP.no),
-    file = "IN3RP.txt",
+    file = "data/IN3RP.txt",
     quote = FALSE,
     row.names = FALSE,
     col.names = FALSE,

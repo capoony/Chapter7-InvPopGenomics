@@ -106,10 +106,6 @@ for index in ${!DATA[@]}; do
     while
         IFS=',' read -r ID SRR Inv
     do
-        ### ignore header or continue if mapped dataset already exists 
-        if [[ ${ID} == "Stock ID" || -f ${WD}/mapping/${ID}_RG.bam ]]; then
-            continue
-        fi
         ### run the mapping pipeline with 100 threads (modify to adjust to your system ressources). Note that this step may take quite some time
         sh ${WD}/shell/mapping.sh \
             ${WD}/data/reads/${ID}_1.fastq.gz \
@@ -134,10 +130,6 @@ for index in ${!DATA[@]}; do
     while
         IFS=',' read -r ID SRR Inv
     do
-        if [[ ${ID} == "Stock ID" ]]; then
-            continue
-        fi
-
         mkdir -p ${WD}/results/SNPs_${INVERSION}
 
         ### store the PATHs to all BAM files in a text, which will be used as the input for FreeBayes
@@ -418,6 +410,6 @@ for index in ${!DATA[@]}; do
         ${WD}
 done
 ```
-The example shown in Figure 4 below shows the distribution of inversion-specific alleles for *In(2L)t* in a population sample collected in 2015 close to Mautern in the beautiful Wachau area along the Danube in Austria. As you can see in the scatterplot, two set of SNPs are located around the breakpoints of *In(2L)t* and the frequencies of the invesion-specific alleles range from 0% to more than 60%, which is quite a broad range and mostly the result of sampling error in the PoolSeq data. Assume that even if a diasgnostic SNP is in full linkage disequilibrium with the inversion, it will not necessarly correctly depict the "true" frequency of the inversion in the population due to binomial sampling. When sequencing the pooled DNA from multiple samples with NGS methods such as Illumina sequenicng, we are usually sampling (i.e. sequencing) 50-100 DNA fragments at every genomic position which corresponds to a 50-100 fold sequencing depth. This is, of course, only a very tiny fraction of the total millions of copies of DNA from all body cells of the individuals in the extracted DNA. The resulting sampling error leads to deviations from the expected frequency (i.e., the true allele frequency in all the DNA copies) and these deviations become even bigger the lower the sequencing depths are. However, if we further assume that each SNP is a reliable estimator of the "true" inversion frequency due to perfect linkage disequilibrium, we expect that the inferred frequencies across all marker SNPs roughly follow a binomial distribution, where the sequencing depth corresponds to the number of trials *n* and the number of successces *p* corresponds to the expected inversion frequency. However, other factors, such as sequencing and mapping errors or imperfect linkage disequilibrium of some diagnostic SNPs in certain geographic regions (see above in the introduction to chapter 3) may also influence the distirbution of frequencies. Rather than using the mean frequencies across all markers, we thus use the median to estimate the population inversion frequency and compare inversion patterns in all population samples, since it is more robust to assymetric distributions and  . In our example in Figure 4, the median is shown as a dashed red line at app. 25%.
+The example in Figure 4 below shows the distribution of inversion-specific alleles for *In(2L)t* in a population sample collected in 2015 close to Mautern in the beautiful Wachau area along the Danube in Austria. As you can see in the scatterplot, two set of SNPs are located around the breakpoints of *In(2L)t* and the frequencies of the invesion-specific alleles range from 0% to more than 60%, which is quite a broad range and mostly the result of sampling error in the PoolSeq data. Assume that even if a diasgnostic SNP is in full linkage disequilibrium with the inversion, it will not necessarly correctly depict the "true" frequency of the inversion in the population due to binomial sampling. When sequencing the pooled DNA from multiple samples with NGS methods such as Illumina, we are usually sampling (i.e., sequencing) 50-100 DNA fragments at every genomic position, which corresponds to a 50-100 fold sequencing depth. This is, of course, only a very tiny fraction of the total millions of copies of DNA from all body cells of the individuals in the extracted DNA. The resulting sampling error leads to deviations from the expected frequency (i.e., the true allele frequency in all the DNA copies) and these deviations become even bigger the lower the sequencing depths are. However, if we further assume that each SNP is a reliable estimator of the "true" inversion frequency due to perfect linkage disequilibrium, we expect that the inferred frequencies across all marker SNPs roughly follow a binomial distribution, where the sequencing depth corresponds to the number of trials *n* and the expected inversion frequency corresponds to the number of successces *p*. However, other factors, such as sequencing and mapping errors or imperfect linkage disequilibrium of some diagnostic SNPs in certain geographic regions (see above in the introduction to chapter 3) may also influence the distirbution of frequencies. Rather than calculating the mean frequencies across all markers, we use the median to estimate the population inversion frequency and compare inversion patterns in all population samples, since this statistic is more robust to assymetric distributions. In our example in Figure 4, the median is shown as a dashed red line at app. 25%.
 
 ![Figure 4](output/AT_Nie_Mau_1_2015-10-19.png)
