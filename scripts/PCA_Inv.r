@@ -17,25 +17,32 @@ setwd(WD)
 # Function to load and process metadata
 load_metadata <- function() {
     meta <- read.csv("data/meta.csv", header = TRUE)
+    ## subset to only contain the sampleId, country and province columns
     meta.sub <- meta %>% select(sampleId, country, province)
+    ## modify the sampleId to be consistent with allele frequency datase
     meta.sub$sampleId <- gsub("-", ".", meta.sub$sampleId)
     return(meta.sub)
 }
 
 # Function to read frequency data
 read_frequency_data <- function(region) {
+    ## read the allele frequency dataset
     DATA <- read.table(gzfile(paste0("results/SNPs/", region, "_freq.csv.gz")), header = TRUE, comment.char = "")
     return(DATA)
 }
 
 # Function to process inversion data
 process_inversion_data <- function(DATA, meta.sub, Chr, Start, End) {
+    ## transpose the allele frequeny matrix and only retain SNPs, within the inverted genomic region.
     DATA.inv <- as.data.frame(t(DATA %>%
         filter(X.CHROM == Chr & POS > Start & POS < End) %>%
         select(3:ncol(DATA))))
+    ## make new column from rownames (sampleIds)
     DATA.inv$sampleId <- rownames(DATA.inv)
+    ## merge the allele frequency data and the country and province information from the metadata set
     DATA.inv <- DATA.inv %>%
         inner_join(meta.sub, by = "sampleId") %>%
+        ## get rid of Panama and Guadeloupe since they are Central America and not North America
         filter(country != "Panama" & country != "Guadeloupe")
     return(DATA.inv)
 }
@@ -82,13 +89,13 @@ save_pca_results <- function(PCA.result, DATA, region, INV, inside = TRUE) {
 process_region <- function(region, meta.sub, Chr, Start, End, INV) {
     DATA <- read_frequency_data(region)
 
-    # Process inversion data
+    # Process SNP data inside the inversion
     DATA.inv <- process_inversion_data(DATA, meta.sub, Chr, Start, End)
     PCA.inv <- perform_pca(DATA.inv[, 1:(ncol(DATA.inv) - 3)])
     save_pca_results(PCA.inv, DATA.inv, region, INV, inside = TRUE)
     PLOT.inv <- create_pca_plot(PCA.inv, DATA.inv, region, INV, inside = TRUE)
 
-    # Process non-inversion data
+    # Process SNP data outside the inversion
     DATA.non <- as.data.frame(t(DATA %>%
         filter(!(X.CHROM == Chr & POS > Start & POS < End)) %>%
         select(3:ncol(DATA))))

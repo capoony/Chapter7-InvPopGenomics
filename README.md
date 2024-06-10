@@ -323,7 +323,7 @@ done
 This analysis resulted in 62 and 26 diagnostic SNPs for *In(2L)t* and *In(3R)Payne*, respectively. In the following paragraphs, we will use these marker SNPs to indirectly infer inversion frequencies in other genomic datasets, but before that, we will test if inversions influence population structure in *D. melanogaster* population samples from North America and Europe without prior information on inversion frequencies in the corresponding samples.
 
 #### (3.2) The influence of inversions on population structure
-To this end, we will use the largest Pool-Seq dataset of natural *D. melanogaster* populations available to date. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitflies from different sources that were densely collected through space and time mostly from North American and from European populations. All shotgun sequence data were processed with a standardized trimming and mapping pipeline (as described above) prior to joint SNP calling with the heuristic variant caller `PoolSNP`. In our analysis pipeline, we will take advantage of this comprehensive and quantitative SNP datasest and focus particularly on population samples collected from North America and Europe. Moreover, DEST v.2.0. also provides rich metadata, including detailed information on the sampling date and location, basic sequencing statistics (such as read depths, SNP counts, etc.) and recommendations based on data quality assessments.
+To this end, we will use the largest Pool-Seq dataset of natural *D. melanogaster* populations available to date. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitflies from different sources that were densely collected through space and time mostly from North American and from European populations. All shotgun sequence data were processed with a standardized trimming and mapping pipeline (as described above) prior to joint SNP calling with the heuristic variant caller `PoolSNP`. In our analysis pipeline, we will take advantage of this comprehensive and quantitative SNP datasest and focus particularly on population samples collected from North America and Europe. Moreover, DEST v.2.0. also provides rich metadata, including detailed information on the sampling date and location, basic sequencing statistics (such as read depths, SNP counts, etc.) and recommendations based on data quality assessments. With the help of these metadata, we will subset the full data and only consider population samples of high quality. 
 
 > As a first step, we will download both the DEST v.2.0 SNP data in VCF file-format and the corresponding metadata as a comma-separated (CSV) table from the DEST website. In addition, we will download two scripts from the DEST pipeline that are needed for the downstream analaysis.
 
@@ -339,8 +339,7 @@ wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Invers
 wget https://raw.githubusercontent.com/DEST-bio/DESTv2_data_paper/main/16.Inversions/scripts/overlap_in_SNPs.py
 ```
 
-> Next, we identify samples that we want to include in our continent-wide analyses of populations from North America and Europe. Furthermore, we want to exclude samples that did not pass the quality thresholds defined previously for the DEST v.2.0. dataset. We will obtain the necessary information from the metadata table and generate input files by subsetting this dataset.
-
+> Using the metadata table, we identify all samples that we will include in our continent-wide analyses of populations from North America and Europe. Furthermore, we will exclude samples that did not pass the quality thresholds defined previously for the DEST v.2.0. dataset. 
 ```bash
 ### Split metadata by continent
 
@@ -355,7 +354,7 @@ awk -F "," '$6 =="North_America" {print $1}' ${WD}/data/meta.csv >${WD}/data/Nor
 awk -F "," '$(NF-7) !="Pass" || $(NF-9)<15 {print $1"\t"$(NF-7)"\t"$(NF-9)}' ${WD}/data/meta.csv >${WD}/data/REMOVE.ids
 ```
 
-> Next, we will apply several filtering steps to the VCF file and craft two continent-specific allele frequency datasets that we will use for all downstream analyses. Specifically, we will (1) isolate continent-specific populations, (2) remove problematic samples (based on DEST recommendations), remove (3) populations with < 15-fold average read depth, (4) only retain bilallic SNPs, (5) subsample to 50,000 randomly drawn genome-wide SNPs, (6) convert the allele counts to frequencies of the reference allele and obtain (7) read-depths for each position and population sample.
+> Next, we will apply several filtering steps to the VCF file and based on metadata information, we will construct two continent-specific datasets consisting of allele frequency data that we will use for all downstream analyses. Specifically, we will (1) isolate continent-specific populations, (2) remove problematic samples (based on DEST recommendations), remove (3) populations with < 15-fold average read depth, (4) only retain bilallic SNPs, (5) convert the allele counts to frequencies of the reference allele and obtain (6) read-depths for each position and population sample. Finally, (7) we will restrict our analyses to 50,000 randomly drawn genome-wide SNPs. The final files will represent a two-dimensional matrix of  frequencies of the allele that is present in the reference genome, where each row represents one polymorphic genomic position and each column shows the data for one poluation sample.
 
 ```bash
 ### subset the VCF file 
@@ -394,6 +393,8 @@ for continent in NorthAmerica Europe; do
 
 done
 ```
+
+> Now, we will employ principal component analyses (PCA) test if the genetic variation in the genomic region spanned by an inversion influences the signals of population structure. To this end, we will execute the *R* script `PCA_inv.r` to carry out the following analysis steps. At first, we will load the allele frequency datasets generated above
 
 #### (3.3) Estimating inversion frequencies in Pool-Seq data
 Since the inversion frequencies in each of the population samples are unknown and cannot be investigated directly, we will take advantage of our diagnostic marker SNPs that we isolated above and estimate inversion frequencies in each population sample. This will allow us to test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation and if they are associated with environmental variation.
