@@ -297,7 +297,7 @@ for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}
 
-    python3 ${WD}/scripts/inversion-freqs.py \
+    python3 ${WD}/scripts/inversion_freqs.py \
         --marker ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
         --input ${WD}/data/DEST_${INVERSION}.sync \
         --names $NAMES \

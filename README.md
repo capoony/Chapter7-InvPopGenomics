@@ -330,9 +330,9 @@ done
 ```
 
 #### (3.2) Estimating inversion frequencies in Pool-Seq data
-In the next part, we will apply these diganostic maker SNPs to the largest Pool-Seq dataset of natural *D. melanogaster* populations available to date. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitfly populations from different sources that were densely collected through space and time mostly from North American and from European populations. All shotgun sequence data were filtered and trimmed reads were mapped using a standardized pipeline prior to joint SNP calling with the heuristic variant caller `PoolSNP`. In our analysis pipeline, we will focus on population samples collected from North America and Europe and use our diagnostic marker SNPs to estimate inversion frequencies in each population sample. Then, we will test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation and if they are associated with environmental variation.
+In the next part, we will apply these diganostic maker SNPs to the largest Pool-Seq dataset of natural *D. melanogaster* populations available to date. The DEST v.2.0 dataset combines more than 700 population samples of world-wide fruitflies from different sources that were densely collected through space and time mostly from North American and from European populations. All shotgun sequence data processed with a standardized trimming and mapping pipeline (as described above) prior to joint SNP calling with the heuristic variant caller `PoolSNP`. In our analysis pipeline, we will take advantage of this comprehensive and quantitative SNP datasest and focus on population samples collected from North America and Europe. Since the inversion frequencies in each of the population samples are unknown and cannot be investigated directly, we will take advantage of our diagnostic marker SNPs that we isolated above and estimate inversion frequencies in each population sample. This will allow us to test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation and if they are associated with environmental variation.
 
-> As a first step, we will download both the DEST v.2.0 SNP data in VCF file-format and the corresponding metadata as a comma-separated (CSV) table from the DEST website and convert the VCF file to the SYNC file format, which is commonly used to store allele counts in pooled re-sequencing data as colon-separated lists in the form `A:T:C:G:N:Del` for each population sample and position. In addition, we will download two scripts from the DEST pipeline that are needed for the downstream analaysis.
+> As a first step, we will download both the DEST v.2.0 SNP data in VCF file-format and the corresponding metadata as a comma-separated (CSV) table from the DEST website. Then we will convert the VCF file to the SYNC file format, which is commonly used to store allele counts in pooled re-sequencing data as colon-separated lists in the form `A:T:C:G:N:Del` for each population sample and position. In addition, we will download two scripts from the DEST pipeline that are needed for the downstream analaysis.
 
 ```bash 
 ### download VCF file and metadata for DEST dataset
@@ -375,7 +375,7 @@ for index in ${!DATA[@]}; do
             >${WD}/data/DEST_${INVERSION}.sync
 done
 ```
-> For each of the two inversions, we are now calculating the median frequency of the inversion specific alleles across all diagnostic markers for each population to obtain an estimate of the corresponding inversion frequency. First, we obtain the names of all samples in the VCF file in the correct order and then output the estimated inversion frequencies as a tab-delimted file.
+> For each population and for each of the two inversions, we now calculate the median frequency of the inversion-specific alleles across all diagnostic markers to obtain an estimate of the corresponding inversion frequency with a custom Python script. Before that, we need to obtain the names of all samples in the VCF file in the correct order and then output the estimated inversion frequencies as a tab-delimted file.
 
 ```bash
 ### get the names of all samples in the VCF file and store as an array
@@ -386,7 +386,7 @@ for index in ${!DATA[@]}; do
 
     INVERSION=${DATA[index]}
 
-    python3 ${WD}/scripts/inversion-freqs.py \
+    python3 ${WD}/scripts/inversion_freqs.py \
         --marker ${WD}/results/SNPs_${INVERSION}/${INVERSION}_diag.txt \
         --input ${WD}/data/DEST_${INVERSION}.sync \
         --names $NAMES \
@@ -395,7 +395,7 @@ for index in ${!DATA[@]}; do
 
 done
 ```
-> To visually inspect the accuracy of the inversion frequency estimates, we plot, for each sample, a historgram of all inversion-specific allele frequencies with the median (= estimated inversion frequency) and the actual allel-frequencies of all diagnostic SNPs against their genomic position. We therefore need to first generate a table with the inversion-specific allele frequencies of the diagnostic SNPs for all population samples in the DEST VCF file. Then, we plot these frequencies in *R*.
+> To visually inspect the distribution of inversion-specific alleles across all diagnostic markers for each inversion and population sample, we plot historgrams of all inversion-specific allele frequencies and the actual allele frequencies of all diagnostic SNPs against their genomic position. In addition, we plot the median frequency, which we consider the estimated inversion frequency, as a dashed line atop the frequency histogram. We therefore need to first generate a table with the inversion-specific allele frequencies of the diagnostic SNPs for all population samples in the DEST VCF file. Then, we generate the above-mentioned plots of allele frequencies in *R*.
 
 ```bash
 ### generate plots for each population
@@ -418,5 +418,5 @@ for index in ${!DATA[@]}; do
         ${WD}
 done
 ```
-The example shown in Figure 4 below shows the results of the inversion frequency estimation for *In(2L)t* for a population sample collected in 2015 close to Mauternbach in the beautiful Wachau area along the Danube in Austria. 
+The example shown in Figure 4 below shows the distributuion of inversion-specific alleles for *In(2L)t* in a population sample collected in 2015 close to Mautern in the beautiful Wachau area along the Danube in Austria. 
 ![Figure 4](output/AT_Nie_Mau_1_2015-10-19.png)
