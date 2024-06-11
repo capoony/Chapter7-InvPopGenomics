@@ -89,6 +89,7 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
         ggtitle(paste0("PCA - ", region, " ", plot_type, " ", INV)) +
         labs(color = "Count(r)y") +
         labs(shape = "Count(r)y") +
+        guides(fill = guide_legend(nrow = 2)) +
         scale_shape_manual(values = SHAPE) +
         scale_color_manual(values = COLOR2)
     return(PLOT)
@@ -129,9 +130,12 @@ process_region <- function(region, meta.sub, Chr, Start, End, INV) {
     PLOT.non <- create_pca_plot(PCA.non, DATA.non, region, INV, inside = FALSE)
 
     # Combine and save plots
-    PLOT <- ggarrange(PLOT.inv, PLOT.non, common.legend = TRUE, legend = "right")
+    PLOT <- ggarrange(PLOT.inv, PLOT.non,
+        common.legend = TRUE,
+        legend = "bottom"
+    )
     FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".png")
-    ggsave(file = FILE, PLOT, width = 12, height = 7)
+    ggsave(file = FILE, PLOT, width = 10, height = 5)
 }
 
 # Load metadata
