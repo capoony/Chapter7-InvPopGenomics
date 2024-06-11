@@ -69,7 +69,10 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
         mean.point = FALSE,
         label = COLOR,
         repel = TRUE
-    ) + theme_bw() + ggtitle(paste0("PCA - ", region, " ", plot_type, " ", INV))
+    ) +
+        theme_bw() +
+        ggtitle(paste0("PCA - ", region, " ", plot_type, " ", INV)) +
+        labs(color = "Count(r)y")
     return(PLOT)
 }
 
@@ -107,7 +110,7 @@ process_region <- function(region, meta.sub, Chr, Start, End, INV) {
     PLOT.non <- create_pca_plot(PCA.non, DATA.non, region, INV, inside = FALSE)
 
     # Combine and save plots
-    PLOT <- ggarrange(PLOT.inv, PLOT.non, common.legend = TRUE)
+    PLOT <- ggarrange(PLOT.inv, PLOT.non, common.legend = TRUE, legend = "right")
     FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".png")
     ggsave(file = FILE, PLOT, width = 12, height = 6)
 }
