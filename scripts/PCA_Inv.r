@@ -14,6 +14,20 @@ WD <- args[5]
 # Set working directory
 setwd(WD)
 
+map_levels_to_numbers <- function(vec, start, end) {
+    # Get the unique levels in the vector
+    unique_levels <- unique(vec)
+
+    # Create a mapping of unique levels to numbers ranging from 1 to start, repeated
+    level_mapping <- setNames(rep(start:end, length.out = length(unique_levels)), unique_levels)
+
+    # Replace the character levels with corresponding numbers
+    num_vec <- level_mapping[vec]
+
+    # Return the resulting vector
+    return(num_vec)
+}
+
 # Function to load and process metadata
 load_metadata <- function() {
     meta <- read.csv("data/meta.csv", header = TRUE)
@@ -61,9 +75,10 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
     } else {
         COLOR <- DATA$province
     }
+    COLOR2 <- map_levels_to_numbers(COLOR, 1, 8)
+    SHAPE <- map_levels_to_numbers(COLOR, 15, 19)
     PLOT <- fviz_pca_ind(PCA.result,
         col.ind = COLOR,
-        pointshape = 16,
         pointsize = 3,
         alpha = 0.7,
         mean.point = FALSE,
@@ -72,7 +87,10 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
     ) +
         theme_bw() +
         ggtitle(paste0("PCA - ", region, " ", plot_type, " ", INV)) +
-        labs(color = "Count(r)y")
+        labs(color = "Count(r)y") +
+        labs(shape = "Count(r)y") +
+        scale_shape_manual(values = SHAPE) +
+        scale_color_manual(values = COLOR2)
     return(PLOT)
 }
 
@@ -104,7 +122,8 @@ process_region <- function(region, meta.sub, Chr, Start, End, INV) {
         select(3:ncol(DATA))))
     DATA.non$sampleId <- rownames(DATA.non)
     DATA.non <- DATA.non %>%
-        inner_join(meta.sub, by = "sampleId")
+        inner_join(meta.sub, by = "sampleId") %>%
+        filter(country != "Panama" & country != "Guadeloupe")
     PCA.non <- perform_pca(DATA.non[, 1:(ncol(DATA.non) - 3)])
     save_pca_results(PCA.non, DATA.non, region, INV, inside = FALSE)
     PLOT.non <- create_pca_plot(PCA.non, DATA.non, region, INV, inside = FALSE)
@@ -112,7 +131,7 @@ process_region <- function(region, meta.sub, Chr, Start, End, INV) {
     # Combine and save plots
     PLOT <- ggarrange(PLOT.inv, PLOT.non, common.legend = TRUE, legend = "right")
     FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".png")
-    ggsave(file = FILE, PLOT, width = 12, height = 6)
+    ggsave(file = FILE, PLOT, width = 12, height = 7)
 }
 
 # Load metadata
