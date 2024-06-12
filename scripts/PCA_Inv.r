@@ -132,7 +132,7 @@ process_region <- function(region, meta.sub, Chr, Start, End, INV) {
     # Combine and save plots
     PLOT <- ggarrange(PLOT.inv, PLOT.non,
         common.legend = TRUE,
-        legend = "bottom"
+        legend = "right"
     )
     FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".png")
     ggsave(file = FILE, PLOT, width = 10, height = 5)
