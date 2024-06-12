@@ -415,13 +415,13 @@ for index in ${!DATA[@]}; do
 done
 ```
 
->The 
+>The plots in Figure 4 reveal that the genomic region spanned by *In(2L)t* (shown on the left) indeed differs in population structure compared to patterns based on the remaining genome (on the right) as shown in scatterplots for the first two PC-axes, which together explain between 8%-12% of the total genetic variation (of all SNPs). Notably, the PC-scores of genome-wide SNPs in Europe (top rows) and North America (bottom rows) both cluster populations according to expectations based on geography. Conversely, PC-scores calculated from SNPs inside the breakpoints of *In(2L)t* are much more compressed and appear to mostl follow a diagonal rather than clustering according to geography. The similar analyses applied to *In(3R)Payne* shows a very similar pattern and the corresponding graphs cand be found in the folder `output/`. We may thus speculate that genetic variation associated with inversion, and thus particularly the inversion frequencies in the investigated populations strongly contribute to these patterns. However, unless the individuals that have been pooled before sequencing were karyotyped prior to DNA extraction, it is not possible to directly investigate the karyotypic status in these population samples. However, there is hope...
 
 ![Figure4_top](output/PCA_IN2Lt_Europe.png)
 ![Figure4_top](output/PCA_IN2Lt_NorthAmerica.png)
 
 #### (3.3) Estimating inversion frequencies in Pool-Seq data
-Since the inversion frequencies in each of the population samples are unknown and cannot be investigated directly, we will now take advantage of our diagnostic marker SNPs that we isolated above and estimate inversion frequencies in each population sample. This will allow us to test how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation and if they are associated with environmental variation.
+We will now take advantage of the diagnostic marker SNPs that we isolated above and estimate inversion frequencies in each population sample. This will allow us to test more directly how inversions influence genetic variation and population structure and if the two inversions are associated with environmental variation and exhibit clinal variation.
 
 > Next we will convert the VCF file to the SYNC file format using the Python script `VCF2sync.py` from the DEST pipeline. The SYNC file format, which is commonly used to store allele counts in pooled re-sequencing data as colon-separated lists in the form `A:T:C:G:N:Del` for each population sample and position. We will then obtain allele counts from the SYNC file at the positions of inversion-specific marker SNPs that are present in the DEST dataset using the Python script `overlap_in_SNPs.py`. To speed these calculations up, I am using GNU parallel with 100 threads. 
 
