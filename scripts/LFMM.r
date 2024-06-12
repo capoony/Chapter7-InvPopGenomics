@@ -15,6 +15,28 @@ WD <- args[5]
 ### ste working directory
 setwd(WD)
 
+## function to find the elbow point
+find_elbow <- function(eigenvalues) {
+    n <- length(eigenvalues)
+    x <- 1:n
+    y <- eigenvalues
+
+    # Normalize the data
+    x_norm <- (x - min(x)) / (max(x) - min(x))
+    y_norm <- (y - min(y)) / (max(y) - min(y))
+
+    # Find the distances to the line connecting the first and last points
+    line <- lm(y_norm ~ x_norm)
+    a <- line$coefficients[2]
+    b <- -1
+    c <- line$coefficients[1]
+
+    distances <- abs(a * x_norm + b * y_norm + c) / sqrt(a^2 + b^2)
+    elbow <- which.max(distances)
+
+    return(elbow)
+}
+
 # Functions
 get_meta_data <- function() {
     ### get metadata-table
@@ -47,12 +69,7 @@ save_plot <- function(file, plot, width, height) {
     ggsave(file, plot, width = width, height = height)
 }
 
-run_lfmm <- function(data, env, K_range = 1:10) {
-    ### run 10 round of sNMF to estimate optimal number of clusters based on cross.entropy validation
-    project <- snmf(data, K = K_range, entropy = TRUE, repetitions = 2, project = "new")
-    CE <- sapply(K_range, function(K) mean(cross.entropy(project, K = K)))
-    K <- which.min(CE)
-    ### estimate latent factors for LFMM analysis
+run_lfmm <- function(data, env, K) {
     mod.lfmm2 <- lfmm2(data, env, K = K)
     return(mod.lfmm2)
 }
@@ -81,15 +98,41 @@ process_continent_data <- function(continent, inv_freq, meta_sub, chr, start, en
     data.af.lfmm <- data.af.lfmm[, colSums(data.af.lfmm) != 0]
     data.env <- data.af.meta %>% select(lat, long)
 
+    pca_result <- prcomp(data.af.lfmm)
+    eigenvalues <- pca_result$sdev^2
+
+    explained_variance <- eigenvalues / sum(eigenvalues)
+
+    # Calculate cumulative explained variance
+    cumulative_variance <- cumsum(explained_variance)
+
+    # Find the number of components that explain at least 90% of the variance
+    threshold <- 0.25
+    optimal_k <- which(cumulative_variance >= threshold)[1]
+
     write.lfmm(data.af.lfmm, paste0("results/SNPs_", INV, "/LFMM_", continent, "/", continent, ".lfmm"))
 
-    mod.lfmm2 <- run_lfmm(paste0("results/SNPs_", INV, "/LFMM_", continent, "/", continent, ".lfmm"), data.env)
+    mod.lfmm2 <- run_lfmm(paste0("results/SNPs_", INV, "/LFMM_", continent, "/", continent, ".lfmm"), data.env, optimal_k)
 
     png(paste0("results/SNPs_", INV, "/LFMM_", continent, "/", continent, "_LatentFactors.png"), width = 500, height = 500)
     plot(mod.lfmm2@U, col = "blue", pch = 19, cex = 1.2)
     text(mod.lfmm2@U, data.af.meta$sampleId, cex = 0.65, pos = 3, col = "red")
     dev.off()
 
+    scree_data <- data.frame(Principal_Component = seq_along(eigenvalues), Eigenvalue = eigenvalues)
+
+    SCREE <- ggplot(scree_data, aes(x = Principal_Component, y = Eigenvalue)) +
+        geom_point() +
+        geom_line() +
+        geom_vline(xintercept = optimal_k, linetype = "dashed", color = "red") +
+        labs(title = "Scree Plot with Elbow Point", x = "Principal Component", y = "Eigenvalue") +
+        theme_minimal() +
+        ggtitle(paste0("Optimal K: ", optimal_k))
+
+    ggsave(
+        file = paste0("results/SNPs_", INV, "/LFMM_", continent, "/", continent, "_Scree.png"),
+        SCREE
+    )
     pv <- lfmm2.test(object = mod.lfmm2, input = data.af.lfmm, env = data.env, linear = TRUE)
     pval <- cbind(ID = colnames(data.af.lfmm), t(-log10(pv$pvalues)))
 

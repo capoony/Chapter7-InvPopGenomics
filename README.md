@@ -553,7 +553,7 @@ All four manhattan plots shown in Figure 7 depict that SNPs, whose allele freque
 #### (4.4) Clinal patterns of chromosomal inversions
 Many decades of research have reported clinal distributions, i.e., gradual frequency changes of several inversions along environmental gradients. One particularly prominent example is the latitudinal cline of *In(3R)Payne* along the North American East Coast. Here, we will similarly test if the inversion frequencies estimated by our diagnostic marker SNPs show these expected patterns along latitudinal and longitundial gradients in Europe and North America. Moreover, we will test if these patterns can be explained by neutral evolution (for example, isolation by distance, secondary contact, admixture) alone. In contrast, if the inversion has evolved a clinal distribution due to spatially varying selection, we would assume that the clinal patterns strongly deviate from the genomic background. However, sometimes it is difficult to distinguish neutral and adaptive genomic signals. If, for example, population samples show very strong population structure along an environmental gradient, it may be misleading to only investigate allele frequency differences at a single gene (or inversion) that is considered a candidate for selection. A signal for strong association of allele frequencies at the gene (or inversion) with the environmental gradient may be strongly confounded by the (unknown) population structure, which would lead to similar patterns of genetic differentiation between the populations across the whole genome. Thus, a signal of differentiation at a single locus may be misinterpreted as the result of selection, while it is in reality the result of the unknown genome-wide evolutionary history. To account for this, we will employ a stastistical approach from landscape genomics. Latent factor mixed models (LFMMS) first identify genome-wide patterns of genetic variation by PCA (very similar to our approach in 3.2) assuming that the first few PC axes capture genomewide differences which are predominantly the result of the demographic history of the sampled populations. These PC axes are then used as latent (hidden) factors in regression models, which test for associations between allele frequencies and the focal environmental variables, in our case latitude and longitude. 
 
-> As a first step, we will test for clinality of the inversions along latitude and longitude in Europe and North America. We will fit general linear models including arcsine square-root transformed inversion frequencies as our dependent variables, which accounts for the skewed variance distribution in binomial data when normality is assumed. Then, we will overlay scatter-plots based on environmental variables and inversion frequencies with a logistic regression curve and print the *p*-value of the linear models in the top-right corner of each plot using the *R*-script `Plot_clinality.r`. 
+> As a first step, we will test for clinality of the inversions along latitude and longitude in Europe and North America. We will fit general linear models including arcsine square-root transformed inversion frequencies as our dependent variables, which accounts for the skewed variance distribution in binomial data when normality is assumed. Then, we will overlay scatter-plots based on environmental variables and inversion frequencies with a logistic regression curve and print the *p*-value of the linear models in the top-right corner of each plot using the *R*-script `Plot_Clinality.r`. 
 
 ```bash
 ## test for clinality of inversion frequency
@@ -565,8 +565,33 @@ for index in ${!DATA[@]}; do
         ${WD}
 done
 ```
-The plots in Figure 8 below are consitent with our a-priori information. We do find highly consistent
+The plots in Figure 8 below are consitent with our a-priori expections. We do find highly significant inversion clines both for both inversions along latitude in North America and for *In(3R)Payne* also in Europe. In all cases the inversions appear to be frequent in the South and rapdily decline in frequency with increasing latitude. Conversely, very weak clines along longitude are only found for *In(3R)Payne* in Europe and for *In(2L)t* in North America. While these clines may be the result of spatially varying selection, we cannot rule out based on this simple analyis that the observed clinal patterns are alternatively the result of the demographic history of the investigated populations.
 
 ![Figure8_top](output/Clines_IN2Lt.png)
 ![Figure8_bottom](output/Clines_IN3RP.png)
+
+> In the final analyses of this book chapter, we will employ LFMMs to test if the inversion clines deviate from neutral expectations. We will therefore again use the allele frequency matrices for the two continental subsets, add the frequency information of the inversion to the matrix and obtain information of latitudinal and longitudinal coordinates for all samples from the metadata table. Importantly, since we want to assess the clinal patterns of an inversion relative to the genomic background, we will exclude all SNPs located within the genomic region of the inversion for the calculation of the background to avoid confounding our analysis by a high degree of linkage with SNPs in this genomic region. Then, we will perform a PCA of these SNPs and only consider a subset of the PC-axes as latent factors for the calculation of the latent factor mixed models. Here, we will include all PC-axes that cummulatively explain at least 25% of the genetic variation to avoid overfitting the model with too many latent factors. After calculating SNP-wise LFMMs using latitude and longitude as predictor variables, we will visualize the -log<sub>10</sub>-transformed *p*-values in Manhattan plots and include the *p*-value of the inversion as a horizontal bar at the corresponding genomic position. We will furthermore add the Bonferroni-corrected *p*-value threshold as a blue horizontal line. This threshold will be calculated by dividing the significance threshold *&alpha;* = 0.05 by the total number of tests and will help us to account for a multiple testing problem which could lead to significant results by chance alone. Particularly, if the p-value of the inversion is higher than the -log<sub>10</sub>-transformed threshold, we can assume that the clinal patterns cannot be explained by chance and neutral evolution alone. The commands to carry out all the above-mentioned anaylses steps in *R* are stored in `LFMM.r`.
+
+```bash
+### Test with LFMMs if clinality due to demography or potentially adaptive
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+
+    Rscript ${WD}/scripts/LFMM.r \
+        ${INVERSION} \
+        ${Ch} \
+        ${St} \
+        ${En} \
+        ${WD}
+
+done
+```
+
+![Figure9_top](output/LFMM_IN2Lt_Latitude.png)
+![Figure9_bottom](output/LFMM_IN3RP_Latitude.png)
+
 
