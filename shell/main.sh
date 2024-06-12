@@ -467,11 +467,6 @@ cp /media/inter/mkapun/projects/InvChapter/results/SNPs_IN2Lt/IN2Lt_plots/AT_Nie
 cd ${WD}
 
 pandoc -f markdown \
-    -t latex \
-    -o /media/inter/mkapun/projects/InvChapter/README.pdf \
-    /media/inter/mkapun/projects/InvChapter/README.md
-
-pandoc -f markdown \
     -t docx \
     -o /media/inter/mkapun/projects/InvChapter/README.docx \
     /media/inter/mkapun/projects/InvChapter/README.md
