@@ -591,6 +591,8 @@ for index in ${!DATA[@]}; do
 done
 ```
 
+
+
 ![Figure9_top](output/LFMM_IN2Lt_Latitude.png)
 ![Figure9_bottom](output/LFMM_IN3RP_Latitude.png)
 
