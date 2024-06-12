@@ -141,7 +141,8 @@ PLOT <- ggplot(p_values_df, aes(x = Pos / 1000000, y = -log10(p_value))) +
         fill = "blue", alpha = 0.2, inherit.aes = FALSE
     ) +
     theme_bw() +
-    xlab("Position (Mbp)")
+    xlab("Position (Mbp)") +
+    ggtitle(paste0("Logistic regression with ", INV))
 
 # Save the plot
 FILE <- paste0("results/SNPs_", INV, "/LDwithSNPs/", INV, "_LD.png")

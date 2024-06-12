@@ -519,3 +519,31 @@ Consistent with our hypothesis, we can see in Figure 6 below, that all plots on 
 
 ![Figure 6_top](output/PCA-InvFreq_IN2Lt.png)
 ![Figure 6_bottom](output/PCA-InvFreq_IN3RP.png)
+
+#### (4.3) The influence of inversions on genetic differentiation revisited
+In the next analysis step, we will extend our previous analysis from 2.2 where we investigated the influence of inversions on genome-wide differentation. While these analyses were restricted to a single population in Zambia, we will now investgate hundreds of populations in Europe and North America. Previously, we used *F*<sub>ST</sub> to quantify differences between the two karyotypes, but now, we will use logistic regression to test for each SNP in the genome, whether it is significantly correlated with the inversion frequency for either *In(2L)t* or *In(3R)Payne* across all populations in a given continent. We assume that SNPs that are in strong LD, either due to physical proximity to the inversion or due to co-evloution, (i.e., statistical linkage) will be characterzed by a statistically significant regression model. 
+
+> Again, the actual analysis steps are stored in the *R*-script `PlotInvLD.r`, where the allele frequency matrices and the corresponding read depths are loaded for each continent. Then logistic regressions will be calculated for each SNP, where the allele frequencies of a given SNP is the dependent variable, the inversion frequency is the independent variable and the read depth is the weight. For each inversion and continent, we then generate Manhattan plots, where the x-axis shows the genomic position of a given SNP and the y-axis shows the negative log<sub>10</sub> - transformed *p*-value of a likelihood ratio test of the logistic regression.
+
+```bash
+## calculate SNP-wise logistic regressions testing for associations between SNP allele frequencies and inversion frequencies to test for linkage between SNPs and inversions for Europe and North America
+
+for index in ${!DATA[@]}; do
+
+    INVERSION=${DATA[index]}
+    St=${Start[index]}
+    En=${End[index]}
+    Ch=${Chrom[index]}
+
+    Rscript ${WD}/scripts/PlotInvLD.r \
+        ${INVERSION} \
+        ${Ch} \
+        ${St} \
+        ${En} \
+        ${WD}
+
+done
+```
+
+![Figure7_top](output/IN2Lt_LD.png)
+![Figure7_bottom](output/IN3RP_LD.png)
