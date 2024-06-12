@@ -545,5 +545,7 @@ for index in ${!DATA[@]}; do
 done
 ```
 
+All four manhattan plots shown in Figure 7 depict that SNPs, whose allele frequencies are influenced by the inversion frequencies in hundreds of natural populations both in Europe and in North America, as indicated by elevated -log<sub>10</sub>-*p*-values, are strongly enriched within the genomic regions covered by the corresponding inversions 
+
 ![Figure7_top](output/IN2Lt_LD.png)
 ![Figure7_bottom](output/IN3RP_LD.png)
