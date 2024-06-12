@@ -515,6 +515,7 @@ for index in ${!DATA[@]}; do
         ${WD}
 done
 ```
+Consistent with our hypothesis, we can see in Figure 6 below, that all plots on the left side, which show scatterplots of inversion frequencies and PC1 are characterized by very strong and highly significant correlations, which explain between  
 
 ![Figure 6_top](output/PCA-InvFreq_IN2Lt.png)
 ![Figure 6_bottom](output/PCA-InvFreq_IN3RP.png)
