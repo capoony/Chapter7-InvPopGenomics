@@ -415,7 +415,7 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-The plots in Figure 4 reveal that the genomic region spanned by the inversions (shown on the left) indeed differs in population structure compared to patterns based on the remaining genome (on the right) as shown in scatterplots for the first two PC-axes, which together explain between 8%-12% of the total genetic variation (of all SNPs). Notably, the PC-scores of genome-wide SNPs in Europe (shown on the right) both cluster populations according to expectations based on geography. Conversely, PC-scores calculated from SNPs inside the breakpoints of *In(2L)t* are much more compressed and appear to mostl follow a diagonal rather than clustering according to geography. The similar analyses applied to *In(3R)Payne* shows a very similar pattern and the corresponding graphs cand be found in the folder `output/`. We may thus speculate that genetic variation associated with inversion, and thus particularly the inversion frequencies in the investigated populations strongly contribute to these patterns. However, unless the individuals that have been pooled before sequencing were karyotyped prior to DNA extraction, it is not possible to directly investigate the karyotypic status in these population samples. However, there is hope...
+The plots in Figure 4 reveal that the genomic region spanned by the inversions (shown on the left) indeed differs in population structure compared to patterns based on the remaining genome (on the right) as shown in scatterplots for the first two PC-axes, which together explain between 8%-12% of the total genetic variation (of all SNPs). Notably, the PC-scores of genome-wide SNPs in Europe (shown on the right) both cluster populations according to expectations based on geography. Conversely, PC-scores calculated from SNPs inside the breakpoints of *In(2L)t* and *In(3R)Payne* are much more compressed and appear to mostly follow a diagonal rather than clustering according to geography - particularly for PC1. The same analyses for North American samples show a very similar pattern and the corresponding graphs cand be found in the folder `output/`. We may thus speculate that genetic variation associated with inversion, and thus particularly the inversion frequencies in the investigated populations strongly contribute to these patterns. However, unless the individuals that have been pooled before sequencing were karyotyped prior to DNA extraction, it is not possible to directly investigate the karyotypic status in these population samples. However, there is hope...
 
 ![Figure4_top](output/PCA_IN2Lt_Europe.png)
 ![Figure4_bottom](output/PCA_IN3RP_Europe.png)
@@ -516,4 +516,5 @@ for index in ${!DATA[@]}; do
 done
 ```
 
-![Figure 6]()
+![Figure 6_top](output/PCA-InvFreq_IN2Lt.png)
+![Figure 6_bottom](output/PCA-InvFreq_IN3RP.png)
