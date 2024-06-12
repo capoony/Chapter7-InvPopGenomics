@@ -21,7 +21,7 @@ inv_freq <- read.table(paste0("results/SNPs_", INV, "/", INV, ".af"), header = T
 
 # Function to create plots
 create_plot <- function(data, x_var, y_var, title_suffix, output_prefix) {
-    model <- glm(data[[y_var]] ~ data[[x_var]], family = binomial)
+    model <- lm(asin(sqrt(data[[y_var]])) ~ data[[x_var]])
     p_value <- summary(model)$coefficients[2, 4]
 
     plot <- ggplot(data, aes_string(x = x_var, y = y_var)) +
@@ -46,5 +46,5 @@ p_na_lon <- create_plot(inv_freq_na, "long", INV, "North America", "na_lon")
 
 # Arrange plots into a grid and save the combined plot
 combined_plot <- ggarrange(p_eur_lat, p_na_lat, p_eur_lon, p_na_lon, nrow = 2, ncol = 2)
-output_file <- paste0("results/SNPs_", INV, "/PCA-Clines_", INV, ".png")
+output_file <- paste0("results/SNPs_", INV, "/Clines_", INV, ".png")
 ggsave(file = output_file, plot = combined_plot, width = 12, height = 6)
