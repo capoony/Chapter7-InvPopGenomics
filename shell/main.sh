@@ -306,21 +306,9 @@ done
 ## (9) The influence of Inversions on population structure
 
 ### use PCA to test for patterns inside and outside the genomic region spanned by an inversion
-for index in ${!DATA[@]}; do
 
-    INVERSION=${DATA[index]}
-    St=${Start[index]}
-    En=${End[index]}
-    Ch=${Chrom[index]}
-
-    Rscript ${WD}/scripts/PCA_Inv.r \
-        ${INVERSION} \
-        ${Ch} \
-        ${St} \
-        ${En} \
-        ${WD}
-
-done
+Rscript ${WD}/scripts/PCA_Inv.r \
+    ${WD}
 
 ## (10) estimate inversion frequency in PoolSeq data
 
@@ -446,7 +434,7 @@ for index in ${!DATA[@]}; do
     INVERSION=${DATA[index]}
     St=${Start[index]}
     En=${End[index]}
-    Ch=${Chrom[index]}`
+    Ch=${Chrom[index]}
 
     Rscript ${WD}/scripts/LFMM_WorldClim.r \
         ${INVERSION} \

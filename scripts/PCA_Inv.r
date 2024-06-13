@@ -5,11 +5,13 @@ library(ggpubr)
 
 # Define command line arguments
 args <- commandArgs(trailingOnly = TRUE)
-INV <- args[1]
-Chr <- args[2]
-Start <- as.numeric(args[3])
-End <- as.numeric(args[4])
-WD <- args[5]
+WD <- args[1]
+
+INV.full <- c("IN2Lt", "IN3RP")
+Chr.full <- c("2L", "3R")
+Start.full <- c(2225744, 16432209)
+End.full <- c(13154180, 24744010)
+
 
 # Set working directory
 setwd(WD)
@@ -61,6 +63,18 @@ process_inversion_data <- function(DATA, meta.sub, Chr, Start, End) {
     return(DATA.inv)
 }
 
+# Function to process inversion data
+process_non_data <- function(DATA, meta.sub, Chr.full, Start.full, End.full) {
+    DATA.non <- as.data.frame(t(DATA %>%
+        filter(!(X.CHROM == Chr.full[1] & POS > Start.full[1] & POS < End.full[1])) %>%
+        filter(!(X.CHROM == Chr.full[2] & POS > Start.full[2] & POS < End.full[2])) %>%
+        select(3:ncol(DATA))))
+    DATA.non$sampleId <- rownames(DATA.non)
+    DATA.non <- DATA.non %>%
+        inner_join(meta.sub, by = "sampleId") %>%
+        filter(country != "Panama" & country != "Guadeloupe")
+    return(DATA.non)
+}
 # Function to perform PCA
 perform_pca <- function(DATA) {
     PCA.result <- PCA(DATA, graph = FALSE)
@@ -89,8 +103,8 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
         ggtitle(paste0("PCA - ", region, " ", plot_type, " ", INV)) +
         labs(color = "Count(r)y") +
         labs(shape = "Count(r)y") +
-        guides(color = guide_legend(ncol = 2, bycol = TRUE)) +
-        guides(shape = guide_legend(ncol = 2, bycol = TRUE)) +
+        # guides(color = guide_legend(ncol = 2, bycol = TRUE)) +
+        # guides(shape = guide_legend(ncol = 2, bycol = TRUE)) +
         scale_shape_manual(values = SHAPE) +
         scale_color_manual(values = COLOR2)
     return(PLOT)
@@ -109,36 +123,36 @@ save_pca_results <- function(PCA.result, DATA, region, INV, inside = TRUE) {
 }
 
 # Main function to process data for each region
-process_region <- function(region, meta.sub, Chr, Start, End, INV) {
+process_region <- function(region, meta.sub, Chr.full, Start.full, End.full) {
     DATA <- read_frequency_data(region)
 
     # Process SNP data inside the inversion
-    DATA.inv <- process_inversion_data(DATA, meta.sub, Chr, Start, End)
-    PCA.inv <- perform_pca(DATA.inv[, 1:(ncol(DATA.inv) - 3)])
-    save_pca_results(PCA.inv, DATA.inv, region, INV, inside = TRUE)
-    PLOT.inv <- create_pca_plot(PCA.inv, DATA.inv, region, INV, inside = TRUE)
+    DATA.inv.IN2Lt <- process_inversion_data(DATA, meta.sub, Chr.full[1], Start.full[1], End.full[1])
+    PCA.inv.IN2Lt <- perform_pca(DATA.inv.IN2Lt[, 1:(ncol(DATA.inv.IN2Lt) - 3)])
+    save_pca_results(PCA.inv.IN2Lt, DATA.inv.IN2Lt, region, "IN2Lt", inside = TRUE)
+    PLOT.inv.IN2Lt <- create_pca_plot(PCA.inv.IN2Lt, DATA.inv.IN2Lt, region, "IN2Lt", inside = TRUE)
+
+    DATA.inv.IN3RP <- process_inversion_data(DATA, meta.sub, Chr.full[2], Start.full[2], End.full[2])
+    PCA.inv.IN3RP <- perform_pca(DATA.inv.IN3RP[, 1:(ncol(DATA.inv.IN3RP) - 3)])
+    save_pca_results(PCA.inv.IN3RP, DATA.inv.IN3RP, region, "IN3RP", inside = TRUE)
+    PLOT.inv.IN3RP <- create_pca_plot(PCA.inv.IN3RP, DATA.inv.IN3RP, region, "IN3RP", inside = TRUE)
+
 
     # Process SNP data outside the inversion
-    DATA.non <- as.data.frame(t(DATA %>%
-        filter(!(X.CHROM == Chr & POS > Start & POS < End)) %>%
-        select(3:ncol(DATA))))
-    DATA.non$sampleId <- rownames(DATA.non)
-    DATA.non <- DATA.non %>%
-        inner_join(meta.sub, by = "sampleId") %>%
-        filter(country != "Panama" & country != "Guadeloupe")
+    DATA.non <- process_non_data(DATA, meta.sub, Chr.full, Start.full, End.full)
     PCA.non <- perform_pca(DATA.non[, 1:(ncol(DATA.non) - 3)])
-    save_pca_results(PCA.non, DATA.non, region, INV, inside = FALSE)
-    PLOT.non <- create_pca_plot(PCA.non, DATA.non, region, INV, inside = FALSE)
+    PLOT.non <- create_pca_plot(PCA.non, DATA.non, region, "inversions", inside = FALSE)
 
     # Combine and save plots
-    PLOT <- ggarrange(PLOT.inv, PLOT.non,
+    PLOT <- ggarrange(PLOT.inv.IN2Lt, PLOT.inv.IN3RP, PLOT.non,
         common.legend = TRUE,
-        legend = "right"
+        ncol = 3,
+        legend = "bottom"
     )
-    FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".pdf")
-    ggsave(file = FILE, PLOT, width = 10, height = 3)
-    FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".png")
-    ggsave(file = FILE, PLOT, width = 10, height = 3)
+    FILE <- paste0("results/SNPs/PCA_", region, ".pdf")
+    ggsave(file = FILE, PLOT, width = 10, height = 5)
+    FILE <- paste0("results/SNPs/PCA_", region, ".png")
+    ggsave(file = FILE, PLOT, width = 10, height = 5)
 }
 
 # Load metadata
@@ -146,5 +160,5 @@ meta.sub <- load_metadata()
 
 # Process each region
 for (region in c("Europe", "NorthAmerica")) {
-    process_region(region, meta.sub, Chr, Start, End, INV)
+    process_region(region, meta.sub, Chr.full, Start.full, End.full)
 }

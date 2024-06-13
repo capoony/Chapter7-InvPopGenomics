@@ -400,27 +400,14 @@ done
 
 ```bash
 ### use PCA to test for patterns inside and outside the genomic region spanned by an inversion
-for index in ${!DATA[@]}; do
-
-    INVERSION=${DATA[index]}
-    St=${Start[index]}
-    En=${End[index]}
-    Ch=${Chrom[index]}
-
-    Rscript ${WD}/scripts/PCA_Inv.r \
-        ${INVERSION} \
-        ${Ch} \
-        ${St} \
-        ${En} \
-        ${WD}
-
-done
+Rscript ${WD}/scripts/PCA_Inv.r \
+    ${WD}
 ```
 
-The plots in Figure 4 reveal that the genomic region spanned by the inversions (shown on the left) indeed differs in population structure compared to patterns based on the remaining genome (on the right) as shown in scatterplots for the first two PC-axes, which together explain between 8%-12% of the total genetic variation (of all SNPs). Notably, the PC-scores of genome-wide SNPs in Europe (shown on the right) both cluster populations according to expectations based on geography. Conversely, PC-scores calculated from SNPs inside the breakpoints of *In(2L)t* and *In(3R)Payne* are much more compressed and appear to mostly follow a diagonal rather than clustering according to geography - particularly for PC1. The same analyses for North American samples show a very similar pattern and the corresponding graphs cand be found in the folder `output/`. We may thus speculate that genetic variation associated with inversion, and thus particularly the inversion frequencies in the investigated populations strongly contribute to these patterns. However, unless the individuals that have been pooled before sequencing were karyotyped prior to DNA extraction, it is not possible to directly investigate the karyotypic status in these population samples. However, there is hope...
+The plots in Figure 4 reveal that the genomic regions spanned by inversions as shown in the left two panels for *In(2L)t* and *In(3R)Payne*, respectively, indeed differ in population structure compared to patterns based on the remaining genome (on the right). These scatterplots for the first two PC-axes, which together explain between 8%-12% of the total genetic variation (of all SNPs). Notably, the PC-scores of genome-wide SNPs in Europe (top panels) and North America (bottom panels) cluster populations according to expectations based on geography. Conversely, PC-scores calculated from SNPs inside the breakpoints of *In(2L)t* and *In(3R)Payne* are much more compressed and appear to mostly follow a diagonal rather than clustering according to geography - particularly for PC1. We may thus speculate that genetic variation associated with inversion, and thus particularly the inversion frequencies in the investigated populations strongly contribute to these patterns. However, unless the individuals that have been pooled before sequencing were karyotyped prior to DNA extraction, it is not possible to directly investigate the karyotypic status in these population samples. However, there is hope...
 
-![Figure4_top](output/PCA_IN2Lt_Europe.png)
-![Figure4_bottom](output/PCA_IN3RP_Europe.png)
+![Figure4_top](output/PCA_Europe.png)
+![Figure4_bottom](output/PCA_NorthAmerica.png)
 >> **Figure 4**: Scatter plots showing the first two PC axes (Dim 1 and Dim 2) of PCAs based on SNPs in European populations located either inside the genomic region spanned by an invesion (left panels) or in the remaining genome (right panels). Two top row shows the analyses based on *In(2L)t* and the bottom row based on *In(3R)Payne*. Furthermore, we highlight the country of origin by a combination of different colors and shapes. The corresponding plots for North America can be found at `output/PCA_IN2Lt_NorthAmerica.png` and `output/PCA_IN3RP_NorthAmerica.png`.
 
 ### (4) Inversion frequencies in Pool-Seq data
