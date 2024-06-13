@@ -150,9 +150,9 @@ process_region <- function(region, meta.sub, Chr.full, Start.full, End.full) {
         legend = "bottom"
     )
     FILE <- paste0("results/SNPs/PCA_", region, ".pdf")
-    ggsave(file = FILE, PLOT, width = 10, height = 5)
+    ggsave(file = FILE, PLOT, width = 15, height = 5)
     FILE <- paste0("results/SNPs/PCA_", region, ".png")
-    ggsave(file = FILE, PLOT, width = 10, height = 5)
+    ggsave(file = FILE, PLOT, width = 15, height = 5)
 }
 
 # Load metadata
