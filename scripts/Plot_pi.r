@@ -52,7 +52,7 @@ create_fst_plot <- function(data) {
 }
 
 # Function to save plot to file
-save_plot <- function(plot, file_path, width = 16, height = 5) {
+save_plot <- function(plot, file_path, width = 10, height = 3) {
     ggsave(file = file_path, plot, width = width, height = height)
 }
 

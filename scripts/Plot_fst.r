@@ -37,7 +37,7 @@ rect_data <- data.frame(
 # Function to create FST plot
 create_fst_plot <- function(data, data2) {
     plot <- ggplot(data, aes(x = POS / 1000000, y = WEIR_AND_COCKERHAM_FST)) +
-        geom_point(col = rgb(0, 0, 0, 0.1), pch = 16) +
+        geom_point(col = rgb(0, 0, 0, 0.01), pch = 16) +
         geom_line(data = data2, aes(x = (BIN_START + BIN_END) / 2 / 1000000, y = WEIGHTED_FST), linewidth = 1.5, color = "red") +
         facet_grid(. ~ CHROM, scales = "free_x", space = "free") +
         theme_bw() +
@@ -51,7 +51,7 @@ create_fst_plot <- function(data, data2) {
 }
 
 # Function to save plot to file
-save_plot <- function(plot, file_path, width = 16, height = 5) {
+save_plot <- function(plot, file_path, width = 10, height = 3) {
     ggsave(file = file_path, plot, width = width, height = height)
 }
 

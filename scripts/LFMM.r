@@ -154,7 +154,7 @@ process_continent_data <- function(continent, inv_freq, meta_sub, chr, start, en
             geom_point(col = rgb(0, 0, 0, 0.1), pch = 16) +
             facet_grid(. ~ Chrom, scales = "free_x", space = "free") +
             theme_bw() +
-            geom_hline(yintercept = -log10(0.05 / (nrow(others) + 1)), colour = "blue") +
+            geom_hline(yintercept = -log10(0.05 / (nrow(others) + 1)), colour = "blue", linetype = "dashed") +
             geom_segment(aes(x = xmin, y = ylat, xend = xmax, yend = ylat, colour = "segment"), data = hline_data) +
             xlab("Position (Mbp)") +
             ylab("-log10(p-value)") +
@@ -164,7 +164,7 @@ process_continent_data <- function(continent, inv_freq, meta_sub, chr, start, en
             geom_point(col = rgb(0, 0, 0, 0.1), pch = 16) +
             facet_grid(. ~ Chrom, scales = "free_x", space = "free") +
             theme_bw() +
-            geom_hline(yintercept = -log10(0.05 / (nrow(others) + 1)), colour = "blue") +
+            geom_hline(yintercept = -log10(0.05 / (nrow(others) + 1)), colour = "blue", linetype = "dashed") +
             geom_segment(aes(x = xmin, y = ylon, xend = xmax, yend = ylon, colour = "segment"), data = hline_data) +
             xlab("Position (Mbp)") +
             ylab("-log10(p-value)") +
@@ -195,8 +195,8 @@ main <- function() {
         lon = ggarrange(plotlist = plot_list$lon, nrow = 2)
     )
 
-    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Latitude.png"), combined_plots$lat, 10, 8)
-    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Longitude.png"), combined_plots$lon, 10, 8)
+    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Latitude.png"), combined_plots$lat, 10, 6)
+    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Longitude.png"), combined_plots$lon, 10, 6)
 }
 
 # Run main function

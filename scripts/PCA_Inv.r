@@ -89,7 +89,8 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
         ggtitle(paste0("PCA - ", region, " ", plot_type, " ", INV)) +
         labs(color = "Count(r)y") +
         labs(shape = "Count(r)y") +
-        guides(fill = guide_legend(nrow = 2)) +
+        guides(color = guide_legend(ncol = 2, bycol = TRUE)) +
+        guides(shape = guide_legend(ncol = 2, bycol = TRUE)) +
         scale_shape_manual(values = SHAPE) +
         scale_color_manual(values = COLOR2)
     return(PLOT)
@@ -134,8 +135,10 @@ process_region <- function(region, meta.sub, Chr, Start, End, INV) {
         common.legend = TRUE,
         legend = "right"
     )
+    FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".pdf")
+    ggsave(file = FILE, PLOT, width = 10, height = 3)
     FILE <- paste0("results/SNPs_", INV, "/PCA_", INV, "_", region, ".png")
-    ggsave(file = FILE, PLOT, width = 10, height = 5)
+    ggsave(file = FILE, PLOT, width = 10, height = 3)
 }
 
 # Load metadata
