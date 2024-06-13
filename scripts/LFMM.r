@@ -155,7 +155,7 @@ process_continent_data <- function(continent, inv_freq, meta_sub, chr, start, en
             facet_grid(. ~ Chrom, scales = "free_x", space = "free") +
             theme_bw() +
             geom_hline(yintercept = -log10(0.05 / (nrow(others) + 1)), colour = "blue", linetype = "dashed") +
-            geom_segment(aes(x = xmin, y = ylat, xend = xmax, yend = ylat, colour = "segment"), data = hline_data) +
+            geom_segment(aes(x = xmin, y = ylat, xend = xmax, yend = ylat, colour = "segment"), linewidth = 1.5, data = hline_data) +
             xlab("Position (Mbp)") +
             ylab("-log10(p-value)") +
             ggtitle(paste0("LFMM: Latitude ", INV, " for ", continent)) +
@@ -165,7 +165,7 @@ process_continent_data <- function(continent, inv_freq, meta_sub, chr, start, en
             facet_grid(. ~ Chrom, scales = "free_x", space = "free") +
             theme_bw() +
             geom_hline(yintercept = -log10(0.05 / (nrow(others) + 1)), colour = "blue", linetype = "dashed") +
-            geom_segment(aes(x = xmin, y = ylon, xend = xmax, yend = ylon, colour = "segment"), data = hline_data) +
+            geom_segment(aes(x = xmin, y = ylon, xend = xmax, yend = ylon, colour = "segment"), linewidth = 1.5, data = hline_data) +
             xlab("Position (Mbp)") +
             ylab("-log10(p-value)") +
             ggtitle(paste0("LFMM: Longitude ", INV, " for ", continent)) +
