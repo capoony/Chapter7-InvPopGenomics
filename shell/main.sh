@@ -446,7 +446,7 @@ for index in ${!DATA[@]}; do
     INVERSION=${DATA[index]}
     St=${Start[index]}
     En=${End[index]}
-    Ch=${Chrom[index]}
+    Ch=${Chrom[index]}`
 
     Rscript ${WD}/scripts/LFMM_WorldClim.r \
         ${INVERSION} \

@@ -75,8 +75,8 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
     } else {
         COLOR <- DATA$province
     }
-    COLOR2 <- map_levels_to_numbers(COLOR, 1, 8)
-    SHAPE <- map_levels_to_numbers(COLOR, 15, 19)
+    COLOR2 <- map_levels_to_numbers(COLOR, 1, 11)
+    SHAPE <- map_levels_to_numbers(COLOR, 15, 20)
     PLOT <- fviz_pca_ind(PCA.result,
         col.ind = COLOR,
         pointsize = 3,
