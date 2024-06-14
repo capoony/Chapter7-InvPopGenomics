@@ -584,10 +584,11 @@ for index in ${!DATA[@]}; do
 
 done
 ```
-
+The Manhattan plots in Figure 9 show that both *In(2L)t* and *In(3R)Payne* exhibit highly significant correlations with latitude in North America, which indicate that these clinal patterns cannot be explained by the demographic history of the investigated populations alone. This is consistent with previous studies and indicate that these two inversions provide an advantage under certain environmental conditions at low latitudes but are not so beneficial in northern areas. Particularly the North American East coast, where most of the samples in our dataset were collected, shows steep and continuous environmental gradients, such as temperature, precipitation and seasonality, ranging from subtropical conditiones in southern Florida to temperate climates in Maine. Since many of these environmental gradients are highly correlated, it is difficult to disentagle which factor influences clinal variation in inversion frequencies the most. As a follow-up to the LFMM analysis based on latitude and longitude as shown here, it would be very intereseting to further study other environmental variables, such temperature and preciptitation as predictors for similar downstream analyses to further explore what environmental conditions may influence the distribution of our two focal inversion the most and I hope that you feel encouraged and excited after reading this book chapter to explo
 
 
 ![Figure9_top](output/LFMM_IN2Lt_Latitude.png)
 ![Figure9_bottom](output/LFMM_IN3RP_Latitude.png)
+>> **Figure 9**: Manhattan plots showing the -log<sub>10</sub>-transformed *p*-values of LFMM analyses that tested for significant associations between allele frequencies and environmental variables, in our case latitude and longitude (not shown). We included the inversion frequencies of *In(2L)t* (top) and *In(3R)Payne* (bottom) from Europe (rows 1 and 3) and North America (rows 2 and 4) in this analysis and show their p-value as a solid red line spanning their genomic region. In addition, we include the Bonferroni-corrected *p*-value threshold as a blue dashed line. Results for longitude are not shown since inversion frequencies were not significantly associated in any of the tests. However, the corresponding plots can be found in the <ins>output/</ins> folder.
 
-
+### Conclusions
