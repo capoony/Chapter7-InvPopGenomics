@@ -16,7 +16,7 @@ wget http://johnpool.net/TableS1_individuals.xls
 ### process table and generate input files for downstream analyses
 Rscript ${WD}/scripts/ReadXLS.r ${WD}
 
-### Define arrays with the inverions names, chromosome, start and end breakpoints; These data will be reused in the whole pipleine for the sequential analysis and visulaization of both focal inversions
+### Define arrays with the inversion names, chromosome, start and end breakpoints; These data will be reused in the whole pipeline for the sequential analysis and visualization of both focal inversions
 DATA=("IN2Lt" "IN3RP")
 Chrom=("2L" "3R")
 Start=(2225744 16432209)
@@ -99,7 +99,7 @@ for index in ${!DATA[@]}; do
 
     conda activate freebayes
 
-    ### run FreeBayes in parallel by splitting the reference genome in chuncks of 100,000bps and and use GNU parallel for multithreading. I am using 100 threads. Please adjust to your system.
+    ### run FreeBayes in parallel by splitting the reference genome in chuncks of 100,000bps and use GNU parallel for multithreading. I am using 100 threads. Please adjust to your system.
     freebayes-parallel \
         <(fasta_generate_regions.py \
             ${WD}/data/dmel-6.57.fa.fai \
@@ -119,7 +119,7 @@ for index in ${!DATA[@]}; do
     mkdir ${WD}/data/${INVERSION}
     output_dir=${WD}/data/${INVERSION}
 
-    ### split file with sample IDs based on Inversions status
+    ### split file with sample IDs based on inversion status
     awk -F',' '
     {
         filename = $3 ".csv"
@@ -193,11 +193,11 @@ for index in ${!DATA[@]}; do
         --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
         --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}.fst
 
-    ## calculate FST
+    ## calculate FST in 200 kbp windows
     vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
         --weir-fst-pop ${WD}/data/${INVERSION}/INV.csv \
         --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
-        --fst-window-size 100000 \
+        --fst-window-size 200000 \
         --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_window.fst
 
     conda deactivate
@@ -228,7 +228,7 @@ for index in ${!DATA[@]}; do
     En=${End[index]}
     Ch=${Chrom[index]}
 
-    ### store the chormosome, start and endpoints of each inversion as a comma-separated string
+    ### store the chromosome, start and endpoints of each inversion as a comma-separated string
     BP="${Ch},${St},${En}"
 
     ### only retain the header and the rows on the "correct" chromosome and focus on the focal individuals that are either INV or ST
@@ -264,7 +264,7 @@ sed -i "s/'//g" ${WD}/data/meta.csv
 awk -F "," '$6 =="Europe" {print $1}' ${WD}/data/meta.csv >${WD}/data/Europe.ids
 awk -F "," '$6 =="North_America" {print $1}' ${WD}/data/meta.csv >${WD}/data/NorthAmerica.ids
 
-## get data for populationes that did not pass the quality criteria (no PASS and average read depths < 15)
+## get data for populations that did not pass the quality criteria (no PASS and average read depths < 15)
 awk -F "," '$(NF-7) !="Pass" || $(NF-9)<15 {print $1"\t"$(NF-7)"\t"$(NF-9)}' ${WD}/data/meta.csv >${WD}/data/REMOVE.ids
 
 ### subset the VCF file to only (1) contain only European data (2) remove problematic populations (based on DEST recommendations), remove (3) populations with < 15-fold average read depth, (4) only retain bilallic SNPs, (5) subsample to 50,000 randomly drawn genome-wide SNPs and (6) convert the allele counts to frequencies and weights (read-depths).
@@ -296,7 +296,7 @@ for continent in NorthAmerica Europe; do
             --input - \
             --snps 50000 |
 
-        ## convert VCF to allele frequencies and weigths (of the reference allele)
+        ## convert VCF to allele frequencies and weights (of the reference allele)
         python ${WD}/scripts/vcf2af.py \
             --input - \
             --output ${WD}/results/SNPs/${continent}

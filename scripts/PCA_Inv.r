@@ -89,6 +89,11 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
     } else {
         COLOR <- DATA$province
     }
+    if (region == "NorthAmerica") {
+        REG <- "NorthAm."
+    } else {
+        REG <- region
+    }
     COLOR2 <- map_levels_to_numbers(COLOR, 1, 11)
     SHAPE <- map_levels_to_numbers(COLOR, 15, 20)
     PLOT <- fviz_pca_ind(PCA.result,
@@ -100,11 +105,11 @@ create_pca_plot <- function(PCA.result, DATA, region, INV, inside = TRUE) {
         repel = TRUE
     ) +
         theme_bw() +
-        ggtitle(paste0("PCA - ", region, " ", plot_type, " ", INV)) +
+        ggtitle(paste0("PCA - ", REG, " ", plot_type, " ", INV)) +
         labs(color = "Count(r)y") +
         labs(shape = "Count(r)y") +
-        # guides(color = guide_legend(ncol = 2, bycol = TRUE)) +
-        # guides(shape = guide_legend(ncol = 2, bycol = TRUE)) +
+        guides(color = guide_legend(nrow = 3, byrow = TRUE)) +
+        guides(shape = guide_legend(nrow = 3, byrow = TRUE)) +
         scale_shape_manual(values = SHAPE) +
         scale_color_manual(values = COLOR2)
     return(PLOT)
@@ -144,15 +149,15 @@ process_region <- function(region, meta.sub, Chr.full, Start.full, End.full) {
     PLOT.non <- create_pca_plot(PCA.non, DATA.non, region, "inversions", inside = FALSE)
 
     # Combine and save plots
-    PLOT <- ggarrange(PLOT.inv.IN2Lt, PLOT.inv.IN3RP, PLOT.non,
+    PLOT <- ggarrange(PLOT.non, PLOT.inv.IN2Lt, PLOT.inv.IN3RP,
         common.legend = TRUE,
         ncol = 3,
         legend = "bottom"
     )
     FILE <- paste0("results/SNPs/PCA_", region, ".pdf")
-    ggsave(file = FILE, PLOT, width = 15, height = 5)
+    ggsave(file = FILE, PLOT, width = 10, height = 4)
     FILE <- paste0("results/SNPs/PCA_", region, ".png")
-    ggsave(file = FILE, PLOT, width = 15, height = 5)
+    ggsave(file = FILE, PLOT, width = 10, height = 4)
 }
 
 # Load metadata
