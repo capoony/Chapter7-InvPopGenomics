@@ -598,91 +598,91 @@ In this book chapter, I briefly introduced a broad variety of bioinformatic meth
 I am very grateful to Lino Ometto, who invited me to write this book chapter and to Elisabeth Haring for providing helpful comments to the manuscript.
 
 ### References
-1. 	Berdan EL, Barton NH, Butlin R, et al (2023) How chromosomal inversions reorient the evolutionary process. J Evol Biol jeb.14242
-2. 	Krimbas KV and Powell JR, Eds, (1992) Drosophila inversion polymorphism, CRC Press, Boca Raton, Fla
-3. 	Hoffmann AA and Rieseberg LH (2008) Revisiting the Impact of Inversions in Evolution: From Population Genetic Markers to Drivers of Adaptive Shifts and Speciation? Annu Rev Ecol Evol Syst 39:21–42
-4. 	Torgasheva AA and Borodin PM (2010) Synapsis and recombination in inversion heterozygotes. Biochem Soc Trans 38:1676
-5. 	Bridges CB (1935) Salivary Chromosome Maps. J Hered 26:60–64
-6. 	Cooper KW (1938) Concerning the Origin of the Polytene Chromosomes of Diptera. Proc Natl Acad Sci U S A 24:452–458
-7. 	Dobzhansky T and Sturtevant A (1938) Inversions in the Chromosomes of Drosophila Pseudoobscura. Genetics 23:28–64
-8. 	Sturtevant AH (1921) A Case of Rearrangement of Genes in Drosophila. Proc Natl Acad Sci 7:235–237
-9. 	Sturtevant AH (1926) A Crossover reducer in Drosophila Melanogaster due to inversion of a section of the third chromosome by A. H. Sturtevant by A. H. Sturtevant: Collectible; Good Pamphlet (1926) | Robinson Street Books, IOBA. Biol Zent Bl 46:697–702
-10. 	Dobzhansky T and Epling C (1948) The Suppression of Crossing Over in Inversion Heterozygotes of Drosophila Pseudoobscura. Proc Natl Acad Sci 34:137–141
-11. 	Anderson WW, Arnold J, Baldwin DG, et al (1991) Four decades of inversion polymorphism in Drosophila pseudoobscura. Proc Natl Acad Sci 88:10367–10371
-12. 	Ranz JM, Maurin D, Chan YS, et al (2007) Principles of Genome Evolution in the Drosophila melanogaster Species Group. PLoS Biol 5:e152
-13. 	Kellis M, Patterson N, Endrizzi M, et al (2003) Sequencing and comparison of yeast species to identify genes and regulatory elements. Nature 423:241–254
-14. 	Cáceres M, Barbadilla A, and Ruiz A (1997) Inversion length and breakpoint distribution in the Drosophila buzzatti species complex. Evolution 51:1149–1155
-15. 	Corbett-Detig RB (2016) Selection on Inversion Breakpoints Favors Proximity to Pairing Sensitive Sites in Drosophila melanogaster. Genetics 204:259–265
-16. 	Puerma E, Orengo DJ, and Aguadé M (2016) Multiple and diverse structural changes affect the breakpoint regions of polymorphic inversions across the Drosophila genus. Sci Rep 6
-17. 	Ashburner M and Lemeunier F (1976) Relationships within the melanogaster Species Subgroup of the Genus Drosophila (Sophophora). I. Inversion Polymorphisms in Drosophila melanogaster and Drosophila simulans. Proc R Soc Lond B Biol Sci 193:137–157
-18. 	Capy P and Gibert P (2004) Drosophila melanogaster, Drosophila simulans: so similar yet so different, In: Capy, P., Gibert, P., and Boussy, I. (eds.) Drosophila melanogaster, Drosophila simulans: So Similar, So Different, pp. 5–16 Springer Netherlands, Dordrecht
-19. 	Lemeunier F and Aulard S (1992) Inversion polymorphism in Drosophila melanogaster, Presented at the 
-20. 	Titen SWA, Johnson MTB, Capecchi M, et al (2020) Site-Specific Recombination with Inverted Target Sites: A Cautionary Tale of Dicentric and Acentric Chromosomes. Genetics 215:923–930
-21. 	Charlesworth B (2023) The effects of inversion polymorphisms on patterns of neutral genetic diversity. Genetics 224:iyad116
-22. 	Guerrero RF, Rousset F, and Kirkpatrick M (2012) Coalescent patterns for chromosomal inversions in divergent populations. Philos Trans R Soc B Biol Sci 367:430–438
-23. 	Navarro A, Betrán E, Barbadilla A, et al (1997) Recombination and gene flux caused by gene conversion and crossing over in inversion heterokaryotypes. Genetics 146:695–709
-24. 	Gorlov IP and Borodin PM (1995) Recombination in single and double heterozygotes for two partially overlapping inversions in chromosome 1 of the house mouse. Heredity 75:113–125
-25. 	Andolfatto P, Depaulis F, and Navarro A (2001) Inversion polymorphisms and nucleotide variability in Drosophila. Genet Res 77
-26. 	Chovnick A (1973) Gene conversion and transfer of genetic information within the inverted region of inversion heterozygotes. Genetics 75:123–131
-27. 	Navarro A, Barbadilla A, and Ruiz A (2000) Effect of Inversion Polymorphism on the Neutral Nucleotide Variability of Linked Chromosomal Regions in Drosophila. Genetics 155:685–698
-28. 	Kennington JW, Partridge L, and Hoffmann AA (2006) Patterns of Diversity and Linkage Disequilibrium Within the Cosmopolitan Inversion In(3R)Payne in Drosophila melanogaster Are Indicative of Coadaptation. Genetics 172:1655–1663
-29. 	Kirkpatrick M and Kern A (2012) Where’s the Money? Inversions, Genes, and the Hunt for Genomic Targets of Selection. 190:1153–1155
-30. 	Faria R, Johannesson K, Butlin RK, et al (2019) Evolving Inversions. Trends Ecol Evol 34:239–248
-31. 	Kapun M, Mitchell ED, Kawecki TJ, et al (2023) An Ancestral Balanced Inversion Polymorphism Confers Global Adaptation. Mol Biol Evol 40:msad118
-32. 	Wright D and Schaeffer SW (2022) The relevance of chromatin architecture to genome rearrangements in Drosophila. Philos Trans R Soc Lond B Biol Sci 377:20210206
-33. 	Matzkin LM, Merritt TJS, Zhu C-T, et al (2005) The structure and population genetics of the breakpoints associated with the cosmopolitan chromosomal inversion In(3R)Payne in Drosophila melanogaster. Genetics 170:1143–1152
-34. 	Griffiths AJF, Doebley JF, Peichel CL, et al (2020) Introduction to genetic analysis, W.H. Freeman & Company/Macmillan Learning, New York, NY
-35. 	Kapun M and Flatt T (2019) The adaptive significance of chromosomal inversion polymorphisms in Drosophila melanogaster. Mol Ecol 28:1263–1282
-36. 	Kirkpatrick M (2010) How and Why Chromosome Inversions Evolve. PLoS Biol 8:e1000501
-37. 	Kirkpatrick M and Barton N (2006) Chromosome inversions, local adaptation and speciation. Genetics 173:419–434
-38. 	Schwander T, Libbrecht R, and Keller L (2014) Supergenes and complex phenotypes. Curr Biol 24:R288-94
-39. 	Villoutreix R, Ayala D, Joron M, et al (2021) Inversion breakpoints and the evolution of supergenes. Mol Ecol 30:2738–2755
-40. 	Küpper C, Stocks M, Risse JE, et al (2016) A supergene determines highly divergent male reproductive morphs in the ruff. Nat Genet 48:79–83
-41. 	Lamichhaney S, Fan G, Widemo F, et al (2016) Structural genomic changes underlie alternative reproductive strategies in the ruff (Philomachus pugnax). Nat Genet 48:84–88
-42. 	Lank DB, Smith CM, Hanotte O, et al (1995) Genetic polymorphism for alternative mating behaviour in lekking male ruff Philomachus pugnax. Nature 378:59–62
-43. 	Joron M, Papa R, Beltrán M, et al (2006) A Conserved Supergene Locus Controls Colour Pattern Diversity in Heliconius Butterflies. PLoS Biol 4:e303
-44. 	Joron M, Frezal L, Jones RT, et al (2011) Chromosomal rearrangements maintain a polymorphic supergene controlling butterfly mimicry. Nature 477:203–206
-45. 	Lee Y, Fishman L, Kelly JK, et al (2016) A Segregating Inversion Generates Fitness Variation in Yellow Monkeyflower (Mimulus guttatus). Genetics 202:1473–1484
-46. 	Lowry DB and Willis JH (2010) A Widespread Chromosomal Inversion Polymorphism Contributes to a Major Life-History Transition, Local Adaptation, and Reproductive Isolation. PLoS Biol 8:e1000500
-47. 	Koch EL, Morales HE, Larsson J, et al (2021) Genetic variation for adaptive traits is associated with polymorphic inversions in Littorina saxatilis. Evol Lett 5:196–213
-48. 	Durmaz E, Kerdaffrec E, Katsianis G, et al (2020) How Selection Acts on Chromosomal Inversions, In: eLS, pp. 307–315 American Cancer Society
-49. 	Mackintosh C, Scott MF, Reuter M, et al (2024) Locally adaptive inversions in structured populations. Genetics iyae073
-50. 	Schaal SM, Haller BC, and Lotterhos KE (2022) Inversion invasions: when the genetic basis of local adaptation is concentrated within inversions in the face of gene flow. Philos Trans R Soc B Biol Sci 377:20210200
-51. 	Charlesworth B (1974) Inversion polymorphism in a two-locus genetic system. Genet Res 23:259
-52. 	Charlesworth B and Flatt T (2021) On the fixation or nonfixation of inversions under epistatic selection. Mol Ecol 30:3896–3897
-53. 	Dobzhansky T (1948) Genetics of natural populations. XVIII. Experiments on chromosomes of Drosophila pseudoobscura from different geographic regions. Genetics
-54. 	Fuller ZL, Koury SA, Leonard CJ, et al (2020) Extensive Recombination Suppression and Epistatic Selection Causes Chromosome-Wide Differentiation of a Selfish Sex Chromosome in Drosophila pseudoobscura. Genetics 216:205–226
-55. 	Guzmán NV, Kemppainen P, Monti D, et al (2022) Stable inversion clines in a grasshopper species group despite complex geographical history. Mol Ecol 31:1196–1215
-56. 	Kapun M, Fabian DK, Goudet J, et al (2016) Genomic Evidence for Adaptive Inversion Clines in Drosophila melanogaster. Mol Biol Evol 33:1317–1336
-57. 	Mérot C, Berdan EL, Cayuela H, et al (2021) Locally Adaptive Inversions Modulate Genetic Variation at Different Geographic Scales in a Seaweed Fly. Mol Biol Evol 38:3953–3971
-58. 	Kapun M, Schmidt C, Durmaz E, et al (2016) Parallel effects of the inversion In(3R)Payne on body size across the North American and Australian clines in Drosophila melanogaster. J Evol Biol 29:1059–1072
-59. 	Durmaz E, Benson C, Kapun M, et al (2018) An inversion supergene in Drosophila underpins latitudinal clines in survival traits. J Evol Biol 31:1354–1364
-60. 	Corbett-Detig RB and Hartl DL (2012) Population Genomics of Inversion Polymorphisms in Drosophila melanogaster. PLoS Genet 8:e1003056
-61. 	Kapun M, Schalkwyk H van, McAllister B, et al (2014) Inference of chromosomal inversion dynamics from Pool-Seq data in natural and laboratory populations of Drosophila melanogaster. Mol Ecol 23:1813–1827
-62. 	Schlötterer C, Tobler R, Kofler R, et al (2014) Sequencing pools of individuals — mining genome-wide polymorphism data without big funding. Nat Rev Genet 15:749–763
-63. 	Kapun M, Nunez JCB, Bogaerts-Márquez M, et al (2021) Drosophila Evolution over Space and Time (DEST): A New Population Genomics Resource. Mol Biol Evol 38:5782–5805
-64. 	UNPUBLISHED (2024) Characterizing footprints worldwide adaptation in structured populations of D. melanogaster through the expanded DEST 2.0 genomic resource.
-65. 	Lack JB, Cardeno CM, Crepeau MW, et al (2015) The Drosophila Genome Nexus: A Population Genomic Resource of 623 Drosophila melanogaster Genomes, Including 197 from a Single Ancestral Range Population. Genetics 199:1229–1241
-66. 	Lack JB, Lange JD, Tang AD, et al (2016) A Thousand Fly Genomes: An Expanded Drosophila Genome Nexus. Mol Biol Evol 33:msw195-3313
-67. 	Hoskins RA, Carlson JW, Wan KH, et al (2015) The Release 6 reference sequence of the Drosophila melanogaster genome. Genome Res 25:445–458
-68. 	Kapun M, Barrón MG, Staubach F, et al (2020) Genomic Analysis of European Drosophila melanogaster Populations Reveals Longitudinal Structure, Continent-Wide Selection, and Previously Unknown DNA Viruses. Mol Biol Evol 37:2661–2678
-69. 	Tange O (2018) GNU Parallel 2018, Ole Tange
-70. 	Nei M and Li WH (1979) Mathematical model for studying genetic variation in terms of restriction endonucleases. Proc Natl Acad Sci U S A 76:5269–5273
-71. 	Danecek P, Auton A, Abecasis G, et al (2011) The variant call format and VCFtools. Bioinformatics 27:2156–2158
-72. 	Wickham H, Averick M, Bryan J, et al (2019) Welcome to the Tidyverse. J Open Source Softw 4:1686
-73. 	R Core Team (2019), R Foundation for Statistical   Computing, https://www.R-project.org/
-74. 	Haudry A, Laurent S, and Kapun M (2020) Population genomics on the fly: recent advances in Drosophila. Stat Popul Genomics 357–396
-75. 	Weir BS and Cockerham CC (1984) Estimating F-Statistics for the Analysis of Population Structure. Evolution 38:1358
-76. 	Futschik A and Schlötterer C (2010) The Next Generation of Molecular Markers From Massively Parallel Sequencing of Pooled DNA Samples. Genetics 186:207–218
-77. 	Novembre J and Stephens M (2008) Interpreting principal component analyses of spatial population genetic variation. Nat Genet 40:646–649
-78. 	Nunez JCB, Lenhart BA, Bangerter A, et al (2024) A cosmopolitan inversion facilitates seasonal adaptation in overwintering Drosophila. Genetics 226:iyad207
-79. 	Anderson AR, Hoffmann AA, Mckechnie SW, et al (2005) The latitudinal cline in the In(3R)Payne inversion polymorphism has shifted in the last 20 years in Australian Drosophila melanogaster populations. Mol Ecol 14:851–858
-80. 	Nielsen R (2005) Molecular signatures of natural selection. Annu Rev Genet 39:197–218
-81. 	Storz JF (2005) Using genome scans of DNA polymorphism to infer adaptive population divergence. Mol Ecol 14:671–688
-82. 	Lewontin RC and Krakauer J (1973) Distribution of Gene Frequency as a Test of the Theory of the Selective Neutrality of Polymorphisms. Genetics 74:175–195
-83. 	Dauphin B, Rellstab C, Wüest RO, et al (2023) Re-thinking the environment in landscape genomics. Trends Ecol Evol 38:261–274
-84. 	Caye K, Jumentier B, Lepeule J, et al (2019) LFMM 2: Fast and Accurate Inference of Gene-Environment Associations in Genome-Wide Studies. Mol Biol Evol 36:852–860
-85. 	Frichot E, Schoville SD, Bouchard G, et al (2013) Testing for Associations between Loci and Environmental Gradients Using Latent Factor Mixed Models. Mol Biol Evol 30:1687–1699
-86. 	Kennington JW and Hoffmann AA (2013) Patterns of genetic variation across inversions: geographic variation in the In(2L)t inversion in populations of Drosophila melanogaster from eastern Australia. BMC Evol Biol 13:100
-87. 	Bogaerts-Márquez M, Guirao-Rico S, Gautier M, et al (2021) Temperature, rainfall and wind variables underlie environmental adaptation in natural populations of Drosophila melanogaster. Mol Ecol 30:938–954
+1. Berdan EL, Barton NH, Butlin R, et al (2023) How chromosomal inversions reorient the evolutionary process. J Evol Biol jeb.14242
+2. Krimbas KV and Powell JR, Eds, (1992) Drosophila inversion polymorphism, CRC Press, Boca Raton, Fla
+3. Hoffmann AA and Rieseberg LH (2008) Revisiting the Impact of Inversions in Evolution: From Population Genetic Markers to Drivers of Adaptive Shifts and Speciation? Annu Rev Ecol Evol Syst 39:21–42
+4. Torgasheva AA and Borodin PM (2010) Synapsis and recombination in inversion heterozygotes. Biochem Soc Trans 38:1676
+5. Bridges CB (1935) Salivary Chromosome Maps. J Hered 26:60–64
+6. Cooper KW (1938) Concerning the Origin of the Polytene Chromosomes of Diptera. Proc Natl Acad Sci U S A 24:452–458
+7. Dobzhansky T and Sturtevant A (1938) Inversions in the Chromosomes of Drosophila Pseudoobscura. Genetics 23:28–64
+8. Sturtevant AH (1921) A Case of Rearrangement of Genes in Drosophila. Proc Natl Acad Sci 7:235–237
+9. Sturtevant AH (1926) A Crossover reducer in Drosophila Melanogaster due to inversion of a section of the third chromosome by A. H. Sturtevant by A. H. Sturtevant: Collectible; Good Pamphlet (1926) | Robinson Street Books, IOBA. Biol Zent Bl 46:697–702
+10. Dobzhansky T and Epling C (1948) The Suppression of Crossing Over in Inversion Heterozygotes of Drosophila Pseudoobscura. Proc Natl Acad Sci 34:137–141
+11. Anderson WW, Arnold J, Baldwin DG, et al (1991) Four decades of inversion polymorphism in Drosophila pseudoobscura. Proc Natl Acad Sci 88:10367–10371
+12. Ranz JM, Maurin D, Chan YS, et al (2007) Principles of Genome Evolution in the Drosophila melanogaster Species Group. PLoS Biol 5:e152
+13. Kellis M, Patterson N, Endrizzi M, et al (2003) Sequencing and comparison of yeast species to identify genes and regulatory elements. Nature 423:241–254
+14. Cáceres M, Barbadilla A, and Ruiz A (1997) Inversion length and breakpoint distribution in the Drosophila buzzatti species complex. Evolution 51:1149–1155
+15. Corbett-Detig RB (2016) Selection on Inversion Breakpoints Favors Proximity to Pairing Sensitive Sites in Drosophila melanogaster. Genetics 204:259–265
+16. Puerma E, Orengo DJ, and Aguadé M (2016) Multiple and diverse structural changes affect the breakpoint regions of polymorphic inversions across the Drosophila genus. Sci Rep 6
+17. Ashburner M and Lemeunier F (1976) Relationships within the melanogaster Species Subgroup of the Genus Drosophila (Sophophora). I. Inversion Polymorphisms in Drosophila melanogaster and Drosophila simulans. Proc R Soc Lond B Biol Sci 193:137–157
+18. Capy P and Gibert P (2004) Drosophila melanogaster, Drosophila simulans: so similar yet so different, In: Capy, P., Gibert, P., and Boussy, I. (eds.) Drosophila melanogaster, Drosophila simulans: So Similar, So Different, pp. 5–16 Springer Netherlands, Dordrecht
+19. Lemeunier F and Aulard S (1992) Inversion polymorphism in Drosophila melanogaster, Presented at the 
+20. Titen SWA, Johnson MTB, Capecchi M, et al (2020) Site-Specific Recombination with Inverted Target Sites: A Cautionary Tale of Dicentric and Acentric Chromosomes. Genetics 215:923–930
+21. Charlesworth B (2023) The effects of inversion polymorphisms on patterns of neutral genetic diversity. Genetics 224:iyad116
+22. Guerrero RF, Rousset F, and Kirkpatrick M (2012) Coalescent patterns for chromosomal inversions in divergent populations. Philos Trans R Soc B Biol Sci 367:430–438
+23. Navarro A, Betrán E, Barbadilla A, et al (1997) Recombination and gene flux caused by gene conversion and crossing over in inversion heterokaryotypes. Genetics 146:695–709
+24. Gorlov IP and Borodin PM (1995) Recombination in single and double heterozygotes for two partially overlapping inversions in chromosome 1 of the house mouse. Heredity 75:113–125
+25. Andolfatto P, Depaulis F, and Navarro A (2001) Inversion polymorphisms and nucleotide variability in Drosophila. Genet Res 77
+26. Chovnick A (1973) Gene conversion and transfer of genetic information within the inverted region of inversion heterozygotes. Genetics 75:123–131
+27. Navarro A, Barbadilla A, and Ruiz A (2000) Effect of Inversion Polymorphism on the Neutral Nucleotide Variability of Linked Chromosomal Regions in Drosophila. Genetics 155:685–698
+28. Kennington JW, Partridge L, and Hoffmann AA (2006) Patterns of Diversity and Linkage Disequilibrium Within the Cosmopolitan Inversion In(3R)Payne in Drosophila melanogaster Are Indicative of Coadaptation. Genetics 172:1655–1663
+29. Kirkpatrick M and Kern A (2012) Where’s the Money? Inversions, Genes, and the Hunt for Genomic Targets of Selection. 190:1153–1155
+30. Faria R, Johannesson K, Butlin RK, et al (2019) Evolving Inversions. Trends Ecol Evol 34:239–248
+31. Kapun M, Mitchell ED, Kawecki TJ, et al (2023) An Ancestral Balanced Inversion Polymorphism Confers Global Adaptation. Mol Biol Evol 40:msad118
+32. Wright D and Schaeffer SW (2022) The relevance of chromatin architecture to genome rearrangements in Drosophila. Philos Trans R Soc Lond B Biol Sci 377:20210206
+33. Matzkin LM, Merritt TJS, Zhu C-T, et al (2005) The structure and population genetics of the breakpoints associated with the cosmopolitan chromosomal inversion In(3R)Payne in Drosophila melanogaster. Genetics 170:1143–1152
+34. Griffiths AJF, Doebley JF, Peichel CL, et al (2020) Introduction to genetic analysis, W.H. Freeman & Company/Macmillan Learning, New York, NY
+35. Kapun M and Flatt T (2019) The adaptive significance of chromosomal inversion polymorphisms in Drosophila melanogaster. Mol Ecol 28:1263–1282
+36. Kirkpatrick M (2010) How and Why Chromosome Inversions Evolve. PLoS Biol 8:e1000501
+37. Kirkpatrick M and Barton N (2006) Chromosome inversions, local adaptation and speciation. Genetics 173:419–434
+38. Schwander T, Libbrecht R, and Keller L (2014) Supergenes and complex phenotypes. Curr Biol 24:R288-94
+39. Villoutreix R, Ayala D, Joron M, et al (2021) Inversion breakpoints and the evolution of supergenes. Mol Ecol 30:2738–2755
+40. Küpper C, Stocks M, Risse JE, et al (2016) A supergene determines highly divergent male reproductive morphs in the ruff. Nat Genet 48:79–83
+41. Lamichhaney S, Fan G, Widemo F, et al (2016) Structural genomic changes underlie alternative reproductive strategies in the ruff (Philomachus pugnax). Nat Genet 48:84–88
+42. Lank DB, Smith CM, Hanotte O, et al (1995) Genetic polymorphism for alternative mating behaviour in lekking male ruff Philomachus pugnax. Nature 378:59–62
+43. Joron M, Papa R, Beltrán M, et al (2006) A Conserved Supergene Locus Controls Colour Pattern Diversity in Heliconius Butterflies. PLoS Biol 4:e303
+44. Joron M, Frezal L, Jones RT, et al (2011) Chromosomal rearrangements maintain a polymorphic supergene controlling butterfly mimicry. Nature 477:203–206
+45. Lee Y, Fishman L, Kelly JK, et al (2016) A Segregating Inversion Generates Fitness Variation in Yellow Monkeyflower (Mimulus guttatus). Genetics 202:1473–1484
+46. Lowry DB and Willis JH (2010) A Widespread Chromosomal Inversion Polymorphism Contributes to a Major Life-History Transition, Local Adaptation, and Reproductive Isolation. PLoS Biol 8:e1000500
+47. Koch EL, Morales HE, Larsson J, et al (2021) Genetic variation for adaptive traits is associated with polymorphic inversions in Littorina saxatilis. Evol Lett 5:196–213
+48. Durmaz E, Kerdaffrec E, Katsianis G, et al (2020) How Selection Acts on Chromosomal Inversions, In: eLS, pp. 307–315 American Cancer Society
+49. Mackintosh C, Scott MF, Reuter M, et al (2024) Locally adaptive inversions in structured populations. Genetics iyae073
+50. Schaal SM, Haller BC, and Lotterhos KE (2022) Inversion invasions: when the genetic basis of local adaptation is concentrated within inversions in the face of gene flow. Philos Trans R Soc B Biol Sci 377:20210200
+51. Charlesworth B (1974) Inversion polymorphism in a two-locus genetic system. Genet Res 23:259
+52. Charlesworth B and Flatt T (2021) On the fixation or nonfixation of inversions under epistatic selection. Mol Ecol 30:3896–3897
+53. Dobzhansky T (1948) Genetics of natural populations. XVIII. Experiments on chromosomes of Drosophila pseudoobscura from different geographic regions. Genetics
+54. Fuller ZL, Koury SA, Leonard CJ, et al (2020) Extensive Recombination Suppression and Epistatic Selection Causes Chromosome-Wide Differentiation of a Selfish Sex Chromosome in Drosophila pseudoobscura. Genetics 216:205–226
+55. Guzmán NV, Kemppainen P, Monti D, et al (2022) Stable inversion clines in a grasshopper species group despite complex geographical history. Mol Ecol 31:1196–1215
+56. Kapun M, Fabian DK, Goudet J, et al (2016) Genomic Evidence for Adaptive Inversion Clines in Drosophila melanogaster. Mol Biol Evol 33:1317–1336
+57. Mérot C, Berdan EL, Cayuela H, et al (2021) Locally Adaptive Inversions Modulate Genetic Variation at Different Geographic Scales in a Seaweed Fly. Mol Biol Evol 38:3953–3971
+58. Kapun M, Schmidt C, Durmaz E, et al (2016) Parallel effects of the inversion In(3R)Payne on body size across the North American and Australian clines in Drosophila melanogaster. J Evol Biol 29:1059–1072
+59. Durmaz E, Benson C, Kapun M, et al (2018) An inversion supergene in Drosophila underpins latitudinal clines in survival traits. J Evol Biol 31:1354–1364
+60. Corbett-Detig RB and Hartl DL (2012) Population Genomics of Inversion Polymorphisms in Drosophila melanogaster. PLoS Genet 8:e1003056
+61. Kapun M, Schalkwyk H van, McAllister B, et al (2014) Inference of chromosomal inversion dynamics from Pool-Seq data in natural and laboratory populations of Drosophila melanogaster. Mol Ecol 23:1813–1827
+62. Schlötterer C, Tobler R, Kofler R, et al (2014) Sequencing pools of individuals — mining genome-wide polymorphism data without big funding. Nat Rev Genet 15:749–763
+63. Kapun M, Nunez JCB, Bogaerts-Márquez M, et al (2021) Drosophila Evolution over Space and Time (DEST): A New Population Genomics Resource. Mol Biol Evol 38:5782–5805
+64. UNPUBLISHED (2024) Characterizing footprints worldwide adaptation in structured populations of D. melanogaster through the expanded DEST 2.0 genomic resource.
+65. Lack JB, Cardeno CM, Crepeau MW, et al (2015) The Drosophila Genome Nexus: A Population Genomic Resource of 623 Drosophila melanogaster Genomes, Including 197 from a Single Ancestral Range Population. Genetics 199:1229–1241
+66. Lack JB, Lange JD, Tang AD, et al (2016) A Thousand Fly Genomes: An Expanded Drosophila Genome Nexus. Mol Biol Evol 33:msw195-3313
+67. Hoskins RA, Carlson JW, Wan KH, et al (2015) The Release 6 reference sequence of the Drosophila melanogaster genome. Genome Res 25:445–458
+68. Kapun M, Barrón MG, Staubach F, et al (2020) Genomic Analysis of European Drosophila melanogaster Populations Reveals Longitudinal Structure, Continent-Wide Selection, and Previously Unknown DNA Viruses. Mol Biol Evol 37:2661–2678
+69. Tange O (2018) GNU Parallel 2018, Ole Tange
+70. Nei M and Li WH (1979) Mathematical model for studying genetic variation in terms of restriction endonucleases. Proc Natl Acad Sci U S A 76:5269–5273
+71. Danecek P, Auton A, Abecasis G, et al (2011) The variant call format and VCFtools. Bioinformatics 27:2156–2158
+72. Wickham H, Averick M, Bryan J, et al (2019) Welcome to the Tidyverse. J Open Source Softw 4:1686
+73. R Core Team (2019), R Foundation for Statistical   Computing, https://www.R-project.org/
+74. Haudry A, Laurent S, and Kapun M (2020) Population genomics on the fly: recent advances in Drosophila. Stat Popul Genomics 357–396
+75. Weir BS and Cockerham CC (1984) Estimating F-Statistics for the Analysis of Population Structure. Evolution 38:1358
+76. Futschik A and Schlötterer C (2010) The Next Generation of Molecular Markers From Massively Parallel Sequencing of Pooled DNA Samples. Genetics 186:207–218
+77. Novembre J and Stephens M (2008) Interpreting principal component analyses of spatial population genetic variation. Nat Genet 40:646–649
+78. Nunez JCB, Lenhart BA, Bangerter A, et al (2024) A cosmopolitan inversion facilitates seasonal adaptation in overwintering Drosophila. Genetics 226:iyad207
+79. Anderson AR, Hoffmann AA, Mckechnie SW, et al (2005) The latitudinal cline in the In(3R)Payne inversion polymorphism has shifted in the last 20 years in Australian Drosophila melanogaster populations. Mol Ecol 14:851–858
+80. Nielsen R (2005) Molecular signatures of natural selection. Annu Rev Genet 39:197–218
+81. Storz JF (2005) Using genome scans of DNA polymorphism to infer adaptive population divergence. Mol Ecol 14:671–688
+82. Lewontin RC and Krakauer J (1973) Distribution of Gene Frequency as a Test of the Theory of the Selective Neutrality of Polymorphisms. Genetics 74:175–195
+83. Dauphin B, Rellstab C, Wüest RO, et al (2023) Re-thinking the environment in landscape genomics. Trends Ecol Evol 38:261–274
+84. Caye K, Jumentier B, Lepeule J, et al (2019) LFMM 2: Fast and Accurate Inference of Gene-Environment Associations in Genome-Wide Studies. Mol Biol Evol 36:852–860
+85. Frichot E, Schoville SD, Bouchard G, et al (2013) Testing for Associations between Loci and Environmental Gradients Using Latent Factor Mixed Models. Mol Biol Evol 30:1687–1699
+86. Kennington JW and Hoffmann AA (2013) Patterns of genetic variation across inversions: geographic variation in the In(2L)t inversion in populations of Drosophila melanogaster from eastern Australia. BMC Evol Biol 13:100
+87. Bogaerts-Márquez M, Guirao-Rico S, Gautier M, et al (2021) Temperature, rainfall and wind variables underlie environmental adaptation in natural populations of Drosophila melanogaster. Mol Ecol 30:938–954
 
