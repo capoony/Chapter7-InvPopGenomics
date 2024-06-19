@@ -3,6 +3,9 @@
 Martin Kapun¹
 
 ¹ *Natural History Museum of Vienna, Vienna, Austria*
+### Abstract
+
+Chromosomal inversions are structural mutations resulting in the reversal of the gene order along the corresponding genomic region. Due to their influence on recombination patterns, they can have a major influence on genetic variation and the evolutionary process. Accordingly, inversions can act as supergenes that keep together co-adapted gene complexes that form the genetic basis of many complex phenotypes in diverse organisms. In this book chapter, I will present an analysis pipeline to investigate the influence of two common cosmopolitan inversion, In(2L)t and In(3R)Payne, on genome-wide genetic variation and differentiation in world-wide populations of the vinegar fly Drosophila melanogaster. We will use single-individual and pooled resequencing data in combination with population genomics analysis tools to explore the impact of these two inversions on genetic variation, population structure and clinal variation in natural populations.
 
 ### Introduction 
 
