@@ -56,6 +56,8 @@ create_and_save_plots <- function(data, id, output_dir) {
     # Save the combined plot
     output_file <- paste0(output_dir, id, ".png")
     ggsave(file = output_file, plot_final, width = 6, height = 4)
+    output_file <- paste0(output_dir, id, ".pdf")
+    ggsave(file = output_file, plot_final, width = 6, height = 4)
 }
 
 # Create and save plots for each ID in the data

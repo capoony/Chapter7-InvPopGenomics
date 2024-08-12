@@ -63,3 +63,10 @@ ggsave(
     width = 12,
     height = 6
 )
+FILE <- paste0("results/SNPs_", INV, "/PCA-InvFreq_", INV, ".pdf")
+ggsave(
+    file = FILE,
+    plot = PLOT,
+    width = 12,
+    height = 6
+)

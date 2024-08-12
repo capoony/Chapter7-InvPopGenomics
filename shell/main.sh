@@ -1,7 +1,7 @@
 ################# ANALYSIS PIPELINE ##################
 
 ### define working directory
-WD=/media/inter/mkapun/projects/InvChapter
+WD=${WD}
 
 ## (1) install dependencies
 sh ${WD}/shell/dependencies
@@ -361,7 +361,7 @@ for index in ${!DATA[@]}; do
     INVERSION=${DATA[index]}
     Ch=${Chrom[index]}
 
-    ### convert VCF to allele frequency table for each SNP and population sample
+    ## convert VCF to allele frequency table for each SNP and population sample
     gunzip -c ${WD}/data/DEST.vcf.gz |
         awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
         python3 ${WD}/scripts/AFbyAllele.py \
@@ -446,15 +446,21 @@ for index in ${!DATA[@]}; do
 done
 
 ## copy figures to output folder
-mkdir /media/inter/mkapun/projects/InvChapter/output
+mkdir ${WD}/output
 
-cp /media/inter/mkapun/projects/InvChapter/results/SNPs*/*.png /media/inter/mkapun/projects/InvChapter/output
-cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LFMM_*/*.png /media/inter/mkapun/projects/InvChapter/output
-cp /media/inter/mkapun/projects/InvChapter/results/SNPs_*/LDwithSNPs/*.png /media/inter/mkapun/projects/InvChapter/output
-cp /media/inter/mkapun/projects/InvChapter/results/SNPs_IN2Lt/IN2Lt_plots/AT_Nie_Mau_1_2015-10-19.png /media/inter/mkapun/projects/InvChapter/output
+cp ${WD}/results/SNPs*/*.png ${WD}/output
+cp ${WD}/results/SNPs_*/LFMM_*/*.png ${WD}/output
+cp ${WD}/results/SNPs_*/LDwithSNPs/*.png ${WD}/output
+cp ${WD}/results/SNPs_IN2Lt/IN2Lt_plots/AT_Nie_Mau_1_2015-10-19.png ${WD}/output
+
+cp ${WD}/results/SNPs*/*.pdf ${WD}/output
+cp ${WD}/results/SNPs_*/LFMM_*/*.pdf ${WD}/output
+cp ${WD}/results/SNPs_*/LDwithSNPs/*.pdf ${WD}/output
+cp ${WD}/results/SNPs_IN2Lt/IN2Lt_plots/AT_Nie_Mau_1_2015-10-19.pdf ${WD}/output
+
 cd ${WD}
 
 pandoc -f markdown \
     -t docx \
-    -o /media/inter/mkapun/projects/InvChapter/README.docx \
-    /media/inter/mkapun/projects/InvChapter/README.md
+    -o ${WD}/README.docx \
+    ${WD}/README.md

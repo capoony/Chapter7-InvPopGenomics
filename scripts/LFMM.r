@@ -197,6 +197,8 @@ main <- function() {
 
     save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Latitude.png"), combined_plots$lat, 10, 6)
     save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Longitude.png"), combined_plots$lon, 10, 6)
+    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Latitude.pdf"), combined_plots$lat, 10, 6)
+    save_plot(paste0("results/SNPs_", INV, "/LFMM_", INV, "_Longitude.pdf"), combined_plots$lon, 10, 6)
 }
 
 # Run main function

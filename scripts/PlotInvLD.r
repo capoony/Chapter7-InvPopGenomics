@@ -152,3 +152,12 @@ ggsave(
     width = 10,
     height = 6
 )
+
+# Save the plot
+FILE <- paste0("results/SNPs_", INV, "/LDwithSNPs/", INV, "_LD.pdf")
+ggsave(
+    file = FILE,
+    plot = PLOT,
+    width = 10,
+    height = 6
+)
