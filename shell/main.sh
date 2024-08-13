@@ -1,10 +1,10 @@
 ################# ANALYSIS PIPELINE ##################
 
 ### define working directory
-WD=${WD}
+WD=<"Chapter6-InvPopGenomics"> ## replace with your working directory where the https://github.com/capoony/Chapter6-InvPopGenomics repository is installed
 
 ## (1) install dependencies
-sh ${WD}/shell/dependencies
+sh ${WD}/shell/dependencies ${WD}
 
 ## (2) Get information of individual sequencing data and isolate samples with known inversion status
 mkdir ${WD}/data
