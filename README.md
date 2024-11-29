@@ -194,7 +194,7 @@ for index in ${!DATA[@]}; do
     gzip ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf
 
     ### convert haploid VCF to diploid
-    <ins>Python</ins> ${WD}/scripts/hap2dip.py \
+    python ${WD}/scripts/hap2dip.py \
         --input ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz \
         --output ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz
 
@@ -315,7 +315,7 @@ for index in ${!DATA[@]}; do
     ### only retain the header and the rows on the "correct" chromosome and focus on the focal individuals that are either INV or ST
     gunzip -c ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz |
         awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
-        <ins>Python</ins> ${WD}/scripts/DiagnosticSNPs.py \
+        python ${WD}/scripts/DiagnosticSNPs.py \
             --range 200000 \
             --breakpoints ${BP} \
             --input - \
@@ -385,12 +385,12 @@ for continent in NorthAmerica Europe; do
         grep -v "\./\." |
 
         ## randomly samples 50,000 SNPs
-        <ins>Python</ins> ${WD}/scripts/SubsampleVCF.py \
+        python ${WD}/scripts/SubsampleVCF.py \
             --input - \
             --snps 50000 |
 
         ## convert VCF to allele frequencies and weigths (of the reference allele)
-        <ins>Python</ins> ${WD}/scripts/vcf2af.py \
+        python ${WD}/scripts/vcf2af.py \
             --input - \
             --output ${WD}/results/SNPs/${continent}
 
