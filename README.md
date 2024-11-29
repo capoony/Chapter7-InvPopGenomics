@@ -243,27 +243,27 @@ With the exception of the genomic regions of the two inversions (*In(2L)t*: Figu
 
 
 #### (2.2) The influence of inversions on genetic differentiation
->In the next part, we will use the diploid SNP dataset generated above to calculate *F*<sub>ST</sub> estimates among the INV and ST individuals for each inversion using the method of Weir & Cockerham (75) as implemented in VCFtools. The fixation index *F*<sub>ST</sub> summarizes genetic structure and is scaled between zero (no differentiation) and one (complete differentiation). We will use this metric to identify single SNPs, which are strongly differentiated between the karyotypes. In addition, we will calculate *F*<sub>ST</sub> averaged in 200,000 bp windows to find genomic regions, where many neighbouring SNPs show similar differentiation patterns.
+>In the next part, we will use the diploid SNP dataset generated above to calculate  estimates among the INV and ST individuals for each inversion using the method of Weir & Cockerham (75) as implemented in VCFtools. The fixation index *F*<sub>ST</sub> summarizes genetic structure and is scaled between zero (no differentiation) and one (complete differentiation). We will use this metric to identify single SNPs, which are strongly differentiated between the karyotypes. In addition, we will calculate *F*<sub>ST</sub> averaged in 200,000 bp windows to find genomic regions, where many neighbouring SNPs show similar differentiation patterns.
 
 ```bash
-## calculate *F*<sub>ST</sub> between karyotypes
+## calculate FST between karyotypes
 for index in ${!DATA[@]}; do
     INVERSION=${DATA[index]}
 
     conda activate vcftools
 
-    ## calculate *F*<sub>ST</sub> per SNP
+    ## calculate FST per SNP
     vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
-        --weir-*F*<sub>ST</sub>-pop ${WD}/data/${INVERSION}/INV.csv \
-        --weir-*F*<sub>ST</sub>-pop ${WD}/data/${INVERSION}/ST.csv \
-        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}.*F*<sub>ST</sub>
+        --weir-FST-pop ${WD}/data/${INVERSION}/INV.csv \
+        --weir-FST-pop ${WD}/data/${INVERSION}/ST.csv \
+        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}.FST
 
-    ## calculate *F*<sub>ST</sub> in 200kbp windows
+    ## calculate FST in 200kbp windows
     vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
-        --weir-*F*<sub>ST</sub>-pop ${WD}/data/${INVERSION}/INV.csv \
-        --weir-*F*<sub>ST</sub>-pop ${WD}/data/${INVERSION}/ST.csv \
-        --*F*<sub>ST</sub>-window-size 200000 \
-        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_window.*F*<sub>ST</sub>
+        --weir-FST-pop ${WD}/data/${INVERSION}/INV.csv \
+        --weir-FST-pop ${WD}/data/${INVERSION}/ST.csv \
+        --FST-window-size 200000 \
+        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_window.FST
 
     conda deactivate
 done
@@ -279,8 +279,8 @@ for index in ${!DATA[@]}; do
     En=${End[index]}
     Ch=${Chrom[index]}
 
-    ### plot *F*<sub>ST</sub> as Manhattan Plots
-    Rscript ${WD}/scripts/Plot_*F*<sub>ST</sub>.r \
+    ### plot FST as Manhattan Plots
+    Rscript ${WD}/scripts/Plot_FST.r \
         ${INVERSION} \
         ${Ch} \
         ${St} \
