@@ -25,7 +25,7 @@ In this book chapter, I will present a bioinformatics analysis pipeline which al
 
 ### (1) Preparing the bioinformatics analyses pipeline
 
-> The full analysis pipeline of this book chapter can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in a shell-script called dependencies.sh which is located in the shell/ folder. Here and throughout this chapter, the code blocks, as shown below, are highlighted by boxes with different fonts and colors according to the coding syntax of the BASH shell scripts, which is the main scripting language used in this analysis pipeline (besides specific scripts written in Python and R). It is possible to copy and paste the code snippets directly from this document and then paste and execute them in a terminal window on a workstation computer or computer server with a LINUX operation system. However, I would strongly recommend to open the script main.sh, which is located in the shell/ folder and which contains the whole analysis pipeline shown here, in an integrated development environment (IDE) program such as the VScode (https://code.visualstudio.com/) editor and execute the individual commands from the main.sh script bit by bit.
+> The full analysis pipeline of this book chapter can be found at https://github.com/capoony/InvChapter. As a first step, all necessary software needs to be installed. This information can be found in a shell-script called dependencies.sh which is located in the shell/ folder. Here and throughout this chapter, the code blocks, as shown below, are highlighted by boxes with different fonts and colors according to the coding syntax of the BASH shell scripts, which is the main scripting language used in this analysis pipeline (besides specific scripts written in python3and R). It is possible to copy and paste the code snippets directly from this document and then paste and execute them in a terminal window on a workstation computer or computer server with a LINUX operation system. However, I would strongly recommend to open the script main.sh, which is located in the shell/ folder and which contains the whole analysis pipeline shown here, in an integrated development environment (IDE) program such as the VScode (https://code.visualstudio.com/) editor and execute the individual commands from the main.sh script bit by bit.
 
 ```bash
 ### define working directory
@@ -194,7 +194,7 @@ for index in ${!DATA[@]}; do
     gzip ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf
 
     ### convert haploid VCF to diploid
-    python ${WD}/scripts/hap2dip.py \
+    python3${WD}/scripts/hap2dip.py \
         --input ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz \
         --output ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz
 
@@ -315,7 +315,7 @@ for index in ${!DATA[@]}; do
     ### only retain the header and the rows on the "correct" chromosome and focus on the focal individuals that are either INV or ST
     gunzip -c ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode.vcf.gz |
         awk -v Ch=${Ch} '$1~/^#/|| $1 == Ch' |
-        python ${WD}/scripts/DiagnosticSNPs.py \
+        python3${WD}/scripts/DiagnosticSNPs.py \
             --range 200000 \
             --breakpoints ${BP} \
             --input - \
@@ -385,12 +385,12 @@ for continent in NorthAmerica Europe; do
         grep -v "\./\." |
 
         ## randomly samples 50,000 SNPs
-        python ${WD}/scripts/SubsampleVCF.py \
+        python3${WD}/scripts/SubsampleVCF.py \
             --input - \
             --snps 50000 |
 
         ## convert VCF to allele frequencies and weigths (of the reference allele)
-        python ${WD}/scripts/vcf2af.py \
+        python3${WD}/scripts/vcf2af.py \
             --input - \
             --output ${WD}/results/SNPs/${continent}
 
@@ -414,7 +414,7 @@ The scatterplots in Figure 4 show the first two PC-axes, which together explain 
 We will now take advantage of the diagnostic marker SNPs that we isolated above and will estimate inversion frequencies in each of the pooled population samples in Europe and North America, respectively. This will allow us to test more directly how inversions influence genetic variation and population structure and if the two inversions exhibit clinal variation.
 
 #### (4.1) Estimating inversion frequencies in Pool-Seq data with diagnostic markers
-> We will now convert the VCF file to the SYNC file format using the Python script VCF2sync.py from the DEST pipeline. SYNC files are commonly used to store allele counts in pooled sequencing data as colon-separated lists in the form “A:T:C:G:N:Del” for each population sample and position. We will then obtain allele counts from the SYNC file at the positions of inversion-specific marker SNPs that are present in the DEST dataset using the Python script overlap_in_SNPs.py. To speed these calculations up, I am using GNU parallel with 100 threads.
+> We will now convert the VCF file to the SYNC file format using the python3script VCF2sync.py from the DEST pipeline. SYNC files are commonly used to store allele counts in pooled sequencing data as colon-separated lists in the form “A:T:C:G:N:Del” for each population sample and position. We will then obtain allele counts from the SYNC file at the positions of inversion-specific marker SNPs that are present in the DEST dataset using the python3script overlap_in_SNPs.py. To speed these calculations up, I am using GNU parallel with 100 threads.
 
 ```bash
 ### convert VCF to SYNC file format
@@ -443,7 +443,7 @@ for index in ${!DATA[@]}; do
             >${WD}/data/DEST_${INVERSION}.sync
 done
 ```
-> For each population and for each of the two inversions, we now calculate the median frequency of the inversion-specific alleles across all diagnostic markers to obtain an estimate of the corresponding inversion frequency with a custom Python script. Before that, we need to obtain the names of all samples in the VCF file in the correct order and then output the estimated inversion frequencies as a tab-delimited file.
+> For each population and for each of the two inversions, we now calculate the median frequency of the inversion-specific alleles across all diagnostic markers to obtain an estimate of the corresponding inversion frequency with a custom python3script. Before that, we need to obtain the names of all samples in the VCF file in the correct order and then output the estimated inversion frequencies as a tab-delimited file.
 ```bash
 ### get the names of all samples in the VCF file and store as an array
 NAMES=$(gunzip -c ${WD}/data/DEST.vcf.gz | head -150 | awk '/^#C/' | cut -f10- | tr '\t' ',')
