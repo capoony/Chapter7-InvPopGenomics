@@ -243,33 +243,33 @@ With the exception of the genomic regions of the two inversions (*In(2L)t*: Figu
 
 
 #### (2.2) The influence of inversions on genetic differentiation
->In the next part, we will use the diploid SNP dataset generated above to calculate FST estimates among the INV and ST individuals for each inversion using the method of Weir & Cockerham (75) as implemented in VCFtools. The fixation index FST summarizes genetic structure and is scaled between zero (no differentiation) and one (complete differentiation). We will use this metric to identify single SNPs, which are strongly differentiated between the karyotypes. In addition, we will calculate FST averaged in 200,000 bp windows to find genomic regions, where many neighbouring SNPs show similar differentiation patterns.
+>In the next part, we will use the diploid SNP dataset generated above to calculate *F*<sub>ST</sub> estimates among the INV and ST individuals for each inversion using the method of Weir & Cockerham (75) as implemented in VCFtools. The fixation index *F*<sub>ST</sub> summarizes genetic structure and is scaled between zero (no differentiation) and one (complete differentiation). We will use this metric to identify single SNPs, which are strongly differentiated between the karyotypes. In addition, we will calculate *F*<sub>ST</sub> averaged in 200,000 bp windows to find genomic regions, where many neighbouring SNPs show similar differentiation patterns.
 
 ```bash
-## calculate FST between karyotypes
+## calculate *F*<sub>ST</sub> between karyotypes
 for index in ${!DATA[@]}; do
     INVERSION=${DATA[index]}
 
     conda activate vcftools
 
-    ## calculate FST per SNP
+    ## calculate *F*<sub>ST</sub> per SNP
     vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
-        --weir-fst-pop ${WD}/data/${INVERSION}/INV.csv \
-        --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
-        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}.fst
+        --weir-*F*<sub>ST</sub>-pop ${WD}/data/${INVERSION}/INV.csv \
+        --weir-*F*<sub>ST</sub>-pop ${WD}/data/${INVERSION}/ST.csv \
+        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}.*F*<sub>ST</sub>
 
-    ## calculate FST in 200kbp windows
+    ## calculate *F*<sub>ST</sub> in 200kbp windows
     vcftools --gzvcf ${WD}/results/SNPs_${INVERSION}/SNPs_${INVERSION}.recode_dip.vcf.gz \
-        --weir-fst-pop ${WD}/data/${INVERSION}/INV.csv \
-        --weir-fst-pop ${WD}/data/${INVERSION}/ST.csv \
-        --fst-window-size 200000 \
-        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_window.fst
+        --weir-*F*<sub>ST</sub>-pop ${WD}/data/${INVERSION}/INV.csv \
+        --weir-*F*<sub>ST</sub>-pop ${WD}/data/${INVERSION}/ST.csv \
+        --*F*<sub>ST</sub>-window-size 200000 \
+        --out ${WD}/results/SNPs_${INVERSION}/${INVERSION}_window.*F*<sub>ST</sub>
 
     conda deactivate
 done
 ```
 
->Now, we plot both SNP-wise FST as well as FST values averaged in 200kbp windows. These types of plots are so-called Manhattan plots, where each dot represents a polymorphic genomic position along the x-axis and the corresponding FST value are shown on the y-axis. On top, we are plotting the window-wise FST as a line and highlight the region of the corresponding inversion by a transparent blue box.
+>Now, we plot both SNP-wise *F*<sub>ST</sub> as well as *F*<sub>ST</sub> values averaged in 200kbp windows. These types of plots are so-called Manhattan plots, where each dot represents a polymorphic genomic position along the x-axis and the corresponding *F*<sub>ST</sub> value are shown on the y-axis. On top, we are plotting the window-wise *F*<sub>ST</sub> as a line and highlight the region of the corresponding inversion by a transparent blue box.
 
 ```bash
 for index in ${!DATA[@]}; do
@@ -279,8 +279,8 @@ for index in ${!DATA[@]}; do
     En=${End[index]}
     Ch=${Chrom[index]}
 
-    ### plot FST as Manhattan Plots
-    Rscript ${WD}/scripts/Plot_fst.r \
+    ### plot *F*<sub>ST</sub> as Manhattan Plots
+    Rscript ${WD}/scripts/Plot_*F*<sub>ST</sub>.r \
         ${INVERSION} \
         ${Ch} \
         ${St} \
@@ -292,10 +292,10 @@ done
 As you can see in Figure 3 for *In(2L)t* (Panel A) and *In(3R)Payne* (Panel B), genetic differentiation is elevated among the karyotypes within the inversion and particularly at and around the inversion breakpoints. These patterns suggest that novel mutations building up over time in the proximity of the inversion breakpoints result in strong differentiation. Consistent with theory, the suppression of recombination prevents genetic homogenization among the karyotypes across the whole inverted region, but specifically at the breakpoints (22). Particularly for *In(3R)Payne*, we observe a typical “suspension bridge” pattern of genetic differentiation within the inversion (29), which suggests that gene flux in distance to the breakpoints and towards the center of the inversion has led to a homogenization of genetic variation across the two karyotypes (27). Similar to Figure 2, we also observe that patterns of differentiation spread way beyond the inversion breakpoints, as shown for *In(2L)t*, which further emphasizes the genome-wide impact of inversions on genetic variation. 
 
 ![Figure3](Figures/Figure3.png)
->> **Figure 3**: Manhattan plots showing the distribution of SNP-wise FST between INV and ST individuals along the genome. In addition, averaged FST values in 200kbp windows are overlaid as line plots in red and the genomic regions spanned by the inversions *In(2L)t* (Panel A) and *In(3R)Payne* (Panel B) are highlighted by transparent blue boxes.
+>> **Figure 3**: Manhattan plots showing the distribution of SNP-wise *F*<sub>ST</sub> between INV and ST individuals along the genome. In addition, averaged *F*<sub>ST</sub> values in 200kbp windows are overlaid as line plots in red and the genomic regions spanned by the inversions *In(2L)t* (Panel A) and *In(3R)Payne* (Panel B) are highlighted by transparent blue boxes.
 
 ### (3) SNPs in strong linkage disequilibrium with different karyotypes
-Several SNPs that are clustered at the inversion breakpoints in the Manhattan plots of Figure 3 show very high FST values, which indicates complete or near complete fixation for different alleles between the two karyotypes. We therefore assume that many SNPs are in complete linkage disequilibrium (LD) with the inversion - at least in the particular Zambian population sample that we investigate here. In those SNPs, one allele is associated with the inverted karyotype (INV) and the other with the standard arrangement (ST). This makes it possible to use these SNPs as diagnostic markers that allow to (1) test if the sequencing data of given individual with unknown karyotype is carrying the inversion simply by tracing for the inversion-specific allele at the corresponding diagnostic markers. Furthermore, (2) it is possible to estimate the frequency of inverted chromosomes in pooled sequencing (Pool-Seq) data, where multiple individuals are pooled prior to DNA extraction and the pool of DNA is then sequenced jointly (61). In the latter type of datasets, it is assumed that the allele frequency in the pooled sequencing reliably estimates the actual frequency of the allele in the population from which the pooled individuals were randomly sampled (76). Thus, the median frequency of the inversion-specific alleles in the pooled dataset should roughly correspond to the inversion frequency given that these SNPs are in tight LD with the inversion. However, I need to caution here, that these markers should - at best - be applied only to sequencing data from samples collected in the same broader geographic region, or that diagnostic maker SNPs are defined using a mixed sample of individuals with known karyotype from all areas where the corresponding inversion occurs. The evolutionary history of inversions with a broad geographic distribution may be very complex and characterized by the emergence and fixation of different SNPs within the inversion in different geographic regions (31).
+Several SNPs that are clustered at the inversion breakpoints in the Manhattan plots of Figure 3 show very high *F*<sub>ST</sub> values, which indicates complete or near complete fixation for different alleles between the two karyotypes. We therefore assume that many SNPs are in complete linkage disequilibrium (LD) with the inversion - at least in the particular Zambian population sample that we investigate here. In those SNPs, one allele is associated with the inverted karyotype (INV) and the other with the standard arrangement (ST). This makes it possible to use these SNPs as diagnostic markers that allow to (1) test if the sequencing data of given individual with unknown karyotype is carrying the inversion simply by tracing for the inversion-specific allele at the corresponding diagnostic markers. Furthermore, (2) it is possible to estimate the frequency of inverted chromosomes in pooled sequencing (Pool-Seq) data, where multiple individuals are pooled prior to DNA extraction and the pool of DNA is then sequenced jointly (61). In the latter type of datasets, it is assumed that the allele frequency in the pooled sequencing reliably estimates the actual frequency of the allele in the population from which the pooled individuals were randomly sampled (76). Thus, the median frequency of the inversion-specific alleles in the pooled dataset should roughly correspond to the inversion frequency given that these SNPs are in tight LD with the inversion. However, I need to caution here, that these markers should - at best - be applied only to sequencing data from samples collected in the same broader geographic region, or that diagnostic maker SNPs are defined using a mixed sample of individuals with known karyotype from all areas where the corresponding inversion occurs. The evolutionary history of inversions with a broad geographic distribution may be very complex and characterized by the emergence and fixation of different SNPs within the inversion in different geographic regions (31).
 
 #### (3.1) Inversion-specific diagnostic marker SNPs
 > In the following, we will use a custom script that searches the VCF files with samples specific to the *In(2L)t* and *In(3R)Payne* analyses for potential candidate SNPs. Specifically, we will focus on SNPs that are in full LD with either of the two focal inversions and which are located within 200kbp distance to an inversion breakpoint. For these SNPs, we will then isolate the alleles that are fixed within the inverted chromosomes.
@@ -511,7 +511,7 @@ Consistent with our hypothesis, we can see in Figure 6 that all plots on the lef
 >> **Figure 6**: Scatterplots showing the association between inversion frequencies and the first PC-axis based on SNPs either located inside (left panels) our outside (right panels) the genomic region spanned by *In(2L)t* (Panel A) or *In(3R)Payne* (Panel B) for Europe (rows 2 and 4) and North America (rows 1 and 3). Regression lines based on linear regression are shown in blue and the determinants of correlation (adjusted R2 value) are printed in the top-right corner of each plot.
 
 #### (4.3) The influence of inversions on genetic differentiation revisited
-In the next analysis step, we will extend our previous analysis from paragraph 2.2 where we investigated the influence of inversions on genome-wide differentiation. While these analyses were restricted to a single population in Zambia, we will now investigate hundreds of populations in Europe and North America. Previously, we used FST to quantify (linked) differences between the two karyotypes, but now, we will use logistic regression to test for each SNP in the genome, whether it is significantly correlated with the inversion frequency for either *In(2L)t* or *In(3R)Payne* across all populations of the data sets of the two continents. We assume that SNPs that are in strong LD, either due to physical proximity to the inversion or due to co-evolution, (i.e., statistical linkage) will be characterized by a statistically significant regression model.
+In the next analysis step, we will extend our previous analysis from paragraph 2.2 where we investigated the influence of inversions on genome-wide differentiation. While these analyses were restricted to a single population in Zambia, we will now investigate hundreds of populations in Europe and North America. Previously, we used *F*<sub>ST</sub> to quantify (linked) differences between the two karyotypes, but now, we will use logistic regression to test for each SNP in the genome, whether it is significantly correlated with the inversion frequency for either *In(2L)t* or *In(3R)Payne* across all populations of the data sets of the two continents. We assume that SNPs that are in strong LD, either due to physical proximity to the inversion or due to co-evolution, (i.e., statistical linkage) will be characterized by a statistically significant regression model.
 
 > Again, the actual analysis steps are stored in the R-script PlotInvLD.r, where the allele frequency matrices and the corresponding read depths are loaded for each continent. Then, logistic regressions will be calculated for each SNP, where the allele frequencies of a given SNP is the dependent variable, the inversion frequency is the independent variable and the read depth is the weight. For each inversion and continent, we then generate Manhattan plots, where the x-axis shows the genomic position of a given SNP and the y-axis shows the negative log10-transformed p-value of a likelihood ratio test of the logistic regression.
 
