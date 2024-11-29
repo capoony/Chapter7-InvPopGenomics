@@ -653,7 +653,7 @@ I am very grateful to Lino Ometto, who invited me to write this book chapter and
 61. Kapun M, Schalkwyk H van, McAllister B, et al (2014) Inference of chromosomal inversion dynamics from Pool-Seq data in natural and laboratory populations of Drosophila melanogaster. Mol Ecol 23:1813–1827
 62. Schlötterer C, Tobler R, Kofler R, et al (2014) Sequencing pools of individuals — mining genome-wide polymorphism data without big funding. Nat Rev Genet 15:749–763
 63. Kapun M, Nunez JCB, Bogaerts-Márquez M, et al (2021) Drosophila Evolution over Space and Time (DEST): A New Population Genomics Resource. Mol Biol Evol 38:5782–5805
-64. UNPUBLISHED (2024) Characterizing footprints worldwide adaptation in structured populations of D. melanogaster through the expanded DEST 2.0 genomic resource.
+64. Nunez JCB, Coronado-Zamora M, Gautier M, et al. (2024) Footprints of worldwide adaptation in structured populations of D. melanogaster through the expanded DEST 2.0 genomic resource. bioRxiv. doi: 10.1101/2024.11.10.622744.
 65. Lack JB, Cardeno CM, Crepeau MW, et al (2015) The Drosophila Genome Nexus: A Population Genomic Resource of 623 Drosophila melanogaster Genomes, Including 197 from a Single Ancestral Range Population. Genetics 199:1229–1241
 66. Lack JB, Lange JD, Tang AD, et al (2016) A Thousand Fly Genomes: An Expanded Drosophila Genome Nexus. Mol Biol Evol 33:msw195-3313
 67. Hoskins RA, Carlson JW, Wan KH, et al (2015) The Release 6 reference sequence of the Drosophila melanogaster genome. Genome Res 25:445–458
